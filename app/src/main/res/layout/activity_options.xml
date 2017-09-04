@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/ActivityPage"
+    tools:context="com.gamesbykevin.jigsaw.activity.OptionsActivity">
+
+    <include layout="@layout/layout_logo" />
+
+    <TableLayout style="@style/TableMenu">
+        <TableRow style="@style/RowMenu">
+            <ToggleButton
+                style="@style/ButtonMenu"
+                android:id="@+id/ToggleButtonVibrate"
+                android:textOn="@string/vibrate_on"
+                android:textOff="@string/vibrate_off"
+                android:onClick="onClickVibrate"
+                android:checked="true" />
+        </TableRow>
+        <TableRow style="@style/RowMenu">
+            <ToggleButton
+                style="@style/ButtonMenu"
+                android:id="@+id/ToggleButtonSound"
+                android:textOn="@string/sound_on"
+                android:textOff="@string/sound_off"
+                android:onClick="onClickSound"
+                android:checked="true" />
+        </TableRow>
+
+        <!--
+        <TableRow style="@style/RowMenu">
+            <com.gamesbykevin.androidframeworkv2.ui.MultiStateToggleButton
+                style="@style/ButtonMenu"
+                android:id="@+id/ToggleButtonShape"
+                android:onClick="onClickShape"
+                android:checked="true" />
+        </TableRow>
+        -->
+    </TableLayout>
+
+    <include layout="@layout/layout_social_icons" />
+</LinearLayout>

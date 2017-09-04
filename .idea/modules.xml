@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Jigsaw.iml" filepath="$PROJECT_DIR$/Jigsaw.iml" />
+      <module fileurl="file://$PROJECT_DIR$/androidframeworkv2-debug/androidframeworkv2-debug.iml" filepath="$PROJECT_DIR$/androidframeworkv2-debug/androidframeworkv2-debug.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

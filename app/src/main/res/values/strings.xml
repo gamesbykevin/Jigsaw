@@ -1,3 +1,50 @@
 <resources>
-    <string name="app_name">Jigsaw</string>
+
+    <!-- name of our application -->
+    <string name="app_name" translatable="false">Jigsaw</string>
+
+    <!-- keys for shared preferences -->
+    <string name="game_stats_file_key" translatable="false">com.gamesbykevin.jigsaw.GAME_STATS_FILE_KEY</string>
+
+    <!-- button text -->
+    <string name="button_text_next">Next</string>
+    <string name="button_text_rate">Rate</string>
+    <string name="button_text_more">More</string>
+    <string name="button_text_menu">Menu</string>
+    <string name="button_text_start">Start</string>
+    <string name="button_text_options">Options</string>
+    <string name="button_text_tutorial">Tutorial</string>
+    <string name="button_text_play">Play</string>
+    <string name="button_text_leaderboard">Leaderboard</string>
+    <string name="button_text_achievements">Achievements</string>
+
+    <!-- prompt to exit -->
+    <string name="exit_prompt">Press again to exit</string>
+
+    <!-- text on options page -->
+    <string name="vibrate_on">Vibrate: On</string>
+    <string name="vibrate_off">Vibrate: Off</string>
+    <string name="sound_on">Sound: On</string>
+    <string name="sound_off">Sound: Off</string>
+
+    <!-- text to display in  the tutorial -->
+    <string name="tutorial_instructions_1">Tutorial Part 1\nTo solve you have to connect all the pipes together</string>
+    <string name="tutorial_instructions_2">Tutorial Part 2\nTouch the pipes to rotate. \nAs you connect the pipes they will turn green</string>
+    <string name="tutorial_instructions_3">Tutorial Part 3\nOnce all pipes are connected you win</string>
+    <string name="tutorial_instructions_4">Tutorial Part 4\nDrag your finger if you want to move the board</string>
+    <string name="tutorial_instructions_5">Tutorial Part 5\nYou can also zoom in and out when you pinch 2 fingers</string>
+    <string name="tutorial_instructions_6">Tutorial Part 6\nSelect the magnet to enable auto rotate</string>
+
+    <!-- ui messages for google play services -->
+    <string name="sign_in_other_error">There was an issue with sign-in, please try again later.</string>
+    <string name="sign_in_failed">Failed to sign in. Please check your network connection and try again.</string>
+    <string name="app_misconfigured">The application is incorrectly configured. Check that the package name and signing certificate match the client ID created in Developer Console. Also, if the application is not yet published, check that the account you are trying to sign in with is listed as a tester account. See logs for more information.</string>
+    <string name="license_failed">License check failed.</string>
+    <string name="unknown_error">Unknown error.</string>
+    <string name="UNKNOWN_ERROR">Unknown error.</string>
+    <string name="gamehelper_sign_in_failed">Failed to sign in. Please check your network connection and try again.</string>
+    <string name="gamehelper_app_misconfigured">The application is incorrectly configured. Check that the package name and signing certificate match the client ID created in Developer Console. Also, if the application is not yet published, check that the account you are trying to sign in with is listed as a tester account. See logs for more information.</string>
+    <string name="gamehelper_license_failed">License check failed.</string>
+    <string name="gamehelper_unknown_error">Unknown error.</string>
+
 </resources>

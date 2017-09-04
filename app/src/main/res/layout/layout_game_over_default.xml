@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="invisible"
+    style="@style/GameOverPage">
+
+    <!-- Need to show Game Over text etc... -->
+    <include layout="@layout/layout_logo" />
+
+    <TableLayout style="@style/TableMenu">
+        <TableRow style="@style/RowMenu">
+            <Button style="@style/ButtonMenu" android:text="@string/button_text_next" android:onClick="onClickNext" android:id="@+id/ButtonNext" />
+        </TableRow>
+        <TableRow style="@style/RowMenu">
+            <Button style="@style/ButtonMenu" android:text="@string/button_text_rate" android:onClick="onClickRate" />
+        </TableRow>
+        <TableRow style="@style/RowMenu">
+            <Button style="@style/ButtonMenu" android:text="@string/button_text_achievements" android:onClick="onClickAchievements" />
+        </TableRow>
+        <TableRow style="@style/RowMenu">
+            <Button android:id="@+id/ButtonMore" style="@style/ButtonMenu" android:text="@string/button_text_more" android:onClick="onClickMore" />
+        </TableRow>
+        <TableRow style="@style/RowMenu">
+            <Button style="@style/ButtonMenu" android:text="@string/button_text_menu" android:onClick="onClickMenu" />
+        </TableRow>
+    </TableLayout>
+
+    <include layout="@layout/layout_social_icons" />
+
+</LinearLayout>

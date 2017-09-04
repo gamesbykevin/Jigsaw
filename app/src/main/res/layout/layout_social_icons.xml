@@ -1,0 +1,10 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+    <TableLayout style="@style/TableSocial">
+        <TableRow>
+            <Button android:id="@+id/tw" android:background="@drawable/twitter" style="@style/ButtonSocial" android:onClick="onClickTwitter" />
+            <Button android:id="@+id/yt" android:background="@drawable/youtube" style="@style/ButtonSocial" android:onClick="onClickYoutube" />
+            <Button android:id="@+id/fb" android:background="@drawable/facebook" style="@style/ButtonSocial" android:onClick="onClickFacebook" />
+            <Button android:id="@+id/in" android:background="@drawable/instagram" style="@style/ButtonSocial" android:onClick="onClickInstagram" />
+        </TableRow>
+    </TableLayout>
+</merge>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/ActivityPage"
+    tools:context="com.gamesbykevin.jigsaw.activity.OtherActivity">
+
+    <!-- Splash page layout -->
+    <include layout="@layout/activity_splash" android:id="@+id/loadingScreenLayout" />
+
+</merge>

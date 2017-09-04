@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "245051392189",
+    "firebase_url": "https://jigsaw-53021862.firebaseio.com",
+    "project_id": "jigsaw-53021862",
+    "storage_bucket": "jigsaw-53021862.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:245051392189:android:ee26ca398d2e2cf7",
+        "android_client_info": {
+          "package_name": "com.gamesbykevin.jigsaw"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "245051392189-kg2v643ijflbuktu1qocgjifnnjbk683.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2g2mCiDuYb3y3jaK9HMl5MCOLS2xYnAs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
