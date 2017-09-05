@@ -7,20 +7,20 @@
 
     <include layout="@layout/layout_logo" />
 
-    <TableLayout style="@style/TableMenu">
-        <TableRow style="@style/RowMenu">
+    <TableLayout style="@style/tableMenu">
+        <TableRow style="@style/rowMenu">
             <ToggleButton
-                style="@style/ButtonMenu"
-                android:id="@+id/ToggleButtonVibrate"
+                style="@style/buttonMenu"
+                android:id="@+id/toggleButtonVibrate"
                 android:textOn="@string/vibrate_on"
                 android:textOff="@string/vibrate_off"
                 android:onClick="onClickVibrate"
                 android:checked="true" />
         </TableRow>
-        <TableRow style="@style/RowMenu">
+        <TableRow style="@style/rowMenu">
             <ToggleButton
-                style="@style/ButtonMenu"
-                android:id="@+id/ToggleButtonSound"
+                style="@style/buttonMenu"
+                android:id="@+id/toggleButtonSound"
                 android:textOn="@string/sound_on"
                 android:textOff="@string/sound_off"
                 android:onClick="onClickSound"
@@ -28,10 +28,10 @@
         </TableRow>
 
         <!--
-        <TableRow style="@style/RowMenu">
+        <TableRow style="@style/rowMenu">
             <com.gamesbykevin.androidframeworkv2.ui.MultiStateToggleButton
                 style="@style/ButtonMenu"
-                android:id="@+id/ToggleButtonShape"
+                android:id="@+id/toggleButtonShape"
                 android:onClick="onClickShape"
                 android:checked="true" />
         </TableRow>

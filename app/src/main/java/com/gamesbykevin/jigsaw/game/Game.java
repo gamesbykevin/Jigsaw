@@ -3,6 +3,7 @@ package com.gamesbykevin.jigsaw.game;
 import android.view.MotionEvent;
 import com.gamesbykevin.jigsaw.activity.GameActivity;
 import com.gamesbykevin.jigsaw.activity.GameActivity.Screen;
+import com.gamesbykevin.jigsaw.board.Board;
 
 import static com.gamesbykevin.jigsaw.game.GameHelper.FRAMES;
 import static com.gamesbykevin.jigsaw.game.GameHelper.GAME_OVER;
@@ -17,27 +18,20 @@ public class Game implements IGame {
     //store activity reference
     private final GameActivity activity;
 
-    //do we reset the zoom factor
-    public static boolean RESET_ZOOM = true;
-
-    //store the zoom for motion events as well
-    public static float ZOOM_SCALE_MOTION_X, ZOOM_SCALE_MOTION_Y;
-
     //are we pressing on the screen
     private boolean press = false;
 
     //did we perform the first render
     private boolean initialRender = false;
 
+    //puzzle board
+    private Board board;
+
     /**
      * The list of steps in the game
      */
     public enum Step {
-        Start,
-        Reset,
-        Loading,
-        GameOver,
-        Updating
+        Start, Reset, Loading, GameOver, Running
     }
 
     //what is the current step that we are on
@@ -50,32 +44,37 @@ public class Game implements IGame {
 
         //default to loading
         STEP = Step.Loading;
-
-        //reset zoom
-        RESET_ZOOM = true;
     }
 
+    protected void setBoard(final Board board) {
+        this.board = board;
+    }
+
+    public Board getBoard() {
+        return this.board;
+    }
+
+    protected GameActivity getActivity() {
+        return this.activity;
+    }
+
+    @Override
     public void onPause() {
-        //do we need to pause anything here?
-        RESET_ZOOM = false;
+        //do we need to do anything here
     }
 
+    @Override
     public void onResume() {
         //do we need to resume anything
     }
 
     @Override
-    public void reset() throws Exception {
-
-        //flag game over false
-        GAME_OVER = false;
-
-        //keep track of how many games are played
-        //activity.trackEvent(R.string.event_games_played);
+    public void reset() {
+        GameHelper.reset(this);
     }
 
     @Override
-    public void update() throws Exception {
+    public void update() {
 
         switch (STEP) {
 
@@ -83,28 +82,26 @@ public class Game implements IGame {
             case Loading:
 
                 //if the textures have finished loading
-                if (LOADED) {
-
-                    //go to start step
+                if (LOADED)
                     STEP = Step.Reset;
-                }
                 break;
 
             //do nothing
             case Start:
                 break;
 
-            //we are resetting the board
+            //we are resetting the game
             case Reset:
 
                 //reset level
                 reset();
 
                 //after resetting, next step is updating
-                STEP = Step.Updating;
+                STEP = Step.Running;
                 break;
 
-            case Updating:
+            //the main game occurs here
+            case Running:
 
                 //if the game is over, move to the next step
                 if (GAME_OVER) {
@@ -130,6 +127,7 @@ public class Game implements IGame {
                 } else {
 
                     //update the board
+                    getBoard().update();
 
                     //if we already rendered the board once, lets display it
                     if (initialRender && activity.getScreen() == Screen.Loading)
@@ -137,14 +135,17 @@ public class Game implements IGame {
                 }
                 break;
 
+            //the game has ended
             case GameOver:
 
-                //keep track of elapsed frames
-                FRAMES++;
-
                 //switch to game over screen if enough time passed and we haven't set yet
-                if (FRAMES >= GAME_OVER_DELAY_FRAMES && activity.getScreen() != Screen.GameOver)
+                if (FRAMES >= GAME_OVER_DELAY_FRAMES && activity.getScreen() != Screen.GameOver) {
+                    //if enough time passed go to game over screen
                     activity.setScreen(Screen.GameOver);
+                } else if (FRAMES <= GAME_OVER_DELAY_FRAMES) {
+                    //keep track of time
+                    FRAMES++;
+                }
                 break;
         }
     }
@@ -162,7 +163,7 @@ public class Game implements IGame {
     public boolean onTouchEvent(final int action, float x, float y) {
 
         //don't continue if we aren't ready yet
-        if (STEP != Step.Updating)
+        if (STEP != Step.Running)
             return true;
 
         if (action == MotionEvent.ACTION_UP)
@@ -193,7 +194,7 @@ public class Game implements IGame {
     public void render(float[] m) {
 
         //don't display if we aren't ready
-        if (STEP != Step.Updating && STEP != Step.GameOver)
+        if (STEP != Step.Running && STEP != Step.GameOver)
             return;
 
         //render everything on screen

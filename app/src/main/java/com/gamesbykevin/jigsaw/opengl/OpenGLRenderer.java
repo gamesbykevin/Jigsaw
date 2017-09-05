@@ -14,11 +14,7 @@ import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.OFFSET_ORIGINAL_X
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.OFFSET_ORIGINAL_Y;
 import static com.gamesbykevin.jigsaw.util.UtilityHelper.DEBUG;
 import static com.gamesbykevin.jigsaw.activity.GameActivity.getGame;
-import static com.gamesbykevin.jigsaw.game.Game.RESET_ZOOM;
 
-import static com.gamesbykevin.jigsaw.game.Game.ZOOM_SCALE_MOTION_X;
-import static com.gamesbykevin.jigsaw.game.Game.ZOOM_SCALE_MOTION_Y;
-import static com.gamesbykevin.jigsaw.game.GameHelper.getEntityBackground;
 import static com.gamesbykevin.jigsaw.game.GameHelper.getSquare;
 import static com.gamesbykevin.jigsaw.game.GameHelper.getSquareBackground;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.FRAME_DURATION;
@@ -57,6 +53,12 @@ public class OpenGLRenderer implements Renderer {
 
     //get the ratio of the users screen compared to the default dimensions for the motion event
     private static float originalScaleMotionX = 0, originalScaleMotionY = 0;
+
+    //do we reset the zoom factor
+    public static boolean RESET_ZOOM = true;
+
+    //store the zoom for motion events as well
+    public static float ZOOM_SCALE_MOTION_X, ZOOM_SCALE_MOTION_Y;
 
     //the actual dimensions of the users phone
     private static int screenWidth, screenHeight;
@@ -314,16 +316,13 @@ public class OpenGLRenderer implements Renderer {
     }
 
     /**
-     * Setup the background to be rendered
+     * Setup the background to the normal screen size to be rendered
      */
     private void setupBackground() {
 
         //set the correct texture for rendering
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, Textures.TEXTURE_ID_BACKGROUND);
-
-        //setup entity (if not already setup)
-        getEntityBackground();
 
         //reset to normal screen size so background is displayed without transformation
         Matrix.orthoM(mtrxProjection, 0, 0f, WIDTH, HEIGHT, 0f, 0f, 50f);

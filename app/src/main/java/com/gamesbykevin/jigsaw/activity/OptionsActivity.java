@@ -21,8 +21,8 @@ public class OptionsActivity extends BaseActivity {
         setContentView(R.layout.activity_options);
 
         //retrieve our buttons so we can update based on current setting (shared preferences)
-        ToggleButton buttonSound = (ToggleButton)findViewById(R.id.ToggleButtonSound);
-        ToggleButton buttonVibrate = (ToggleButton)findViewById(R.id.ToggleButtonVibrate);
+        ToggleButton buttonSound = (ToggleButton)findViewById(R.id.toggleButtonSound);
+        ToggleButton buttonVibrate = (ToggleButton)findViewById(R.id.toggleButtonVibrate);
 
         /*
         //populate shape options
@@ -72,10 +72,10 @@ public class OptionsActivity extends BaseActivity {
             Editor editor = getSharedPreferences().edit();
 
             //store the sound setting based on the toggle button
-            editor.putBoolean(getString(R.string.sound_file_key), ((ToggleButton)findViewById(R.id.ToggleButtonSound)).isChecked());
+            editor.putBoolean(getString(R.string.sound_file_key), ((ToggleButton)findViewById(R.id.toggleButtonSound)).isChecked());
 
             //store the vibrate setting based on the toggle button
-            editor.putBoolean(getString(R.string.vibrate_file_key), ((ToggleButton)findViewById(R.id.ToggleButtonVibrate)).isChecked());
+            editor.putBoolean(getString(R.string.vibrate_file_key), ((ToggleButton)findViewById(R.id.toggleButtonVibrate)).isChecked());
 
             //store the shape setting as well
             //editor.putString(getString(R.string.game_shape_file_key), GSON.toJson(buttonShape.getValue()));
@@ -96,7 +96,7 @@ public class OptionsActivity extends BaseActivity {
     public void onClickVibrate(View view) {
 
         //get the button
-        ToggleButton button = (ToggleButton)view.findViewById(R.id.ToggleButtonVibrate);
+        ToggleButton button = (ToggleButton)view.findViewById(R.id.toggleButtonVibrate);
 
         //if the button is checked we will vibrate the phone
         if (button.isChecked()) {
@@ -107,9 +107,14 @@ public class OptionsActivity extends BaseActivity {
     public void onClickSound(View view) {
 
         //get the button
-        ToggleButton button = (ToggleButton)view.findViewById(R.id.ToggleButtonSound);
+        ToggleButton button = (ToggleButton)view.findViewById(R.id.toggleButtonSound);
 
-        if (!button.isChecked())
+        if (!button.isChecked()) {
+            //if not enabled stop all sound
             super.stopSound();
+        } else {
+            //ifi enabled play menu theme
+            super.playMenu();
+        }
     }
 }

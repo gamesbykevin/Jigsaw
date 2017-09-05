@@ -7,7 +7,7 @@
     <string name="game_stats_file_key" translatable="false">com.gamesbykevin.jigsaw.GAME_STATS_FILE_KEY</string>
 
     <!-- button text -->
-    <string name="button_text_next">Next</string>
+    <string name="button_text_next">Continue</string>
     <string name="button_text_rate">Rate</string>
     <string name="button_text_more">More</string>
     <string name="button_text_menu">Menu</string>
@@ -29,11 +29,6 @@
 
     <!-- text to display in  the tutorial -->
     <string name="tutorial_instructions_1">Tutorial Part 1\nTo solve you have to connect all the pipes together</string>
-    <string name="tutorial_instructions_2">Tutorial Part 2\nTouch the pipes to rotate. \nAs you connect the pipes they will turn green</string>
-    <string name="tutorial_instructions_3">Tutorial Part 3\nOnce all pipes are connected you win</string>
-    <string name="tutorial_instructions_4">Tutorial Part 4\nDrag your finger if you want to move the board</string>
-    <string name="tutorial_instructions_5">Tutorial Part 5\nYou can also zoom in and out when you pinch 2 fingers</string>
-    <string name="tutorial_instructions_6">Tutorial Part 6\nSelect the magnet to enable auto rotate</string>
 
     <!-- ui messages for google play services -->
     <string name="sign_in_other_error">There was an issue with sign-in, please try again later.</string>

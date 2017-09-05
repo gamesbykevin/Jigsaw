@@ -29,6 +29,11 @@ public class Textures {
     public static int TEXTURE_ID_HEXAGON = 0;
     public static int TEXTURE_ID_DIAMOND = 0;
 
+    //the id of our source image to create the puzzle
+    public static int TEXTURE_ID_IMAGE_SOURCE = 0;
+
+    public static final int INDEX_TEXTURE_ID_IMAGE_SOURCE = 4;
+
     public static float TEXTURE_SQUARE_COLS = 5.0f;
     public static float TEXTURE_SQUARE_ROWS = 2.0f;
 
@@ -49,7 +54,7 @@ public class Textures {
         this.activity = activity;
 
         //create array containing all the texture ids
-        IDS = new int[49];
+        IDS = new int[5];
     }
 
     /**
@@ -78,6 +83,8 @@ public class Textures {
      */
     public int loadTexture(int resId) {
 
+        int textureId = 0;
+
         try {
 
             //make sure we aren't pre-scaling the image when loading the texture(s)
@@ -86,6 +93,24 @@ public class Textures {
 
             //get our bitmap
             final Bitmap bitmap = BitmapFactory.decodeResource(activity.getResources(), resId, options);
+
+            //load and get the texture id
+            textureId = loadTexture(bitmap, index);
+
+        } catch (Exception e) {
+            UtilityHelper.handleException(e);
+        }
+
+        //keep increasing the index
+        index++;
+
+        //return our value
+        return textureId;
+    }
+
+    public static int loadTexture(Bitmap bitmap, final int index) {
+
+        try {
 
             //our container to generate the textures
             GLES20.glGenTextures(1, IDS, index);
@@ -118,13 +143,7 @@ public class Textures {
             UtilityHelper.handleException(e);
         }
 
-        //get texture id
-        int value = IDS[index];
-
-        //keep increasing the index
-        index++;
-
         //return our value
-        return value;
+        return IDS[index];
     }
 }

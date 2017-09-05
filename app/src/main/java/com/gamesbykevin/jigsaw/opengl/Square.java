@@ -70,40 +70,40 @@ public class Square {
     public void render(final float[] m) {
 
         // get handle to vertex shader's vPosition member
-        int mPositionHandle = GLES20.glGetAttribLocation(riGraphicTools.sp_Image, "vPosition");
+        int matrixPositionHandle = GLES20.glGetAttribLocation(riGraphicTools.sp_Image, "vPosition");
 
         // Enable generic vertex attribute array
-        GLES20.glEnableVertexAttribArray(mPositionHandle);
+        GLES20.glEnableVertexAttribArray(matrixPositionHandle);
 
         // Prepare the triangle coordinate data
-        GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false, 0, vertexBuffer);
+        GLES20.glVertexAttribPointer(matrixPositionHandle, 3, GLES20.GL_FLOAT, false, 0, vertexBuffer);
 
         // Get handle to texture coordinates location
-        int mTexCoordLoc = GLES20.glGetAttribLocation(riGraphicTools.sp_Image, "a_texCoord" );
+        int matrixTextureCoordinateLocation = GLES20.glGetAttribLocation(riGraphicTools.sp_Image, "a_texCoord" );
 
         //enable generic vertex attribute array
-        GLES20.glEnableVertexAttribArray(mTexCoordLoc);
+        GLES20.glEnableVertexAttribArray(matrixTextureCoordinateLocation);
 
         //prepare the texture coordinates
-        GLES20.glVertexAttribPointer(mTexCoordLoc, 2, GLES20.GL_FLOAT, false, 0, uvBuffer);
+        GLES20.glVertexAttribPointer(matrixTextureCoordinateLocation, 2, GLES20.GL_FLOAT, false, 0, uvBuffer);
 
         // Get handle to shape's transformation matrix
-        int mtrxhandle = GLES20.glGetUniformLocation(riGraphicTools.sp_Image, "uMVPMatrix");
+        int matrixHandle = GLES20.glGetUniformLocation(riGraphicTools.sp_Image, "uMVPMatrix");
 
-        // Apply the projection and view transformation
-        GLES20.glUniformMatrix4fv(mtrxhandle, 1, false, m, 0);
+        //apply the projection and view transformation
+        GLES20.glUniformMatrix4fv(matrixHandle, 1, false, m, 0);
 
-        // Get handle to textures locations
+        //Get handle to textures locations
         int mSamplerLoc = GLES20.glGetUniformLocation(riGraphicTools.sp_Image, "s_texture");
 
-        // Set the sampler texture unit to 0, where we have saved the texture.
+        //Set the sampler texture unit to 0, where we have saved the texture.
         GLES20.glUniform1i(mSamplerLoc, 0);
 
         //draw the triangle
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, indicesLength, GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
 
         //disable vertex array
-        GLES20.glDisableVertexAttribArray(mPositionHandle);
-        GLES20.glDisableVertexAttribArray(mTexCoordLoc);
+        GLES20.glDisableVertexAttribArray(matrixPositionHandle);
+        GLES20.glDisableVertexAttribArray(matrixTextureCoordinateLocation);
     }
 }

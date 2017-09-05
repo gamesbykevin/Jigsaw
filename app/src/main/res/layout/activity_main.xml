@@ -7,22 +7,25 @@
 
     <include layout="@layout/layout_logo" />
 
-    <TableLayout style="@style/TableMenu">
-        <TableRow style="@style/RowMenu">
-            <Button android:id="@+id/ButtonStart" style="@style/ButtonMenu" android:text="@string/button_text_start" android:onClick="onClickStart" />
+    <TableLayout style="@style/tableMenu">
+        <TableRow style="@style/rowMenu">
+            <Button style="@style/buttonMenu" android:text="@string/button_text_start" android:onClick="onClickStart" />
         </TableRow>
-        <TableRow style="@style/RowMenu">
-            <Button android:id="@+id/ButtonOptions" style="@style/ButtonMenu" android:text="@string/button_text_options" android:onClick="onClickOptions" />
+        <TableRow style="@style/rowMenu">
+            <Button style="@style/buttonMenu" android:text="@string/button_text_options" android:onClick="onClickOptions" />
         </TableRow>
-        <TableRow style="@style/RowMenu">
-            <Button android:id="@+id/ButtonAchievements" style="@style/ButtonMenu" android:text="@string/button_text_achievements" android:onClick="onClickAchievements" />
+        <TableRow style="@style/rowMenu">
+            <Button style="@style/buttonMenu" android:text="@string/button_text_achievements" android:onClick="onClickAchievements" />
         </TableRow>
-        <TableRow style="@style/RowMenu">
+        <TableRow style="@style/rowMenu">
             <!--suppress AndroidMissingOnClickHandler -->
-            <Button android:id="@+id/ButtonRate" style="@style/ButtonMenu" android:text="@string/button_text_rate" android:onClick="onClickRate" />
+            <Button style="@style/buttonMenu" android:text="@string/button_text_rate" android:onClick="onClickRate" />
         </TableRow>
-        <TableRow style="@style/RowMenu">
-            <Button android:id="@+id/ButtonTutorial" style="@style/ButtonMenu" android:text="@string/button_text_tutorial" android:onClick="onClickTutorial" />
+        <TableRow style="@style/rowMenu">
+            <Button style="@style/buttonMenu" android:text="@string/button_text_tutorial" android:onClick="onClickTutorial" />
+        </TableRow>
+        <TableRow style="@style/rowMenu">
+            <Button style="@style/buttonMenu" android:text="@string/button_text_more" android:onClick="onClickMore" />
         </TableRow>
     </TableLayout>
 

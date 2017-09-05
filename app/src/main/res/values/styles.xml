@@ -46,7 +46,7 @@
         <item name="android:textColor">@color/colorWhite</item>
     </style>
 
-    <style name="ButtonMenu">
+    <style name="buttonMenu">
         <item name="android:textSize">8pt</item>
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:layout_width">55dp</item>
@@ -60,12 +60,12 @@
         <item name="android:soundEffectsEnabled">true</item>
     </style>
 
-    <style name="RowMenu">
+    <style name="rowMenu">
         <item name="android:paddingBottom">5dp</item>
         <item name="android:paddingTop">0dp</item>
     </style>
 
-    <style name="TableMenu">
+    <style name="tableMenu">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">50dp</item>
@@ -74,7 +74,7 @@
         <item name="android:layout_marginBottom">0dp</item>
     </style>
 
-    <style name="ButtonSocial">
+    <style name="buttonSocial">
         <item name="android:layout_width">60dp</item>
         <item name="android:layout_height">60dp</item>
         <item name="android:layout_weight">1</item>
@@ -83,7 +83,7 @@
         <item name="android:soundEffectsEnabled">true</item>
     </style>
 
-    <style name="TableSocial">
+    <style name="tableSocial">
         <item name="android:paddingTop">5dp</item>
         <item name="android:paddingBottom">15dp</item>
         <item name="android:paddingLeft">5dp</item>

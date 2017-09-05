@@ -111,9 +111,6 @@ public class MainActivity extends BaseGameActivity {
 
     public void onClickStart(View view) {
 
-        //reset the zoom, for every new game started
-        Game.RESET_ZOOM = true;
-
         //store our shape selection
         //OptionsActivity.OPTION_BOARD_SHAPE = (Board.Shape)getObjectValue(R.string.game_shape_file_key, Board.Shape.class);
 

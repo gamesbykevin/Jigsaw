@@ -1,23 +1,24 @@
 package com.gamesbykevin.jigsaw.game;
 
 import com.gamesbykevin.androidframeworkv2.base.Disposable;
+import com.gamesbykevin.jigsaw.common.ICommon;
 
 /**
  * Game interface methods
  * @author GOD
  */
-public interface IGame extends Disposable
+public interface IGame extends ICommon
 {
     /**
-     * Logic to reset the game
+     * Handle onPause activity event
      */
-    void reset() throws Exception;
+    public void onPause();
 
     /**
-     * Logic to update element
+     * Handle onResume activity event
      */
-    void update() throws Exception;
-    
+    public void onResume();
+
     /**
      * Update the game based on a motion event
      * @param action The action of the MotionEvent
@@ -27,10 +28,4 @@ public interface IGame extends Disposable
      * @return true if we want to keep receiving events, false otherwise
      */
     boolean onTouchEvent(final int action, final float x, final float y) throws Exception;
-
-    /**
-     * Logic to render the game
-     * @param m OpenGL array
-     */
-    void render(float[] m);
 }

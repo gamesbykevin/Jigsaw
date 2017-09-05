@@ -9,21 +9,21 @@
     <!-- Need to show Game Over text etc... -->
     <include layout="@layout/layout_logo" />
 
-    <TableLayout style="@style/TableMenu">
-        <TableRow style="@style/RowMenu">
-            <Button style="@style/ButtonMenu" android:text="@string/button_text_next" android:onClick="onClickNext" android:id="@+id/ButtonNext" />
+    <TableLayout style="@style/tableMenu">
+        <TableRow style="@style/rowMenu">
+            <Button style="@style/buttonMenu" android:text="@string/button_text_next" android:onClick="onClickNext" />
         </TableRow>
-        <TableRow style="@style/RowMenu">
-            <Button style="@style/ButtonMenu" android:text="@string/button_text_rate" android:onClick="onClickRate" />
+        <TableRow style="@style/rowMenu">
+            <Button style="@style/buttonMenu" android:text="@string/button_text_achievements" android:onClick="onClickAchievements" />
         </TableRow>
-        <TableRow style="@style/RowMenu">
-            <Button style="@style/ButtonMenu" android:text="@string/button_text_achievements" android:onClick="onClickAchievements" />
+        <TableRow style="@style/rowMenu">
+            <Button style="@style/buttonMenu" android:text="@string/button_text_rate" android:onClick="onClickRate" />
         </TableRow>
-        <TableRow style="@style/RowMenu">
-            <Button android:id="@+id/ButtonMore" style="@style/ButtonMenu" android:text="@string/button_text_more" android:onClick="onClickMore" />
+        <TableRow style="@style/rowMenu">
+            <Button style="@style/buttonMenu" android:text="@string/button_text_menu" android:onClick="onClickMenu" />
         </TableRow>
-        <TableRow style="@style/RowMenu">
-            <Button style="@style/ButtonMenu" android:text="@string/button_text_menu" android:onClick="onClickMenu" />
+        <TableRow style="@style/rowMenu">
+            <Button style="@style/buttonMenu" android:text="@string/button_text_more" android:onClick="onClickMore" />
         </TableRow>
     </TableLayout>
 

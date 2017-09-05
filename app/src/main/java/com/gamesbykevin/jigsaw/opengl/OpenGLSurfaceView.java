@@ -9,10 +9,11 @@ import com.gamesbykevin.jigsaw.base.Entity;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 import com.gamesbykevin.jigsaw.game.Game;
 
+import static com.gamesbykevin.jigsaw.game.Game.STEP;
+import static com.gamesbykevin.jigsaw.opengl.OpenGLRenderer.ZOOM_SCALE_MOTION_X;
+import static com.gamesbykevin.jigsaw.opengl.OpenGLRenderer.ZOOM_SCALE_MOTION_Y;
 import static com.gamesbykevin.jigsaw.util.UtilityHelper.DEBUG;
 import static com.gamesbykevin.jigsaw.activity.GameActivity.getGame;
-import static com.gamesbykevin.jigsaw.game.Game.ZOOM_SCALE_MOTION_X;
-import static com.gamesbykevin.jigsaw.game.Game.ZOOM_SCALE_MOTION_Y;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLRenderer.LOADED;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLRenderer.ZOOM_RATIO_ADJUST;
 
@@ -34,12 +35,12 @@ public class OpenGLSurfaceView extends GLSurfaceView implements Runnable {
     /**
      * Default dimensions this game was designed for
      */
-    public static final int WIDTH = 480;
+    public static final int WIDTH = 800;
 
     /**
      * Default dimensions this game was designed for
      */
-    public static final int HEIGHT = 800;
+    public static final int HEIGHT = 480;
 
     /**
      * The version of open GL we are using
@@ -282,13 +283,19 @@ public class OpenGLSurfaceView extends GLSurfaceView implements Runnable {
 
         try
         {
-            //if we aren't updating the game
-            if (Game.STEP != Game.Step.Updating)
-                return true;
-
             //we can't continue if the textures have not yet loaded
             if (!LOADED)
                 return true;
+
+            //don't continue if the game is not running
+            switch (STEP) {
+
+                default:
+                    return true;
+
+                case Running:
+                    break;
+            }
 
             final float x = event.getX();
             final float y = event.getY();
