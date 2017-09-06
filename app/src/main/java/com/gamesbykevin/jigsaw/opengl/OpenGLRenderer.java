@@ -5,6 +5,7 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
 
+import com.gamesbykevin.jigsaw.board.BoardHelper;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -271,6 +272,10 @@ public class OpenGLRenderer implements Renderer {
      */
     @Override
     public void onDrawFrame(GL10 unused) {
+
+        //textures can only be loaded onDrawFrame and onSurfaceCreated
+        if (Textures.TEXTURE_ID_IMAGE_SOURCE == 0 && BoardHelper.PUZZLE_TEXTURE_GENERATED)
+            Textures.TEXTURE_ID_IMAGE_SOURCE = Textures.loadTexture(BoardHelper.PUZZLE_TEXTURE, Textures.INDEX_TEXTURE_ID_IMAGE_SOURCE, false);
 
         //get the current time
         long time = System.currentTimeMillis();

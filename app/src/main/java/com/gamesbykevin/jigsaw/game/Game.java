@@ -22,7 +22,7 @@ public class Game implements IGame {
     private boolean press = false;
 
     //did we perform the first render
-    private boolean initialRender = false;
+    public static boolean INITIAL_RENDER = false;
 
     //puzzle board
     private Board board;
@@ -54,7 +54,7 @@ public class Game implements IGame {
         return this.board;
     }
 
-    protected GameActivity getActivity() {
+    public GameActivity getActivity() {
         return this.activity;
     }
 
@@ -70,6 +70,11 @@ public class Game implements IGame {
 
     @Override
     public void reset() {
+
+        //reset initial render flag
+        INITIAL_RENDER = false;
+
+        //reset game components
         GameHelper.reset(this);
     }
 
@@ -130,7 +135,7 @@ public class Game implements IGame {
                     getBoard().update();
 
                     //if we already rendered the board once, lets display it
-                    if (initialRender && activity.getScreen() == Screen.Loading)
+                    if (INITIAL_RENDER && activity.getScreen() == Screen.Loading)
                         activity.setScreen(Screen.Ready);
                 }
                 break;
@@ -200,7 +205,7 @@ public class Game implements IGame {
         //render everything on screen
         GameHelper.render(m);
 
-        //we have performed the initial render
-        initialRender = true;
+        //flag that we have performed the initial render
+        //INITIAL_RENDER = true;
     }
 }

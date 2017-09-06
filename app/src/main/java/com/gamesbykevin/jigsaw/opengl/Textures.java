@@ -55,6 +55,9 @@ public class Textures {
 
         //create array containing all the texture ids
         IDS = new int[5];
+
+        //reset custom texture image id
+        TEXTURE_ID_IMAGE_SOURCE = 0;
     }
 
     /**
@@ -95,7 +98,7 @@ public class Textures {
             final Bitmap bitmap = BitmapFactory.decodeResource(activity.getResources(), resId, options);
 
             //load and get the texture id
-            textureId = loadTexture(bitmap, index);
+            textureId = loadTexture(bitmap, index, true);
 
         } catch (Exception e) {
             UtilityHelper.handleException(e);
@@ -108,7 +111,7 @@ public class Textures {
         return textureId;
     }
 
-    public static int loadTexture(Bitmap bitmap, final int index) {
+    public static int loadTexture(Bitmap bitmap, final int index, final boolean recycle) {
 
         try {
 
@@ -127,11 +130,13 @@ public class Textures {
             // Load the bitmap into the bound texture.
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
 
-            // Recycle the bitmap, since its data has been loaded into OpenGL.
-            bitmap.recycle();
+            //if true, recycle the bitmap
+            if (recycle)
+                bitmap.recycle();
 
             if (IDS[index] == 0) {
-                throw new Exception("Error loading texture: " + index);
+                throw new Exception("Error loading texture index: " + index + " OpenGL Error:" + GLES20.glGetError());
+
             } else {
 
                 //display texture id
@@ -140,7 +145,13 @@ public class Textures {
             }
 
         } catch (Exception e) {
+
+            //handle exception accordingly
             UtilityHelper.handleException(e);
+
+            //if debugging we want to throw an exception to stop the thread
+            if (DEBUG)
+                throw new RuntimeException(e);
         }
 
         //return our value

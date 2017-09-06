@@ -4,13 +4,16 @@ import android.graphics.Bitmap;
 import android.opengl.GLES20;
 
 import com.gamesbykevin.androidframeworkv2.base.Entity;
+import com.gamesbykevin.jigsaw.activity.GameActivity;
 import com.gamesbykevin.jigsaw.board.Piece.Connector;
 import com.gamesbykevin.jigsaw.common.ICommon;
 import com.gamesbykevin.jigsaw.opengl.Square;
 import com.gamesbykevin.jigsaw.opengl.Textures;
 
 import static com.gamesbykevin.jigsaw.activity.GameActivity.getRandomObject;
+import static com.gamesbykevin.jigsaw.board.BoardHelper.PUZZLE_TEXTURE_GENERATED;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.square;
+import static com.gamesbykevin.jigsaw.game.Game.INITIAL_RENDER;
 
 /**
  * Created by Kevin on 9/4/2017.
@@ -163,9 +166,18 @@ public class Board implements ICommon {
     @Override
     public void render(float[] m) {
 
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, Textures.TEXTURE_ID_IMAGE_SOURCE);
+        //make sure the texture has been generated first before rendering
+        if (PUZZLE_TEXTURE_GENERATED) {
 
-        square.render(m);
+            //bind the correct texture
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, Textures.TEXTURE_ID_IMAGE_SOURCE);
+
+            //render the entire texture (for now)
+            square.render(m);
+
+            //flag that we have performed the initial render
+            INITIAL_RENDER = true;
+        }
     }
 }

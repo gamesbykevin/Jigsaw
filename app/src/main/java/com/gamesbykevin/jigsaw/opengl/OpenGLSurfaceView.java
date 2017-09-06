@@ -7,7 +7,6 @@ import android.view.MotionEvent;
 
 import com.gamesbykevin.jigsaw.base.Entity;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
-import com.gamesbykevin.jigsaw.game.Game;
 
 import static com.gamesbykevin.jigsaw.game.Game.STEP;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLRenderer.ZOOM_SCALE_MOTION_X;
@@ -217,7 +216,15 @@ public class OpenGLSurfaceView extends GLSurfaceView implements Runnable {
                 control();
 
             } catch (Exception e) {
+
+                //handle exception
                 UtilityHelper.handleException(e);
+
+                //if debugging exit loop on exception
+                if (DEBUG) {
+                    running = false;
+                    break;
+                }
             }
         }
     }
@@ -466,7 +473,7 @@ public class OpenGLSurfaceView extends GLSurfaceView implements Runnable {
     /**
      * Update the game state
      */
-    private void update() throws Exception {
+    private void update() {
 
         //track time before update
         this.previousUpdate = System.currentTimeMillis();
