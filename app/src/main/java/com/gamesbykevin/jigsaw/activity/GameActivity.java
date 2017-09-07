@@ -22,7 +22,7 @@ import java.util.Random;
 import static com.gamesbykevin.jigsaw.game.Game.STEP;
 import static com.gamesbykevin.jigsaw.util.UtilityHelper.DEBUG;
 
-public class GameActivity extends BaseGameActivity implements Disposable {
+public class GameActivity extends BaseActivity implements Disposable {
 
     //our open GL surface view
     private GLSurfaceView glSurfaceView;
@@ -276,18 +276,5 @@ public class GameActivity extends BaseGameActivity implements Disposable {
 
         //go back to the main game menu
         startActivity(new Intent(this, MainActivity.class));
-    }
-
-    public void onClickAchievements(View view) {
-
-        //if we are connected, display default achievements ui
-        if (getApiClient().isConnected()) {
-            displayAchievementUI();
-        } else {
-            //flag that we want to open the achievements
-            ACCESS_ACHIEVEMENT = true;
-
-            beginUserInitiatedSignIn();
-        }
     }
 }

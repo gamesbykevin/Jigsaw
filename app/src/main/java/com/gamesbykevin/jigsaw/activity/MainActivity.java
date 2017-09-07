@@ -11,7 +11,7 @@ import com.gamesbykevin.jigsaw.R;
 import com.gamesbykevin.jigsaw.game.Game;
 import com.gamesbykevin.jigsaw.services.BaseGameActivity;
 
-public class MainActivity extends BaseGameActivity {
+public class MainActivity extends BaseActivity {
 
     //did we prompt the user before exiting the app
     private boolean promptExit = false;
@@ -79,7 +79,7 @@ public class MainActivity extends BaseGameActivity {
             if (promptExit) {
 
                 //no need to bypass login in the future
-                BYPASS_LOGIN = false;
+                //BYPASS_LOGIN = false;
 
                 //finish activity
                 super.finish();
@@ -88,7 +88,7 @@ public class MainActivity extends BaseGameActivity {
                 ActivityCompat.finishAffinity(this);
 
                 //sign out of google play services
-                super.signOut();
+                //super.signOut();
 
             } else {
 
