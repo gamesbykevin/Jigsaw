@@ -3,15 +3,10 @@ package com.gamesbykevin.jigsaw.board;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 
 import com.gamesbykevin.androidframeworkv2.base.Entity;
 import com.gamesbykevin.jigsaw.R;
 import com.gamesbykevin.jigsaw.opengl.Square;
-import com.gamesbykevin.jigsaw.opengl.Textures;
 
 import static com.gamesbykevin.jigsaw.activity.GameActivity.getGame;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.HEIGHT;
@@ -35,7 +30,11 @@ public class BoardHelper {
 
     protected static void cut(final Board board) {
 
-        final Bitmap bitmapCut = BitmapFactory.decodeResource(getGame().getActivity().getResources(), R.drawable.cut_east);
+        //bitmap mask to cut the pieces
+        Bitmap east = BitmapFactory.decodeResource(getGame().getActivity().getResources(), R.drawable.cut_traditional_east);
+        Bitmap west = BitmapFactory.decodeResource(getGame().getActivity().getResources(), R.drawable.cut_traditional_west);
+        Bitmap north = BitmapFactory.decodeResource(getGame().getActivity().getResources(), R.drawable.cut_traditional_north);
+        Bitmap south = BitmapFactory.decodeResource(getGame().getActivity().getResources(), R.drawable.cut_traditional_south);
 
         if (PUZZLE_TEXTURE != null) {
             PUZZLE_TEXTURE.recycle();
@@ -45,9 +44,38 @@ public class BoardHelper {
         //temporary store all our created bitmaps
         Bitmap[][] tmpImages = new Bitmap[board.getRows()][board.getCols()];
 
+        //the desired size of the image
+        final int imageWidth;
+        final int imageHeight;
+
+        final float imgSrcHeight = (float)Board.IMAGE_SOURCE.getHeight();
+        final float imgSrcWidth = (float)Board.IMAGE_SOURCE.getWidth();
+
+        //get the size ratio
+        final float ratio =  imgSrcHeight / imgSrcWidth;
+
+        if (imgSrcHeight > HEIGHT || imgSrcWidth > WIDTH) {
+
+            if (ratio >= 1) {
+
+                imageWidth = (int)(HEIGHT * (imgSrcWidth / imgSrcHeight));
+                imageHeight = HEIGHT;
+
+            } else {
+
+                imageWidth = HEIGHT;
+                imageHeight = (int)(HEIGHT * (imgSrcHeight / imgSrcWidth));
+
+            }
+
+        } else {
+            imageWidth = Board.IMAGE_SOURCE.getWidth();
+            imageHeight = Board.IMAGE_SOURCE.getHeight();
+        }
+
         //typical size of piece, not including connectors
-        final int w = Board.IMAGE_SOURCE.getWidth() / board.getCols();
-        final int h = Board.IMAGE_SOURCE.getHeight() / board.getRows();
+        final int w = imageWidth / board.getCols();
+        final int h = imageHeight / board.getRows();
 
         //size of connector ends
         final int connectorW = (int)(w * Piece.CONNECTOR_RATIO);
@@ -61,110 +89,48 @@ public class BoardHelper {
                 int x = col * w;
                 int y = row * h;
 
-                //get the current bitmap
-                Bitmap tmp = tmpImages[row][col];
+                //coordinates to grab from the source image
+                final int x1, y1, w1, h1;
 
-                //if image doesn't exist yet we will need to create it
-                if (tmp == null) {
-
-                    //coordinates to grab from the source image
-                    final int x1, y1, w1, h1;
-
-                    //x-coordinate and width will vary by location
-                    if (col == 0) {
-                        x1 = 0;
-                        w1 = w + connectorW;
-                    } else if (col == board.getCols() - 1) {
-                        x1 = x - connectorW;
-                        w1 = w + connectorW;
-                    } else {
-                        x1 = x - connectorW;
-                        w1 = w + (connectorW * 2);
-                    }
-
-                    //y-coordinate and height will vary by location
-                    if (row == 0) {
-                        y1 = 0;
-                        h1 = h + connectorH;
-                    } else if (row == board.getRows() - 1) {
-                        y1 = y - connectorH;
-                        h1 = h + connectorH;
-                    } else {
-                        y1 = y - connectorH;
-                        h1 = h + (connectorH * 2);
-                    }
-
-                    //create a bitmap of the specified area for our puzzle piece
-                    tmpImages[row][col] = Bitmap.createBitmap(Board.IMAGE_SOURCE, x1, y1, w1, h1);
-
-                    //make the image mutable
-                    tmpImages[row][col] = tmpImages[row][col].copy(Bitmap.Config.ARGB_8888, true);
-
-                    //canvas object to make changes to bitmap
-                    Canvas canvas = new Canvas(tmpImages[row][col]);
-
-                    Paint paint = new Paint();
-                    paint.setARGB(255, 255, 255, 0);
-                    paint.setStrokeWidth(20);
-                    paint.setStyle(Paint.Style.FILL);
-                    paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
-
-                    Rect rectSrc = new Rect(0, 0, bitmapCut.getWidth(), bitmapCut.getHeight());
-                    Rect rectDest = new Rect(w1 - (w1/3), 0, w1, h1);
-
-                    canvas.drawBitmap(bitmapCut, rectSrc, rectDest, paint);
-
-                    //remove circle in bitmap
-                    //canvas.drawCircle((w1 / 3), (y1 / 3), (w1 / 3), paint);
-
-                    //assign image reference
-                    tmp = tmpImages[row][col];
+                //x-coordinate and width will vary by location
+                if (col == 0) {
+                    x1 = 0;
+                    w1 = w + connectorW;
+                } else if (col == board.getCols() - 1) {
+                    x1 = x - connectorW;
+                    w1 = w + connectorW;
+                } else {
+                    x1 = x - connectorW;
+                    w1 = w + (connectorW * 2);
                 }
+
+                //y-coordinate and height will vary by location
+                if (row == 0) {
+                    y1 = 0;
+                    h1 = h + connectorH;
+                } else if (row == board.getRows() - 1) {
+                    y1 = y - connectorH;
+                    h1 = h + connectorH;
+                } else {
+                    y1 = y - connectorH;
+                    h1 = h + (connectorH * 2);
+                }
+
+                //create a bitmap of the specified area for our puzzle piece
+                tmpImages[row][col] = Bitmap.createBitmap(Board.IMAGE_SOURCE, x1, y1, w1, h1);
+
+                //make bitmap mutable
+                tmpImages[row][col] = tmpImages[row][col].copy(Bitmap.Config.ARGB_8888, true);
 
                 //get the current piece
                 Piece piece = board.getPieces()[row][col];
 
                 //set the size of the piece
-                piece.setWidth(tmp.getWidth());
-                piece.setHeight(tmp.getHeight());
+                piece.setWidth(tmpImages[row][col].getWidth());
+                piece.setHeight(tmpImages[row][col].getHeight());
 
-                //check the east connector
-                if (col < board.getCols() - 1) {
-
-                    //get neighbor
-                    Piece neighbor = board.getPieces()[row][col + 1];
-
-                    switch (piece.getEast()) {
-                        case Male:
-                            break;
-
-                        case Female:
-                            break;
-
-                        //this should never happen
-                        case None:
-                            throw new RuntimeException("Piece has no east connector: (" + col + "," + row + ")");
-                    }
-                }
-
-                //check the south connector
-                if (row < board.getRows() - 1) {
-
-                    //get neighbor
-                    Piece neighbor = board.getPieces()[row + 1][col];
-
-                    switch (piece.getSouth()) {
-                        case Male:
-                            break;
-
-                        case Female:
-                            break;
-
-                        //this should never happen
-                        case None:
-                            throw new RuntimeException("Piece has no east connector: (" + col + "," + row + ")");
-                    }
-                }
+                //cut the bitmap
+                piece.cut(tmpImages[row][col], west, north, east, south);
             }
         }
 
@@ -198,10 +164,10 @@ public class BoardHelper {
 
                 canvas.drawBitmap(tmpImages[row][col], x, y, null);
 
-                y += tmpImages[row][col].getHeight();
+                y += tmpImages[row][col].getHeight() + 0;
             }
 
-            x += tmpImages[0][col].getWidth();
+            x += tmpImages[0][col].getWidth() + 0;
         }
 
         //only need to setup once

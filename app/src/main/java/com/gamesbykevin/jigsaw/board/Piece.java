@@ -1,5 +1,12 @@
 package com.gamesbykevin.jigsaw.board;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+
 import com.gamesbykevin.jigsaw.base.Entity;
 
 /**
@@ -60,5 +67,95 @@ public class Piece extends Entity {
 
     public Connector getSouth() {
         return this.south;
+    }
+
+    /**
+     * Cut the bitmap to create a puzzle piece
+     * @param bitmap The bitmap pertaining to the desired puzzle piece
+     */
+    public void cut(Bitmap bitmap, Bitmap west, Bitmap north, Bitmap east, Bitmap south) {
+
+        //canvas object to make changes to bitmap
+        Canvas canvas = new Canvas(bitmap);
+
+        //create our paint object which will add/subtract the pixel data accordingly
+        Paint paint = new Paint();
+        paint.setFilterBitmap(false);
+
+        //source and destination coordinates
+        Rect src = new Rect(), dest = new Rect();
+
+        //how do we manipulate the canvas on drawBitmap
+        PorterDuffXfermode modeIn = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
+        PorterDuffXfermode modeOut = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
+
+        //cut the piece
+        dest.set(0, 0, bitmap.getWidth(), (bitmap.getHeight() / 3));
+        paint.setXfermode((getNorth() == Connector.Male) ? modeIn : modeOut);
+        cutNorth(canvas, (getNorth() == Connector.Male) ? north : south, src, dest, paint);
+
+        //cut the piece
+        dest.set(0, bitmap.getHeight() - (bitmap.getHeight() / 3), bitmap.getWidth(), bitmap.getHeight());
+        paint.setXfermode((getSouth() == Connector.Male) ? modeIn : modeOut);
+        cutSouth(canvas, (getSouth() == Connector.Male) ? south : north, src, dest, paint);
+
+        //cut the piece
+        dest.set(0, 0, (bitmap.getWidth() / 3), bitmap.getHeight());
+        paint.setXfermode((getWest() == Connector.Male) ? modeIn : modeOut);
+        cutWest(canvas, (getWest() == Connector.Male) ? west : east, src, dest, paint);
+
+        //cut the piece
+        dest.set(bitmap.getWidth() - (bitmap.getWidth() / 3), 0, bitmap.getWidth(), bitmap.getHeight());
+        paint.setXfermode((getEast() == Connector.Male) ? modeIn : modeOut);
+        cutEast(canvas, (getEast() == Connector.Male) ? east : west, src, dest, paint);
+    }
+
+    private void cutNorth(Canvas canvas, Bitmap cutImage, Rect src, Rect dest, Paint paint) {
+
+        //don't do anything
+        if (getNorth() == Connector.None)
+            return;
+
+        //make the final cut
+        cut(canvas, cutImage, src, dest, paint);
+    }
+
+    private void cutSouth(Canvas canvas, Bitmap cutImage, Rect src, Rect dest, Paint paint) {
+
+        //don't do anything
+        if (getSouth() == Connector.None)
+            return;
+
+        //make the final cut
+        cut(canvas, cutImage, src, dest, paint);
+    }
+
+    private void cutWest(Canvas canvas, Bitmap cutImage, Rect src, Rect dest, Paint paint) {
+
+        //don't do anything
+        if (getWest() == Connector.None)
+            return;
+
+        //make the final cut
+        cut(canvas, cutImage, src, dest, paint);
+    }
+
+    private void cutEast(Canvas canvas, Bitmap cutImage, Rect src, Rect dest, Paint paint) {
+
+        //don't do anything
+        if (getEast() == Connector.None)
+            return;
+
+        //make the final cut
+        cut(canvas, cutImage, src, dest, paint);
+    }
+
+    private void cut(Canvas canvas, Bitmap cutImage, Rect src, Rect dest, Paint paint) {
+
+        //source of the cut image will always be the same
+        src.set(0, 0, cutImage.getWidth(), cutImage.getHeight());
+
+        //draw bitmap on top of our puzzle piece to make the cut
+        canvas.drawBitmap(cutImage, src, dest, paint);
     }
 }
