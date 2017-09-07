@@ -7,6 +7,7 @@ import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
 
+import com.gamesbykevin.jigsaw.board.BoardHelper;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 import com.gamesbykevin.jigsaw.R;
 
@@ -58,6 +59,9 @@ public class Textures {
 
         //reset custom texture image id
         TEXTURE_ID_IMAGE_SOURCE = 0;
+
+        //flag not generated
+        BoardHelper.PUZZLE_TEXTURE_GENERATED = false;
     }
 
     /**

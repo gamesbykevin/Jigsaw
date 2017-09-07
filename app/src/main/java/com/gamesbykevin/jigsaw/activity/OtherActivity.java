@@ -11,7 +11,10 @@ import android.provider.MediaStore;
 
 import com.gamesbykevin.jigsaw.R;
 import com.gamesbykevin.jigsaw.board.Board;
+import com.gamesbykevin.jigsaw.board.BoardHelper;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
+
+import static com.gamesbykevin.jigsaw.board.BoardHelper.PUZZLE_TEXTURE;
 
 public class OtherActivity extends BaseActivity {
 
@@ -29,10 +32,15 @@ public class OtherActivity extends BaseActivity {
         //inflate layout
         setContentView(R.layout.activity_other);
 
-        //reset image
+        //reset image(s)
         if (Board.IMAGE_SOURCE != null) {
             Board.IMAGE_SOURCE.recycle();
             Board.IMAGE_SOURCE = null;
+        }
+
+        if (PUZZLE_TEXTURE != null) {
+            PUZZLE_TEXTURE.recycle();
+            PUZZLE_TEXTURE = null;
         }
 
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);

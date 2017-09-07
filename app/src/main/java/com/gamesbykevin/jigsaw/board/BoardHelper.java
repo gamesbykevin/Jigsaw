@@ -69,9 +69,12 @@ public class BoardHelper {
             }
 
         } else {
+
             imageWidth = Board.IMAGE_SOURCE.getWidth();
             imageHeight = Board.IMAGE_SOURCE.getHeight();
         }
+
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(Board.IMAGE_SOURCE, imageWidth, imageHeight, false);
 
         //typical size of piece, not including connectors
         final int w = imageWidth / board.getCols();
@@ -117,7 +120,7 @@ public class BoardHelper {
                 }
 
                 //create a bitmap of the specified area for our puzzle piece
-                tmpImages[row][col] = Bitmap.createBitmap(Board.IMAGE_SOURCE, x1, y1, w1, h1);
+                tmpImages[row][col] = Bitmap.createBitmap(resizedBitmap, x1, y1, w1, h1);
 
                 //make bitmap mutable
                 tmpImages[row][col] = tmpImages[row][col].copy(Bitmap.Config.ARGB_8888, true);
@@ -164,10 +167,10 @@ public class BoardHelper {
 
                 canvas.drawBitmap(tmpImages[row][col], x, y, null);
 
-                y += tmpImages[row][col].getHeight() + 0;
+                y += tmpImages[row][col].getHeight();
             }
 
-            x += tmpImages[0][col].getWidth() + 0;
+            x += tmpImages[0][col].getWidth();
         }
 
         //only need to setup once
@@ -188,5 +191,8 @@ public class BoardHelper {
         //recycle bitmap image since it is no longer needed
         Board.IMAGE_SOURCE.recycle();
         Board.IMAGE_SOURCE = null;
+
+        resizedBitmap.recycle();
+        resizedBitmap = null;
     }
 }
