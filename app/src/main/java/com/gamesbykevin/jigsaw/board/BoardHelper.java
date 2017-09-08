@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import com.gamesbykevin.androidframeworkv2.base.Entity;
 import com.gamesbykevin.jigsaw.R;
 import com.gamesbykevin.jigsaw.opengl.Square;
+import com.gamesbykevin.jigsaw.util.UtilityHelper;
 
 import static com.gamesbykevin.jigsaw.activity.GameActivity.getGame;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.HEIGHT;
@@ -15,18 +16,36 @@ import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.WIDTH;
 /**
  * Created by Kevin on 9/4/2017.
  */
-
 public class BoardHelper {
 
-    //used to render the background
-    protected static Entity entity = null;
-    protected static Square square = null;
+    //used to render the puzzle pieces
+    private static Square square = null;
+
+    //only calculate when we need to
+    protected static boolean CALCULATE_UVS = true, CALCULATE_INDICES = true, CALCULATE_VERTICES = true;
 
     //our texture containing the puzzle pieces
     public static Bitmap PUZZLE_TEXTURE = null;
 
     //has the puzzle texture been generated
     public static boolean PUZZLE_TEXTURE_GENERATED = false;
+
+    /**
+     * Cleanup resources
+     */
+    public static void dispose() {
+        square = null;
+        PUZZLE_TEXTURE = null;
+    }
+
+    protected static Square getSquare() {
+
+        //create new if null
+        if (square == null)
+            square = new Square();
+
+        return square;
+    }
 
     protected static void cut(final Board board) {
 
@@ -84,6 +103,14 @@ public class BoardHelper {
         final int connectorW = (int)(w * Piece.CONNECTOR_RATIO);
         final int connectorH = (int)(h * Piece.CONNECTOR_RATIO);
 
+        //the max size of a puzzle piece
+        final int fullW = w + (connectorW * 2);
+        final int fullH = h + (connectorH * 2);
+
+        //where will the first piece be rendered
+        final int startX = (WIDTH / 2) - ((board.getCols() * fullW) / 2);
+        final int startY = (HEIGHT / 2) - ((board.getRows() * fullH) / 2);
+
         //now that all pieces are created, create the connectors
         for (int col = 0; col < board.getCols(); col++) {
             for (int row = 0; row < board.getRows(); row++) {
@@ -104,7 +131,7 @@ public class BoardHelper {
                     w1 = w + connectorW;
                 } else {
                     x1 = x - connectorW;
-                    w1 = w + (connectorW * 2);
+                    w1 = fullW;
                 }
 
                 //y-coordinate and height will vary by location
@@ -116,7 +143,7 @@ public class BoardHelper {
                     h1 = h + connectorH;
                 } else {
                     y1 = y - connectorH;
-                    h1 = h + (connectorH * 2);
+                    h1 = fullH;
                 }
 
                 //create a bitmap of the specified area for our puzzle piece
@@ -128,27 +155,30 @@ public class BoardHelper {
                 //get the current piece
                 Piece piece = board.getPieces()[row][col];
 
+                //assign the coordinates
+                piece.setX(startX + (col * fullW));
+                piece.setY(startY + (row * fullH));
+
                 //set the size of the piece
                 piece.setWidth(tmpImages[row][col].getWidth());
                 piece.setHeight(tmpImages[row][col].getHeight());
+
+                //calculate the texture coordinates
+                final float tmpCol = (float)col * (1.0f / (float)board.getCols());
+                final float tmpRow = (float)row * (1.0f / (float)board.getRows());
+                final float tmpW = 1.0f / (float)board.getCols();
+                final float tmpH = 1.0f / (float)board.getRows();
+
+                //make sure the texture coordinates are mapped
+                piece.setTextureCoordinates(tmpCol, tmpRow, tmpW, tmpH);
 
                 //cut the bitmap
                 piece.cut(tmpImages[row][col], west, north, east, south);
             }
         }
 
-        int width = 0;
-        int height = 0;
-
-        for (int col = 0; col < tmpImages[0].length; col++) {
-            width += tmpImages[0][col].getWidth();
-        }
-
-        for (int row = 0; row < tmpImages.length; row++) {
-            height += tmpImages[row][0].getHeight();
-        }
-
-        Bitmap texture = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        //create our single texture containing all puzzle pieces
+        Bitmap texture = Bitmap.createBitmap(fullW * board.getCols(), fullH * board.getRows(), Bitmap.Config.ARGB_8888);
 
         //convert bitmap to mutable object that we will convert to texture
         PUZZLE_TEXTURE = texture.copy(Bitmap.Config.ARGB_8888, true);
@@ -160,30 +190,16 @@ public class BoardHelper {
         int y = 0;
 
         for (int col = 0; col < tmpImages[0].length; col++) {
-
-            y = 0;
-
             for (int row = 0; row < tmpImages.length; row++) {
 
+                //calculate so the bitmap is rendered in the center
+                x = (col * fullW) + (fullW / 2) - (tmpImages[row][col].getWidth() / 2);
+                y = (row * fullH) + (fullH / 2) - (tmpImages[row][col].getHeight() / 2);
+
+                //draw the puzzle piece on the large bitmap
                 canvas.drawBitmap(tmpImages[row][col], x, y, null);
-
-                y += tmpImages[row][col].getHeight();
             }
-
-            x += tmpImages[0][col].getWidth();
         }
-
-        //only need to setup once
-        entity = new Entity();
-        entity.setX((WIDTH / 2) - (width / 2));
-        entity.setY((HEIGHT / 2) - (height / 2));
-        entity.setAngle(0f);
-        entity.setWidth(width);
-        entity.setHeight(height);
-        square = new Square();
-        square.setupImage();
-        square.setupTriangle();
-        square.setupVertices(entity.getVertices());
 
         //flag that the texture has been generated
         PUZZLE_TEXTURE_GENERATED = true;
@@ -194,5 +210,83 @@ public class BoardHelper {
 
         resizedBitmap.recycle();
         resizedBitmap = null;
+    }
+
+    /**
+     * Setup the coordinates for open gl rendering
+     */
+    protected static void updateCoordinates(Board board) {
+
+        for (int col = 0; col < board.getPieces()[0].length; col++) {
+            for (int row = 0; row < board.getPieces().length; row++) {
+
+                try {
+
+                    //get the current shape
+                    Piece piece = board.getPieces()[row][col];
+
+                    if (piece == null)
+                        continue;
+
+                    //update piece coordinates
+                    updatePiece(board, piece);
+
+                } catch (Exception e) {
+                    UtilityHelper.handleException(e);
+                }
+            }
+        }
+
+        //make sure our indices are created
+        board.getIndices();
+    }
+
+    protected static void updatePieceVertices(Board board, Piece piece) {
+
+        //if rotating update vertices
+        //if (piece.hasRotate())
+        piece.updateVertices();
+
+        //flag to recalculate
+        CALCULATE_VERTICES = true;
+
+        //assign vertices
+        for (int i = 0; i < piece.getVertices().length; i++) {
+
+            int index = (piece.getIndex() * 12) + i;
+
+            if (index >= board.getVertices().length)
+                return;
+
+            board.getVertices()[index] = piece.getVertices()[i];
+        }
+    }
+
+    protected static void updatePieceUvs(Board board, Piece piece) {
+
+        //flag to recalculate
+        CALCULATE_UVS = true;
+
+        //which portion of the texture are we rendering
+        for (int i = 0; i < piece.getTextureCoordinates().length; i++) {
+
+            int index = (piece.getIndex() * 8) + i;
+
+            if (index >= board.getUvs().length)
+                return;
+
+            board.getUvs()[index] = piece.getTextureCoordinates()[i];
+        }
+    }
+
+    /**
+     * Update the UVS and  Vertices coordinates
+     * @param board The board containing the render coordinates
+     * @param piece Current desired puzzle piece we want to update
+     */
+    protected static void updatePiece(Board board, Piece piece) {
+
+        updatePieceVertices(board, piece);
+        updatePieceUvs(board, piece);
     }
 }

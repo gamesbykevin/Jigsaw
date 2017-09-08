@@ -12,7 +12,6 @@ import com.gamesbykevin.jigsaw.base.Entity;
 /**
  * Created by Kevin on 9/4/2017.
  */
-
 public class Piece extends Entity {
 
     /**
@@ -30,11 +29,53 @@ public class Piece extends Entity {
      */
     public static final float CONNECTOR_RATIO = .2f;
 
+    //are we rotating
+    private boolean rotate = false;
+
+    //this index will help us update the open gl coordinates
+    private int index;
+
+    //the group will tell us which pieces are connected
+    private int group;
+
     public Piece(int col, int row) {
 
         //set the location
         super.setCol(col);
         super.setRow(row);
+    }
+
+    public void setGroup(final int group) {
+        this.group = group;
+    }
+
+    public int getGroup() {
+        return this.group;
+    }
+
+    public void setIndex(final int index) {
+        this.index = index;
+    }
+
+    public int getIndex() {
+        return this.index;
+    }
+
+    /**
+     * Update the vertices based on the combined current angle and pipe angle
+     */
+    public void updateVertices() {
+
+        //add the angle to the current pipe to update the vertices
+        super.getTransformedVertices(getAngle());
+    }
+
+    public void setRotate(final boolean rotate) {
+        this.rotate = rotate;
+    }
+
+    public boolean hasRotate() {
+        return this.rotate;
     }
 
     public void setWest(final Connector west) {
@@ -81,6 +122,9 @@ public class Piece extends Entity {
         //create our paint object which will add/subtract the pixel data accordingly
         Paint paint = new Paint();
         paint.setFilterBitmap(false);
+
+        //make the cut smoother
+        paint.setAntiAlias(true);
 
         //source and destination coordinates
         Rect src = new Rect(), dest = new Rect();

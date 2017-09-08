@@ -43,6 +43,7 @@ public class OtherActivity extends BaseActivity {
             PUZZLE_TEXTURE = null;
         }
 
+        //open up image picker to use a custom image
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, 1);

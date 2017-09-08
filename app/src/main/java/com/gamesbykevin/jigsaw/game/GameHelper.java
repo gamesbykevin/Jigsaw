@@ -21,9 +21,6 @@ public final class GameHelper {
 	private static Entity entityBackground = null;
     private static Square squareBackground = null;
 
-    //used to render the game objects
-    private static Square square = null;
-
     //did we flag the game over?
     public static boolean GAME_OVER = false;
 
@@ -61,17 +58,8 @@ public final class GameHelper {
         return squareBackground;
     }
 
-    public static Square getSquare() {
-
-        if (square == null)
-            square = new Square();
-
-        return square;
-    }
-
     public static void dispose() {
         squareBackground = null;
-        square = null;
         entityBackground = null;
     }
 

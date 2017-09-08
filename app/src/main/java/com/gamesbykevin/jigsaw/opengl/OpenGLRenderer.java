@@ -16,7 +16,6 @@ import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.OFFSET_ORIGINAL_Y
 import static com.gamesbykevin.jigsaw.util.UtilityHelper.DEBUG;
 import static com.gamesbykevin.jigsaw.activity.GameActivity.getGame;
 
-import static com.gamesbykevin.jigsaw.game.GameHelper.getSquare;
 import static com.gamesbykevin.jigsaw.game.GameHelper.getSquareBackground;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.FRAME_DURATION;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.HEIGHT;
@@ -186,9 +185,6 @@ public class OpenGLRenderer implements Renderer {
      */
     @Override
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
-
-        //init square used for rendering
-        getSquare();
 
         //set the clear color to black
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1);

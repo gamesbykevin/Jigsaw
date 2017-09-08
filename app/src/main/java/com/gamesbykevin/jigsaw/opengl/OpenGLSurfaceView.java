@@ -3,9 +3,12 @@ package com.gamesbykevin.jigsaw.opengl;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.gamesbykevin.jigsaw.base.Entity;
+import com.gamesbykevin.jigsaw.board.BoardHelper;
+import com.gamesbykevin.jigsaw.board.Piece;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 
 import static com.gamesbykevin.jigsaw.game.Game.STEP;
@@ -297,15 +300,26 @@ public class OpenGLSurfaceView extends GLSurfaceView implements Runnable {
             //don't continue if the game is not running
             switch (STEP) {
 
-                default:
-                    return true;
-
                 case Running:
                     break;
+
+                //if the game is not running, don't check motion events
+                default:
+                    return true;
             }
 
             final float x = event.getX();
             final float y = event.getY();
+
+            //adjust the coordinates where touch event occurred
+            float checkX = (x * ZOOM_SCALE_MOTION_X) - OFFSET_X;
+            float checkY = (y * ZOOM_SCALE_MOTION_Y) - OFFSET_Y;
+
+            //adjust the coordinates based on the window displayed
+            if (getOpenGlRenderer() != null) {
+                checkX += OpenGLRenderer.LEFT;
+                checkY += OpenGLRenderer.TOP;
+            }
 
             //if zoom functionality is enabled, check for it
             if (ZOOM_ENABLED) {
@@ -318,6 +332,22 @@ public class OpenGLSurfaceView extends GLSurfaceView implements Runnable {
 
                         //keep track of how many fingers we have on screen
                         fingers++;
+
+                        //if only 1 finger is pressed
+                        if (fingers == 1) {
+
+                            //check if we selected a piece
+                            Piece piece = getGame().getBoard().getSelected(checkX, checkY);
+
+                            //if piece exists, mark as selected
+                            if (piece != null)
+                                getGame().getBoard().setSelected(piece);
+
+                        } else {
+
+                            //if more than 1 finger is on the screen we can't select a piece
+                            getGame().getBoard().setSelected(null);
+                        }
 
                         //reset distance
                         pinchDistance = 0;
@@ -336,6 +366,10 @@ public class OpenGLSurfaceView extends GLSurfaceView implements Runnable {
 
                         //reset distance
                         pinchDistance = 0;
+
+                        //if we selected a piece, de-select it
+                        if (getGame().getBoard().getSelected() != null)
+                            getGame().getBoard().setSelected(null);
 
                         //if we are zooming
                         if (zooming) {
@@ -363,6 +397,9 @@ public class OpenGLSurfaceView extends GLSurfaceView implements Runnable {
 
                         //if there are 2 coordinates and we recorded 2 fingers
                         if (fingers == 2 && event.getPointerCount() == 2) {
+
+                            //if we have 2 fingers we can't select a piece
+                            getGame().getBoard().setSelected(null);
 
                             //flag that we are zooming
                             zooming = true;
@@ -418,20 +455,34 @@ public class OpenGLSurfaceView extends GLSurfaceView implements Runnable {
                             float xDiff = ((x2 > x1) ? -(x2 - x1) : (x1 - x2));
                             float yDiff = ((y2 > y1) ? -(y2 - y1) : (y1 - y2));
 
-                            //don't continue if we didn't move enough to register
-                            if (Math.abs(xDiff) < DRAG_THRESHOLD && Math.abs(yDiff) < DRAG_THRESHOLD)
-                                return true;
+                            //if we have a piece selected, move all pieces of the same group
+                            if (getGame().getBoard().getSelected() != null) {
 
-                            //flag that we are dragging
-                            dragging = true;
+                                //update the piece x,y
+                                Piece piece = getGame().getBoard().getSelected();
+                                piece.setX(piece.getX() + (xDiff * ZOOM_SCALE_MOTION_X));
+                                piece.setY(piece.getY() + (yDiff * ZOOM_SCALE_MOTION_Y));
 
-                            //keep track of original coordinates
-                            OFFSET_ORIGINAL_X += xDiff;
-                            OFFSET_ORIGINAL_Y += yDiff;
+                            } else {
 
-                            //if one finger is moved, offset the x,y coordinates
-                            OFFSET_X += (xDiff * ZOOM_SCALE_MOTION_X);
-                            OFFSET_Y += (yDiff * ZOOM_SCALE_MOTION_Y);
+                                //don't continue if we didn't move enough to register
+                                if (Math.abs(xDiff) < DRAG_THRESHOLD && Math.abs(yDiff) < DRAG_THRESHOLD)
+                                    return true;
+
+                                //flag that we are dragging
+                                dragging = true;
+
+                                //keep track of original coordinates
+                                OFFSET_ORIGINAL_X += xDiff;
+                                OFFSET_ORIGINAL_Y += yDiff;
+
+                                //if one finger is moved, offset the x,y coordinates
+                                OFFSET_X += (xDiff * ZOOM_SCALE_MOTION_X);
+                                OFFSET_Y += (yDiff * ZOOM_SCALE_MOTION_Y);
+                            }
+
+
+
 
                             //update the coordinates
                             motionMoveX = x1;
