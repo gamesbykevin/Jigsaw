@@ -458,10 +458,8 @@ public class OpenGLSurfaceView extends GLSurfaceView implements Runnable {
                             //if we have a piece selected, move all pieces of the same group
                             if (getGame().getBoard().getSelected() != null) {
 
-                                //update the piece x,y
-                                Piece piece = getGame().getBoard().getSelected();
-                                piece.setX(piece.getX() + (xDiff * ZOOM_SCALE_MOTION_X));
-                                piece.setY(piece.getY() + (yDiff * ZOOM_SCALE_MOTION_Y));
+                                //update the piece x,y for any connected pieces
+                                getGame().getBoard().updateSelected(xDiff * ZOOM_SCALE_MOTION_X, yDiff * ZOOM_SCALE_MOTION_Y);
 
                             } else {
 

@@ -52,6 +52,32 @@ public class Board implements ICommon {
         reset();
     }
 
+    public void updateSelected(final float x, final float y) {
+
+        //we can't update anything if nothing is selected
+        if (getSelected() == null)
+            return;;
+
+        //check all pieces that have the same group
+        for (int col = 0; col < getPieces()[0].length; col++) {
+            for (int row = 0; row < getPieces().length; row++) {
+
+                //get the current piece
+                Piece piece = getPieces()[row][col];
+
+                //skip if not part of the group
+                if (getSelected().getGroup() != piece.getGroup())
+                    continue;
+
+                //update the piece coordinates
+                piece.setX(piece.getX() + x);
+                piece.setY(piece.getY() + y);
+            }
+        }
+
+
+    }
+
     public Piece getSelected(final float x, final float y) {
 
         if (getPieces() == null)
@@ -211,6 +237,9 @@ public class Board implements ICommon {
                     getPieces()[row][col].setCol(col);
                     getPieces()[row][col].setRow(row);
                 }
+
+                //each image will belong to their own group until they are combined
+                getPieces()[row][col].setGroup(index);
 
                 //keep track of index so we can map the open gl coordinates
                 getPieces()[row][col].setIndex(index);
