@@ -5,4 +5,41 @@
     android:layout_height="match_parent"
     android:visibility="invisible">
 
+    <TableLayout style="@style/background_selector_table">
+
+        <TableRow>
+            <ImageView
+                android:src="@drawable/background_selector_white"
+                android:onClick="onClickBackgroundWhite"
+                style="@style/background_selector" />
+        </TableRow>
+
+        <TableRow>
+            <ImageView
+                android:src="@drawable/background_selector_black"
+                android:onClick="onClickBackgroundBlack"
+                style="@style/background_selector" />
+        </TableRow>
+
+        <TableRow>
+            <ImageView
+                android:src="@drawable/background_selector_gray"
+                android:onClick="onClickBackgroundGray"
+                style="@style/background_selector" />
+        </TableRow>
+
+        <TableRow>
+            <ImageView
+                android:src="@drawable/background_selector_yellow"
+                android:onClick="onClickBackgroundYellow"
+                style="@style/background_selector" />
+        </TableRow>
+
+        <TableRow>
+            <ImageView
+                android:src="@drawable/background_selector_red"
+                android:onClick="onClickBackgroundRed"
+                style="@style/background_selector" />
+        </TableRow>
+    </TableLayout>
 </LinearLayout>

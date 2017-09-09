@@ -114,7 +114,7 @@ public class Piece extends Entity {
      * Cut the bitmap to create a puzzle piece
      * @param bitmap The bitmap pertaining to the desired puzzle piece
      */
-    public void cut(Bitmap bitmap, Bitmap west, Bitmap north, Bitmap east, Bitmap south) {
+    public void cut(Bitmap bitmap, Bitmap west, Bitmap north, Bitmap east, Bitmap south, final int w, final int h) {
 
         //canvas object to make changes to bitmap
         Canvas canvas = new Canvas(bitmap);
@@ -134,22 +134,22 @@ public class Piece extends Entity {
         PorterDuffXfermode modeOut = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
 
         //cut the piece
-        dest.set(0, 0, bitmap.getWidth(), (bitmap.getHeight() / 3));
+        dest.set(0, 0, bitmap.getWidth(), (h / 3));
         paint.setXfermode((getNorth() == Connector.Male) ? modeIn : modeOut);
         cutNorth(canvas, (getNorth() == Connector.Male) ? north : south, src, dest, paint);
 
         //cut the piece
-        dest.set(0, bitmap.getHeight() - (bitmap.getHeight() / 3), bitmap.getWidth(), bitmap.getHeight());
+        dest.set(0, bitmap.getHeight() - (h / 3), bitmap.getWidth(), bitmap.getHeight());
         paint.setXfermode((getSouth() == Connector.Male) ? modeIn : modeOut);
         cutSouth(canvas, (getSouth() == Connector.Male) ? south : north, src, dest, paint);
 
         //cut the piece
-        dest.set(0, 0, (bitmap.getWidth() / 3), bitmap.getHeight());
+        dest.set(0, 0, (w / 4), bitmap.getHeight());
         paint.setXfermode((getWest() == Connector.Male) ? modeIn : modeOut);
         cutWest(canvas, (getWest() == Connector.Male) ? west : east, src, dest, paint);
 
         //cut the piece
-        dest.set(bitmap.getWidth() - (bitmap.getWidth() / 3), 0, bitmap.getWidth(), bitmap.getHeight());
+        dest.set(bitmap.getWidth() - (w / 4), 0, bitmap.getWidth(), bitmap.getHeight());
         paint.setXfermode((getEast() == Connector.Male) ? modeIn : modeOut);
         cutEast(canvas, (getEast() == Connector.Male) ? east : west, src, dest, paint);
     }

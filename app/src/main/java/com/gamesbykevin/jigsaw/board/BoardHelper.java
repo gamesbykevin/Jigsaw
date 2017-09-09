@@ -173,7 +173,7 @@ public class BoardHelper {
                 piece.setTextureCoordinates(tmpCol, tmpRow, tmpW, tmpH);
 
                 //cut the bitmap
-                piece.cut(tmpImages[row][col], west, north, east, south);
+                piece.cut(tmpImages[row][col], west, north, east, south, w, h);
             }
         }
 

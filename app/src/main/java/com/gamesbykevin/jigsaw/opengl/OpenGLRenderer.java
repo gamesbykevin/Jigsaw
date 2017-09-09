@@ -8,6 +8,8 @@ import android.opengl.Matrix;
 import com.gamesbykevin.jigsaw.board.BoardHelper;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 
+import org.w3c.dom.Text;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -87,6 +89,8 @@ public class OpenGLRenderer implements Renderer {
 
     //the angle of the board
     private float angle = 0f;
+
+    public static int BACKGROUND_TEXTURE_ID_CURRENT = -1;
 
     public OpenGLRenderer(Context activity) {
 
@@ -321,9 +325,12 @@ public class OpenGLRenderer implements Renderer {
      */
     private void setupBackground() {
 
+        if (BACKGROUND_TEXTURE_ID_CURRENT < 0)
+            BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_WHITE;
+
         //set the correct texture for rendering
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, Textures.TEXTURE_ID_BACKGROUND);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, BACKGROUND_TEXTURE_ID_CURRENT);//Textures.TEXTURE_ID_BACKGROUND);
 
         //reset to normal screen size so background is displayed without transformation
         Matrix.orthoM(mtrxProjection, 0, 0f, WIDTH, HEIGHT, 0f, 0f, 50f);

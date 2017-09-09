@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.gamesbykevin.androidframeworkv2.base.Disposable;
+import com.gamesbykevin.jigsaw.opengl.OpenGLRenderer;
+import com.gamesbykevin.jigsaw.opengl.Textures;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 import com.gamesbykevin.jigsaw.R;
 import com.gamesbykevin.jigsaw.game.Game;
@@ -276,5 +278,25 @@ public class GameActivity extends BaseActivity implements Disposable {
 
         //go back to the main game menu
         startActivity(new Intent(this, MainActivity.class));
+    }
+
+    public void onClickBackgroundWhite(View view) {
+        OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_WHITE;
+    }
+
+    public void onClickBackgroundBlack(View view) {
+        OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_BLACK;
+    }
+
+    public void onClickBackgroundGray(View view) {
+        OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_GRAY;
+    }
+
+    public void onClickBackgroundYellow(View view) {
+        OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_YELLOW;
+    }
+
+    public void onClickBackgroundRed(View view) {
+        OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_RED;
     }
 }

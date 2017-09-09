@@ -7,6 +7,7 @@ import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
 
+import com.gamesbykevin.androidframeworkv2.base.Disposable;
 import com.gamesbykevin.jigsaw.board.BoardHelper;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 import com.gamesbykevin.jigsaw.R;
@@ -17,7 +18,7 @@ import static com.gamesbykevin.jigsaw.util.UtilityHelper.DEBUG;
  * Created by Kevin on 7/23/2017.
  */
 
-public class Textures {
+public class Textures implements Disposable {
 
     //array containing all the texture ids
     public static int[] IDS;
@@ -26,23 +27,16 @@ public class Textures {
     public static int TEXTURE_ID_BACKGROUND = 0;
 
     //texture id for each shape
-    public static int TEXTURE_ID_SQUARE = 0;
-    public static int TEXTURE_ID_HEXAGON = 0;
-    public static int TEXTURE_ID_DIAMOND = 0;
+    public static int TEXTURE_ID_BACKGROUND_WHITE = 0;
+    public static int TEXTURE_ID_BACKGROUND_BLACK = 0;
+    public static int TEXTURE_ID_BACKGROUND_GRAY = 0;
+    public static int TEXTURE_ID_BACKGROUND_RED = 0;
+    public static int TEXTURE_ID_BACKGROUND_YELLOW = 0;
 
     //the id of our source image to create the puzzle
     public static int TEXTURE_ID_IMAGE_SOURCE = 0;
 
-    public static final int INDEX_TEXTURE_ID_IMAGE_SOURCE = 4;
-
-    public static float TEXTURE_SQUARE_COLS = 5.0f;
-    public static float TEXTURE_SQUARE_ROWS = 2.0f;
-
-    public static float TEXTURE_DIAMOND_COLS = 5.0f;
-    public static float TEXTURE_DIAMOND_ROWS = 2.0f;
-
-    public static float TEXTURE_HEXAGON_COLS = 14.0f;
-    public static float TEXTURE_HEXAGON_ROWS = 2.0f;
+    public static int INDEX_TEXTURE_ID_IMAGE_SOURCE;
 
     //store reference to access resources
     private final Context activity;
@@ -55,13 +49,21 @@ public class Textures {
         this.activity = activity;
 
         //create array containing all the texture ids
-        IDS = new int[5];
+        IDS = new int[7];
 
         //reset custom texture image id
         TEXTURE_ID_IMAGE_SOURCE = 0;
 
         //flag not generated
         BoardHelper.PUZZLE_TEXTURE_GENERATED = false;
+
+        //put this index at the end of the  list
+        INDEX_TEXTURE_ID_IMAGE_SOURCE = IDS.length - 1;
+    }
+
+    @Override
+    public void dispose() {
+        //do any clean up?
     }
 
     /**
@@ -78,9 +80,11 @@ public class Textures {
 
         //load the textures
         TEXTURE_ID_BACKGROUND = loadTexture(R.drawable.background);
-        TEXTURE_ID_DIAMOND = loadTexture(R.drawable.diamonds);
-        TEXTURE_ID_HEXAGON = loadTexture(R.drawable.hexagons);
-        TEXTURE_ID_SQUARE = loadTexture(R.drawable.squares);
+        TEXTURE_ID_BACKGROUND_WHITE = loadTexture(R.drawable.background_white);
+        TEXTURE_ID_BACKGROUND_BLACK = loadTexture(R.drawable.background_black);
+        TEXTURE_ID_BACKGROUND_GRAY = loadTexture(R.drawable.background_gray);
+        TEXTURE_ID_BACKGROUND_RED = loadTexture(R.drawable.background_red);
+        TEXTURE_ID_BACKGROUND_YELLOW = loadTexture(R.drawable.background_yellow);
     }
 
     /**
