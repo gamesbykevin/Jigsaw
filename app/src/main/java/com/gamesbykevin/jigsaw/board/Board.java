@@ -12,9 +12,7 @@ import static com.gamesbykevin.jigsaw.board.BoardHelper.CALCULATE_UVS;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.CALCULATE_VERTICES;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.PUZZLE_TEXTURE_GENERATED;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.getSquare;
-import static com.gamesbykevin.jigsaw.board.BoardHelper.placeSelected;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.updateCoordinates;
-import static com.gamesbykevin.jigsaw.board.BoardHelper.updateGroup;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.updatePieces;
 import static com.gamesbykevin.jigsaw.game.Game.INITIAL_RENDER;
 
@@ -43,6 +41,9 @@ public class Board implements ICommon {
     //have we selected a piece
     private Piece selected = null;
 
+    //the default size of a puzzle piece without the end connectors
+    private int defaultWidth, defaultHeight;
+
     /**
      * Default constructor
      */
@@ -50,6 +51,22 @@ public class Board implements ICommon {
         setCols(DEFAULT_COLS);
         setRows(DEFAULT_ROWS);
         reset();
+    }
+
+    public void setDefaultWidth(final int defaultWidth) {
+        this.defaultWidth = defaultWidth;
+    }
+
+    public void setDefaultHeight(final int defaultHeight) {
+        this.defaultHeight = defaultHeight;
+    }
+
+    public int getDefaultWidth() {
+        return this.defaultWidth;
+    }
+
+    public int getDefaultHeight() {
+        return this.defaultHeight;
     }
 
     public void updateSelected(final float x, final float y) {

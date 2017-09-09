@@ -99,6 +99,10 @@ public class BoardHelper {
         final int w = imageWidth / board.getCols();
         final int h = imageHeight / board.getRows();
 
+        //set the default size
+        board.setDefaultWidth(w);
+        board.setDefaultHeight(h);
+
         //where will the first piece be rendered
         final int startX = (WIDTH / 2) - (imageWidth / 2);
         final int startY = (HEIGHT / 2) - (imageHeight / 2);
@@ -140,12 +144,8 @@ public class BoardHelper {
         final int connectorW = (int)(w * Piece.CONNECTOR_RATIO);
         final int connectorH = (int)(h * Piece.CONNECTOR_RATIO);
 
-        //calculate the full size of a single puzzle piece
-        final int fullW = w + (connectorW * 2);
-        final int fullH = h + (connectorH * 2);
-
         //create our single texture containing all puzzle pieces
-        Bitmap texture = Bitmap.createBitmap(fullW * board.getCols(), fullH * board.getRows(), Bitmap.Config.ARGB_8888);
+        Bitmap texture = Bitmap.createBitmap(tmpImages[0][0].getWidth() * board.getCols(), tmpImages[0][0].getHeight() * board.getRows(), Bitmap.Config.ARGB_8888);
 
         //convert bitmap to mutable object that we will convert to texture
         PUZZLE_TEXTURE = texture.copy(Bitmap.Config.ARGB_8888, true);
@@ -160,8 +160,8 @@ public class BoardHelper {
             for (int row = 0; row < tmpImages.length; row++) {
 
                 //calculate so the bitmap is rendered in the center
-                x = (col * fullW) + (fullW / 2) - (tmpImages[row][col].getWidth() / 2);
-                y = (row * fullH) + (fullH / 2) - (tmpImages[row][col].getHeight() / 2);
+                x = (col * tmpImages[0][0].getWidth());
+                y = (row * tmpImages[0][0].getHeight());
 
                 //draw the puzzle piece on the large bitmap
                 canvas.drawBitmap(tmpImages[row][col], x, y, null);
@@ -280,7 +280,7 @@ public class BoardHelper {
         updatePieceUvs(board, piece);
     }
 
-    protected static void updateGroup(Board board, final int oldGroupId, final int newGroupId) {
+    private static void updateGroup(Board board, final int oldGroupId, final Piece piece) {
 
         for (int col = 0; col < board.getPieces()[0].length; col++) {
             for (int row = 0; row < board.getPieces().length; row++) {
@@ -292,7 +292,36 @@ public class BoardHelper {
 
                     //if matching the old, update to new
                     if (tmp.getGroup() == oldGroupId)
-                        tmp.setGroup(newGroupId);
+                        tmp.setGroup(piece.getGroup());
+
+                } catch (Exception e) {
+                    UtilityHelper.handleException(e);
+                }
+            }
+        }
+
+        //get the size of the connectors
+        final int connectorW = (int)(board.getDefaultWidth() * Piece.CONNECTOR_RATIO);
+        final int connectorH = (int)(board.getDefaultHeight() * Piece.CONNECTOR_RATIO);
+
+        for (int col = 0; col < board.getPieces()[0].length; col++) {
+            for (int row = 0; row < board.getPieces().length; row++) {
+
+                try {
+                    //get the current shape
+                    Piece tmp = board.getPieces()[row][col];
+
+                    //we only want matching groups
+                    if (tmp.getGroup() != piece.getGroup())
+                        continue;
+
+                    //don't check the same piece
+                    if (tmp.getCol() == piece.getCol() && tmp.getRow() == piece.getRow())
+                        continue;
+
+                    //update the position to be relative
+                    tmp.setX(piece.getX() + (float)(col - piece.getCol()) * (tmp.getWidth() - connectorW - connectorW));
+                    tmp.setY(piece.getY() + (float)(row - piece.getRow()) * (tmp.getHeight() - connectorH - connectorH));
 
                 } catch (Exception e) {
                     UtilityHelper.handleException(e);
@@ -450,12 +479,8 @@ public class BoardHelper {
                     if (east.getX() >= minX && east.getX() <= maxX) {
                         if (east.getY() >= minY && east.getY() <= maxY) {
 
-                            //auto place coordinates
-                            east.setX(piece.getX() + width + connectorW);
-                            east.setY(piece.getY());
-
                             //make group match as well as all pieces currently connected to the current piece
-                            updateGroup(board, east.getGroup(), piece.getGroup());
+                            updateGroup(board, east.getGroup(), piece);
 
                             //flag change made
                             flag = true;
@@ -476,12 +501,8 @@ public class BoardHelper {
                     if (west.getX() >= minX && west.getX() <= maxX) {
                         if (west.getY() >= minY && west.getY() <= maxY) {
 
-                            //auto place coordinates
-                            west.setX(piece.getX() - width + connectorW);
-                            west.setY(piece.getY());
-
                             //make group match as well as all pieces currently connected to the current piece
-                            updateGroup(board, west.getGroup(), piece.getGroup());
+                            updateGroup(board, west.getGroup(), piece);
 
                             //flag change made
                             flag = true;
@@ -502,12 +523,8 @@ public class BoardHelper {
                     if (south.getX() >= minX && south.getX() <= maxX) {
                         if (south.getY() >= minY && south.getY() <= maxY) {
 
-                            //auto place coordinates
-                            south.setX(piece.getX());
-                            south.setY(piece.getY() + height + connectorH);
-
                             //make group match as well as all pieces currently connected to the current piece
-                            updateGroup(board, south.getGroup(), piece.getGroup());
+                            updateGroup(board, south.getGroup(), piece);
 
                             //flag change made
                             flag = true;
@@ -528,12 +545,8 @@ public class BoardHelper {
                     if (north.getX() >= minX && north.getX() <= maxX) {
                         if (north.getY() >= minY && north.getY() <= maxY) {
 
-                            //auto place coordinates
-                            north.setX(piece.getX());
-                            north.setY(piece.getY() - height + connectorH);
-
                             //make group match as well as all pieces currently connected to the current piece
-                            updateGroup(board, north.getGroup(), piece.getGroup());
+                            updateGroup(board, north.getGroup(), piece);
 
                             //flag change made
                             flag = true;
