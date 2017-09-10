@@ -4,12 +4,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
-import com.gamesbykevin.androidframeworkv2.base.Entity;
 import com.gamesbykevin.jigsaw.R;
 import com.gamesbykevin.jigsaw.opengl.Square;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 
 import static com.gamesbykevin.jigsaw.activity.GameActivity.getGame;
+import static com.gamesbykevin.jigsaw.activity.GameActivity.getRandomObject;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.HEIGHT;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.WIDTH;
 
@@ -99,83 +99,50 @@ public class BoardHelper {
         final int w = imageWidth / board.getCols();
         final int h = imageHeight / board.getRows();
 
-        //size of connector ends
-        final int connectorW = (int)(w * Piece.CONNECTOR_RATIO);
-        final int connectorH = (int)(h * Piece.CONNECTOR_RATIO);
-
-        //the max size of a puzzle piece
-        final int fullW = w + (connectorW * 2);
-        final int fullH = h + (connectorH * 2);
-
         //where will the first piece be rendered
-        final int startX = (WIDTH / 2) - ((board.getCols() * fullW) / 2);
-        final int startY = (HEIGHT / 2) - ((board.getRows() * fullH) / 2);
+        final int startX = (WIDTH / 2) - (imageWidth / 2);
+        final int startY = (HEIGHT / 2) - (imageHeight / 2);
 
         //now that all pieces are created, create the connectors
         for (int col = 0; col < board.getCols(); col++) {
             for (int row = 0; row < board.getRows(); row++) {
 
                 //calculate the current location
-                int x = col * w;
-                int y = row * h;
-
-                //coordinates to grab from the source image
-                final int x1, y1, w1, h1;
-
-                //x-coordinate and width will vary by location
-                if (col == 0) {
-                    x1 = 0;
-                    w1 = w + connectorW;
-                } else if (col == board.getCols() - 1) {
-                    x1 = x - connectorW;
-                    w1 = w + connectorW;
-                } else {
-                    x1 = x - connectorW;
-                    w1 = fullW;
-                }
-
-                //y-coordinate and height will vary by location
-                if (row == 0) {
-                    y1 = 0;
-                    h1 = h + connectorH;
-                } else if (row == board.getRows() - 1) {
-                    y1 = y - connectorH;
-                    h1 = h + connectorH;
-                } else {
-                    y1 = y - connectorH;
-                    h1 = fullH;
-                }
-
-                //create a bitmap of the specified area for our puzzle piece
-                tmpImages[row][col] = Bitmap.createBitmap(resizedBitmap, x1, y1, w1, h1);
-
-                //make bitmap mutable
-                tmpImages[row][col] = tmpImages[row][col].copy(Bitmap.Config.ARGB_8888, true);
+                final int x = col * w;
+                final int y = row * h;
 
                 //get the current piece
                 Piece piece = board.getPieces()[row][col];
 
+                //cut our puzzle piece out of the re-sized map
+                tmpImages[row][col] = piece.cutPuzzlePiece(resizedBitmap, x, y, w, h, north, south, west, east);
+
                 //assign the coordinates
-                piece.setX(startX + (col * fullW));
-                piece.setY(startY + (row * fullH));
+                piece.setX(startX + (col * w));
+                piece.setY(startY + (row * h));
 
                 //set the size of the piece
                 piece.setWidth(tmpImages[row][col].getWidth());
                 piece.setHeight(tmpImages[row][col].getHeight());
 
                 //calculate the texture coordinates
-                final float tmpCol = (float)col * (1.0f / (float)board.getCols());
-                final float tmpRow = (float)row * (1.0f / (float)board.getRows());
-                final float tmpW = 1.0f / (float)board.getCols();
-                final float tmpH = 1.0f / (float)board.getRows();
+                final float tmpCol = (float)col * (1f / (float)board.getCols());
+                final float tmpRow = (float)row * (1f / (float)board.getRows());
+                final float tmpW = (1f / (float)board.getCols());
+                final float tmpH = (1f / (float)board.getRows());
 
                 //make sure the texture coordinates are mapped
                 piece.setTextureCoordinates(tmpCol, tmpRow, tmpW, tmpH);
-
-                //cut the bitmap
-                piece.cut(tmpImages[row][col], west, north, east, south, w, h);
             }
         }
+
+        //the max size of a connector
+        final int connectorW = (int)(w * Piece.CONNECTOR_RATIO);
+        final int connectorH = (int)(h * Piece.CONNECTOR_RATIO);
+
+        //calculate the full size of a single puzzle piece
+        final int fullW = w + (connectorW * 2);
+        final int fullH = h + (connectorH * 2);
 
         //create our single texture containing all puzzle pieces
         Bitmap texture = Bitmap.createBitmap(fullW * board.getCols(), fullH * board.getRows(), Bitmap.Config.ARGB_8888);
@@ -279,14 +246,308 @@ public class BoardHelper {
         }
     }
 
+    protected static void updatePieces(Board board, final int groupId) {
+
+        for (int col = 0; col < board.getPieces()[0].length; col++) {
+            for (int row = 0; row < board.getPieces().length; row++) {
+
+                try {
+
+                    //get the current shape
+                    Piece tmp = board.getPieces()[row][col];
+
+                    if (tmp == null || groupId != tmp.getGroup())
+                        continue;
+
+                    //update the piece if they are part of the same group
+                    updatePiece(board, tmp);
+
+                } catch (Exception e) {
+                    UtilityHelper.handleException(e);
+                }
+            }
+        }
+    }
+
     /**
      * Update the UVS and  Vertices coordinates
      * @param board The board containing the render coordinates
      * @param piece Current desired puzzle piece we want to update
      */
-    protected static void updatePiece(Board board, Piece piece) {
+    private static void updatePiece(Board board, Piece piece) {
 
         updatePieceVertices(board, piece);
         updatePieceUvs(board, piece);
+    }
+
+    protected static void updateGroup(Board board, final int oldGroupId, final int newGroupId) {
+
+        for (int col = 0; col < board.getPieces()[0].length; col++) {
+            for (int row = 0; row < board.getPieces().length; row++) {
+
+                try {
+
+                    //get the current shape
+                    Piece tmp = board.getPieces()[row][col];
+
+                    //if matching the old, update to new
+                    if (tmp.getGroup() == oldGroupId)
+                        tmp.setGroup(newGroupId);
+
+                } catch (Exception e) {
+                    UtilityHelper.handleException(e);
+                }
+            }
+        }
+    }
+
+    protected static void reset(final Board board) {
+
+        //create new array if the size does not match
+        if (board.getPieces().length != board.getRows() || board.getPieces()[0].length != board.getCols())
+            board.setPieces(new Piece[board.getRows()][board.getCols()]);
+
+        int index = 0;
+
+        for (int col = 0; col < board.getCols(); col++) {
+            for (int row = 0; row < board.getRows(); row++) {
+
+                //create the piece and make sure location is correct
+                if (board.getPieces()[row][col] == null) {
+                    board.getPieces()[row][col] = new Piece(col, row);
+                } else {
+                    board.getPieces()[row][col].setCol(col);
+                    board.getPieces()[row][col].setRow(row);
+                }
+
+                //each image will belong to their own group until they are combined
+                board.getPieces()[row][col].setGroup(index);
+
+                //keep track of index so we can map the open gl coordinates
+                board.getPieces()[row][col].setIndex(index);
+
+                //keep track of index
+                index++;
+            }
+        }
+
+        //now that all pieces are created, create the connectors
+        for (int col = 0; col < board.getCols(); col++) {
+            for (int row = 0; row < board.getRows(); row++) {
+
+                //get the current piece
+                Piece piece = board.getPieces()[row][col];
+
+                //our neighbor piece
+                Piece neighbor;
+
+                //certain sides won't have any connectors depending on the puzzle position
+                if (row == 0)
+                    piece.setNorth(Piece.Connector.None);
+                if (row == board.getRows() - 1)
+                    piece.setSouth(Piece.Connector.None);
+                if (col == 0)
+                    piece.setWest(Piece.Connector.None);
+                if (col == board.getCols() - 1)
+                    piece.setEast(Piece.Connector.None);
+
+                //if we aren't on the end set the connector with our neighbor
+                if (col < board.getCols() - 1) {
+
+                    //make random decision
+                    boolean result = getRandomObject().nextBoolean();
+
+                    //east neighbor
+                    neighbor = board.getPieces()[row][col + 1];
+
+                    //make sure we can connect to our neighbor
+                    piece.setEast(result ? Piece.Connector.Male : Piece.Connector.Female);
+                    neighbor.setWest(result ? Piece.Connector.Female : Piece.Connector.Male);
+                }
+
+                //if we aren't on the end set the connector with our neighbor
+                if (row < board.getRows() - 1) {
+
+                    //make random decision
+                    boolean result = getRandomObject().nextBoolean();
+
+                    //south neighbor
+                    neighbor = board.getPieces()[row + 1][col];
+
+                    //make sure we can connect to our neighbor
+                    piece.setSouth(result ? Piece.Connector.Male : Piece.Connector.Female);
+                    neighbor.setNorth(result ? Piece.Connector.Female : Piece.Connector.Male);
+                }
+            }
+        }
+
+        //cut the pieces
+        BoardHelper.cut(board);
+
+        //update open gl coordinates
+        updateCoordinates(board);
+
+        //we need to recalculate coordinates
+        CALCULATE_UVS = true;
+        CALCULATE_INDICES = true;
+        CALCULATE_VERTICES = true;
+    }
+
+    protected static void placeSelected(final Board board) {
+
+        //if nothing was selected we can't continue
+        if (board.getSelected() == null)
+            return;
+
+        //were any changes made?
+        boolean flag = false;
+
+        //calculate the size of our end connectors
+        final int connectorW = (int) (board.getSelected().getWidth() * Piece.CONNECTOR_RATIO);
+        final int connectorH = (int) (board.getSelected().getHeight() * Piece.CONNECTOR_RATIO);
+
+        //each piece will be the same size
+        final int width = (int)(board.getSelected().getWidth() - connectorW - connectorW);
+        final int height = (int)(board.getSelected().getHeight() - connectorH - connectorH);
+
+        for (int col = 0; col < board.getPieces()[0].length; col++) {
+            for (int row = 0; row < board.getPieces().length; row++) {
+
+                if (flag)
+                    break;
+
+                //only check pieces connected to the selected piece
+                if (board.getPieces()[row][col].getGroup() != board.getSelected().getGroup())
+                    continue;
+
+                //get the current piece
+                Piece piece = board.getPieces()[row][col];
+
+                //check our neighbors
+                Piece west = null, east = null, north = null, south = null;
+
+                //check for our neighbors
+                if (piece.getCol() < board.getCols() - 1)
+                    east = board.getPieces()[(int) piece.getRow()][(int) piece.getCol() + 1];
+                if (piece.getCol() > 0)
+                    west = board.getPieces()[(int) piece.getRow()][(int) piece.getCol() - 1];
+                if (piece.getRow() < board.getRows() - 1)
+                    south = board.getPieces()[(int) piece.getRow() + 1][(int) piece.getCol()];
+                if (piece.getRow() > 0)
+                    north = board.getPieces()[(int) piece.getRow() - 1][(int) piece.getCol()];
+
+
+                //if the piece exists and not already part of the same group, check if we can connect
+                if (!flag && east != null && piece.getGroup() != east.getGroup()) {
+
+                    //make sure the pieces are close enough
+                    int minX = (int) (piece.getX() + width);
+                    int maxX = (int) (piece.getX() + width + connectorW + connectorW);
+                    int minY = (int) (piece.getY() - connectorH);
+                    int maxY = (int) (piece.getY() + connectorH);
+
+                    //now make sure the piece is on the correct side
+                    if (east.getX() >= minX && east.getX() <= maxX) {
+                        if (east.getY() >= minY && east.getY() <= maxY) {
+
+                            //auto place coordinates
+                            east.setX(piece.getX() + width + connectorW);
+                            east.setY(piece.getY());
+
+                            //make group match as well as all pieces currently connected to the current piece
+                            updateGroup(board, east.getGroup(), piece.getGroup());
+
+                            //flag change made
+                            flag = true;
+                        }
+                    }
+                }
+
+                //if the piece exists and not already part of the same group, check if we can connect
+                if (!flag && west != null && piece.getGroup() != west.getGroup()) {
+
+                    //make sure the pieces are close enough
+                    int minX = (int) (piece.getX() - width - connectorW - connectorW);
+                    int maxX = (int) (piece.getX() - width);
+                    int minY = (int) (piece.getY() - connectorH);
+                    int maxY = (int) (piece.getY() + connectorH);
+
+                    //now make sure the piece is on the correct side
+                    if (west.getX() >= minX && west.getX() <= maxX) {
+                        if (west.getY() >= minY && west.getY() <= maxY) {
+
+                            //auto place coordinates
+                            west.setX(piece.getX() - width + connectorW);
+                            west.setY(piece.getY());
+
+                            //make group match as well as all pieces currently connected to the current piece
+                            updateGroup(board, west.getGroup(), piece.getGroup());
+
+                            //flag change made
+                            flag = true;
+                        }
+                    }
+                }
+
+                //if the piece exists and not already part of the same group, check if we can connect
+                if (!flag && south != null && piece.getGroup() != south.getGroup()) {
+
+                    //make sure the pieces are close enough
+                    int minX = (int) (piece.getX() - connectorW);
+                    int maxX = (int) (piece.getX() + connectorW);
+                    int minY = (int) (piece.getY() + height);
+                    int maxY = (int) (piece.getY() + height + connectorH + connectorH);
+
+                    //now make sure the piece is on the correct side
+                    if (south.getX() >= minX && south.getX() <= maxX) {
+                        if (south.getY() >= minY && south.getY() <= maxY) {
+
+                            //auto place coordinates
+                            south.setX(piece.getX());
+                            south.setY(piece.getY() + height + connectorH);
+
+                            //make group match as well as all pieces currently connected to the current piece
+                            updateGroup(board, south.getGroup(), piece.getGroup());
+
+                            //flag change made
+                            flag = true;
+                        }
+                    }
+                }
+
+                //if the piece exists and not already part of the same group, check if we can connect
+                if (!flag && north != null && piece.getGroup() != north.getGroup()) {
+
+                    //make sure the pieces are close enough
+                    int minX = (int) (piece.getX() - connectorW);
+                    int maxX = (int) (piece.getX() + connectorW);
+                    int minY = (int) (piece.getY() - height - connectorH - connectorH);
+                    int maxY = (int) (piece.getY() - height);
+
+                    //now make sure the piece is on the correct side
+                    if (north.getX() >= minX && north.getX() <= maxX) {
+                        if (north.getY() >= minY && north.getY() <= maxY) {
+
+                            //auto place coordinates
+                            north.setX(piece.getX());
+                            north.setY(piece.getY() - height + connectorH);
+
+                            //make group match as well as all pieces currently connected to the current piece
+                            updateGroup(board, north.getGroup(), piece.getGroup());
+
+                            //flag change made
+                            flag = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        //only update if changes were made
+        if (flag)
+            updatePieces(board, board.getSelected().getGroup());
+
+        //un-select the piece
+        board.removeSelected();
     }
 }

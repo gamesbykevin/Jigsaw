@@ -75,9 +75,9 @@ public class GameActivity extends BaseActivity implements Disposable {
 
         //add the layouts to our list
         this.layouts = new ArrayList<>();
-        this.layouts.add((LinearLayout)findViewById(R.id.gameOverLayoutDefault));
-        this.layouts.add((LinearLayout)findViewById(R.id.loadingScreenLayout));
-        this.layouts.add((LinearLayout)findViewById(R.id.layoutGameControls));
+        this.layouts.add((ViewGroup)findViewById(R.id.gameOverLayoutDefault));
+        this.layouts.add((ViewGroup)findViewById(R.id.loadingScreenLayout));
+        this.layouts.add((ViewGroup)findViewById(R.id.layoutGameControls));
     }
 
     public static Game getGame() {

@@ -336,17 +336,13 @@ public class OpenGLSurfaceView extends GLSurfaceView implements Runnable {
                         //if only 1 finger is pressed
                         if (fingers == 1) {
 
-                            //check if we selected a piece
-                            Piece piece = getGame().getBoard().getSelected(checkX, checkY);
-
-                            //if piece exists, mark as selected
-                            if (piece != null)
-                                getGame().getBoard().setSelected(piece);
+                            //check if we selected a puzzle piece
+                            getGame().getBoard().setSelected(checkX, checkY);
 
                         } else {
 
                             //if more than 1 finger is on the screen we can't select a piece
-                            getGame().getBoard().setSelected(null);
+                            getGame().getBoard().removeSelected();
                         }
 
                         //reset distance
@@ -369,7 +365,7 @@ public class OpenGLSurfaceView extends GLSurfaceView implements Runnable {
 
                         //if we selected a piece, de-select it
                         if (getGame().getBoard().getSelected() != null)
-                            getGame().getBoard().setSelected(null);
+                            getGame().getBoard().placeSelected();
 
                         //if we are zooming
                         if (zooming) {
@@ -398,11 +394,11 @@ public class OpenGLSurfaceView extends GLSurfaceView implements Runnable {
                         //if there are 2 coordinates and we recorded 2 fingers
                         if (fingers == 2 && event.getPointerCount() == 2) {
 
-                            //if we have 2 fingers we can't select a piece
-                            getGame().getBoard().setSelected(null);
-
                             //flag that we are zooming
                             zooming = true;
+
+                            //if we have 2 fingers, make sure we removed the selected piece
+                            getGame().getBoard().removeSelected();
 
                             //get the distance between the two points
                             double distance = Entity.getDistance(event.getX(0), event.getY(0), event.getX(1), event.getY(1));
@@ -478,9 +474,6 @@ public class OpenGLSurfaceView extends GLSurfaceView implements Runnable {
                                 OFFSET_X += (xDiff * ZOOM_SCALE_MOTION_X);
                                 OFFSET_Y += (yDiff * ZOOM_SCALE_MOTION_Y);
                             }
-
-
-
 
                             //update the coordinates
                             motionMoveX = x1;

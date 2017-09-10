@@ -7,22 +7,6 @@ public class Entity extends com.gamesbykevin.androidframeworkv2.base.Entity {
 
     private float[] uvs;
 
-    public boolean contains(final float x, final float y) {
-
-        //if any of these are true, it is outside (false)
-        if (x < getX())
-            return false;
-        if (y < getY())
-            return false;
-        if (x > getX() + getWidth())
-            return false;
-        if (y > getY() + getHeight())
-            return false;
-
-        //the coordinate is inside (true)
-        return true;
-    }
-
     public void setTextureCoordinates(float col, float row, float width, float height) {
 
         if (getTextureCoordinates() == null)

@@ -2,7 +2,9 @@ package com.gamesbykevin.jigsaw.board;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
@@ -27,7 +29,7 @@ public class Piece extends Entity {
     /**
      * The size of the connector will be a fraction of the piece size
      */
-    public static final float CONNECTOR_RATIO = .2f;
+    protected static final float CONNECTOR_RATIO = .25f;
 
     //are we rotating
     private boolean rotate = false;
@@ -78,128 +80,189 @@ public class Piece extends Entity {
         return this.rotate;
     }
 
-    public void setWest(final Connector west) {
+    protected void setWest(final Connector west) {
         this.west = west;
     }
 
-    public void setEast(final Connector east) {
+    protected void setEast(final Connector east) {
         this.east = east;
     }
 
-    public void setNorth(final Connector north) {
+    protected void setNorth(final Connector north) {
         this.north = north;
     }
 
-    public void setSouth(final Connector south) {
+    protected void setSouth(final Connector south) {
         this.south = south;
     }
 
-    public Connector getWest() {
+    protected Connector getWest() {
         return this.west;
     }
 
-    public Connector getEast() {
+    protected Connector getEast() {
         return this.east;
     }
 
-    public Connector getNorth() {
+    protected Connector getNorth() {
         return this.north;
     }
 
-    public Connector getSouth() {
+    protected Connector getSouth() {
         return this.south;
     }
 
-    /**
-     * Cut the bitmap to create a puzzle piece
-     * @param bitmap The bitmap pertaining to the desired puzzle piece
-     */
-    public void cut(Bitmap bitmap, Bitmap west, Bitmap north, Bitmap east, Bitmap south, final int w, final int h) {
+    protected boolean isMale(Connector connector) {
+        return (connector == Connector.Male);
+    }
 
-        //canvas object to make changes to bitmap
-        Canvas canvas = new Canvas(bitmap);
+    protected boolean isFemale(Connector connector) {
+        return (connector == Connector.Female);
+    }
 
-        //create our paint object which will add/subtract the pixel data accordingly
-        Paint paint = new Paint();
-        paint.setFilterBitmap(false);
+    protected boolean isNone(Connector connector) {
+        return (connector == Connector.None);
+    }
 
-        //make the cut smoother
-        paint.setAntiAlias(true);
+    protected Bitmap cutPuzzlePiece(Bitmap picture, final int startX, final int startY, final int w, final int h, Bitmap north, Bitmap south, Bitmap west, Bitmap east) {
+
+        final int connectorW = (int)(w * CONNECTOR_RATIO);
+        final int connectorH = (int)(h * CONNECTOR_RATIO);
+
+        final int fullW = w + (connectorW * 2);
+        final int fullH = h + (connectorH * 2);
+
+        //create an empty mutable bitmap
+        Bitmap tmp = Bitmap.createBitmap(fullW, fullH, Bitmap.Config.ARGB_8888);
 
         //source and destination coordinates
-        Rect src = new Rect(), dest = new Rect();
+        Rect src = new Rect();
+        Rect dest = new Rect();
+
+        //create our canvas to draw on
+        Canvas canvas = new Canvas(tmp);
 
         //how do we manipulate the canvas on drawBitmap
         PorterDuffXfermode modeIn = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
         PorterDuffXfermode modeOut = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
 
-        //cut the piece
-        dest.set(0, 0, bitmap.getWidth(), (h / 3));
-        paint.setXfermode((getNorth() == Connector.Male) ? modeIn : modeOut);
-        cutNorth(canvas, (getNorth() == Connector.Male) ? north : south, src, dest, paint);
+        //create paint object to cut the image(s)
+        Paint paint = new Paint();
 
-        //cut the piece
-        dest.set(0, bitmap.getHeight() - (h / 3), bitmap.getWidth(), bitmap.getHeight());
-        paint.setXfermode((getSouth() == Connector.Male) ? modeIn : modeOut);
-        cutSouth(canvas, (getSouth() == Connector.Male) ? south : north, src, dest, paint);
+        //draw the middle part of the image in the middle
+        src.set(startX, startY, startX + w, startY + h);
+        dest.set(connectorW, connectorH, connectorW + w, connectorH + h);
+        canvas.drawBitmap(picture, src, dest, null);
 
-        //cut the piece
-        dest.set(0, 0, (w / 4), bitmap.getHeight());
-        paint.setXfermode((getWest() == Connector.Male) ? modeIn : modeOut);
-        cutWest(canvas, (getWest() == Connector.Male) ? west : east, src, dest, paint);
+        if (isMale(getWest())) {
 
-        //cut the piece
-        dest.set(bitmap.getWidth() - (w / 4), 0, bitmap.getWidth(), bitmap.getHeight());
-        paint.setXfermode((getEast() == Connector.Male) ? modeIn : modeOut);
-        cutEast(canvas, (getEast() == Connector.Male) ? east : west, src, dest, paint);
+            //draw the side image
+            dest.set(0, connectorH, connectorW, connectorH + h);
+            src.set(startX - connectorW, startY, startX, startY + h);
+            canvas.drawBitmap(picture, src, dest, null);
+
+            //cut the puzzle connector
+            paint.setXfermode(modeIn);
+            src.set(0, 0, west.getWidth(), west.getHeight());
+            canvas.drawBitmap(west, src, dest, paint);
+
+        } else if (isFemale(getWest())) {
+
+            //update destination
+            dest.set(connectorW, connectorH, connectorW + connectorW, connectorH + h);
+
+            //cut the puzzle connector
+            paint.setXfermode(modeOut);
+            src.set(0, 0, east.getWidth(), east.getHeight());
+            canvas.drawBitmap(east, src, dest, paint);
+        }
+
+        if (isMale(getEast())) {
+
+            //draw the side image
+            dest.set(tmp.getWidth() - connectorW, connectorH, tmp.getWidth(), connectorH + h);
+            src.set(startX + w, startY, startX + w + connectorW, startY + h);
+            canvas.drawBitmap(picture, src, dest, null);
+
+            //cut the puzzle connector
+            paint.setXfermode(modeIn);
+            src.set(0, 0, east.getWidth(), east.getHeight());
+            canvas.drawBitmap(east, src, dest, paint);
+
+        } else if (isFemale(getEast())) {
+
+            //update destination
+            dest.set(connectorW + w - connectorW, connectorH, connectorW + w, connectorH + h);
+
+            //cut the puzzle connector
+            paint.setXfermode(modeOut);
+            src.set(0, 0, west.getWidth(), west.getHeight());
+            canvas.drawBitmap(west, src, dest, paint);
+        }
+
+        if (isMale(getNorth())) {
+
+            //draw the side image
+            dest.set(connectorW, 0, connectorW + w, connectorH);
+            src.set(startX, startY - connectorH, startX + w, startY);
+            canvas.drawBitmap(picture, src, dest, null);
+
+            //cut the puzzle connector
+            paint.setXfermode(modeIn);
+            src.set(0, 0, north.getWidth(), north.getHeight());
+            canvas.drawBitmap(north, src, dest, paint);
+
+        } else if (isFemale(getNorth())) {
+
+            //update destination
+            dest.set(connectorW, connectorH, tmp.getWidth() - connectorW, connectorH + connectorH);
+
+            //cut the puzzle connector
+            paint.setXfermode(modeOut);
+            src.set(0, 0, south.getWidth(), south.getHeight());
+            canvas.drawBitmap(south, src, dest, paint);
+        }
+
+        if (isMale(getSouth())) {
+
+            //draw the side image
+            dest.set(connectorW, connectorH + h, connectorW + w, tmp.getHeight());
+            src.set(startX, startY + h, startX + w, startY + h + connectorH);
+            canvas.drawBitmap(picture, src, dest, null);
+
+            //cut the puzzle connector
+            paint.setXfermode(modeIn);
+            src.set(0, 0, south.getWidth(), south.getHeight());
+            canvas.drawBitmap(south, src, dest, paint);
+
+        } else if (isFemale(getSouth())) {
+
+            //update destination
+            dest.set(connectorW, connectorH + h - connectorH, connectorW + w, tmp.getHeight() - connectorH);
+
+            //cut the puzzle connector
+            paint.setXfermode(modeOut);
+            src.set(0, 0, north.getWidth(), north.getHeight());
+            canvas.drawBitmap(north, src, dest, paint);
+        }
+
+        //return our result
+        return tmp;
     }
 
-    private void cutNorth(Canvas canvas, Bitmap cutImage, Rect src, Rect dest, Paint paint) {
+    public boolean contains(final float x, final float y) {
 
-        //don't do anything
-        if (getNorth() == Connector.None)
-            return;
+        //if any of these are true, it is outside (false)
+        if (x < getX())
+            return false;
+        if (y < getY())
+            return false;
+        if (x > getX() + getWidth())
+            return false;
+        if (y > getY() + getHeight())
+            return false;
 
-        //make the final cut
-        cut(canvas, cutImage, src, dest, paint);
-    }
-
-    private void cutSouth(Canvas canvas, Bitmap cutImage, Rect src, Rect dest, Paint paint) {
-
-        //don't do anything
-        if (getSouth() == Connector.None)
-            return;
-
-        //make the final cut
-        cut(canvas, cutImage, src, dest, paint);
-    }
-
-    private void cutWest(Canvas canvas, Bitmap cutImage, Rect src, Rect dest, Paint paint) {
-
-        //don't do anything
-        if (getWest() == Connector.None)
-            return;
-
-        //make the final cut
-        cut(canvas, cutImage, src, dest, paint);
-    }
-
-    private void cutEast(Canvas canvas, Bitmap cutImage, Rect src, Rect dest, Paint paint) {
-
-        //don't do anything
-        if (getEast() == Connector.None)
-            return;
-
-        //make the final cut
-        cut(canvas, cutImage, src, dest, paint);
-    }
-
-    private void cut(Canvas canvas, Bitmap cutImage, Rect src, Rect dest, Paint paint) {
-
-        //source of the cut image will always be the same
-        src.set(0, 0, cutImage.getWidth(), cutImage.getHeight());
-
-        //draw bitmap on top of our puzzle piece to make the cut
-        canvas.drawBitmap(cutImage, src, dest, paint);
+        //the coordinate is inside (true)
+        return true;
     }
 }

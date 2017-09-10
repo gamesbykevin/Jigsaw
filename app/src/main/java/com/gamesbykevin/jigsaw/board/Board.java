@@ -3,19 +3,19 @@ package com.gamesbykevin.jigsaw.board;
 import android.graphics.Bitmap;
 import android.opengl.GLES20;
 
-import com.gamesbykevin.jigsaw.board.Piece.Connector;
 import com.gamesbykevin.jigsaw.common.ICommon;
 import com.gamesbykevin.jigsaw.opengl.Textures;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 
-import static com.gamesbykevin.jigsaw.activity.GameActivity.getRandomObject;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.CALCULATE_INDICES;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.CALCULATE_UVS;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.CALCULATE_VERTICES;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.PUZZLE_TEXTURE_GENERATED;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.getSquare;
+import static com.gamesbykevin.jigsaw.board.BoardHelper.placeSelected;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.updateCoordinates;
-import static com.gamesbykevin.jigsaw.board.BoardHelper.updatePiece;
+import static com.gamesbykevin.jigsaw.board.BoardHelper.updateGroup;
+import static com.gamesbykevin.jigsaw.board.BoardHelper.updatePieces;
 import static com.gamesbykevin.jigsaw.game.Game.INITIAL_RENDER;
 
 /**
@@ -74,34 +74,46 @@ public class Board implements ICommon {
                 piece.setY(piece.getY() + y);
             }
         }
-
-
     }
 
-    public Piece getSelected(final float x, final float y) {
+    public void setSelected(final float x, final float y) {
 
         if (getPieces() == null)
-            return null;
+            removeSelected();
 
         for (int col = 0; col < getPieces()[0].length; col++) {
             for (int row = 0; row < getPieces().length; row++) {
 
                 //if the coordinate is within the piece, return result
-                if (getPieces()[row][col].contains(x, y))
-                    return getPieces()[row][col];
+                if (getPieces()[row][col].contains(x, y)) {
+
+                    //assign our selected piece
+                    setSelected(getPieces()[row][col]);
+
+                    //no need to continue
+                    return;
+                }
             }
         }
 
         //we couldn't find anything
-        return null;
+        removeSelected();
     }
 
-    public void setSelected(final Piece piece) {
+    public void removeSelected() {
+        setSelected(null);
+    }
+
+    private void setSelected(final Piece piece) {
         this.selected = piece;
     }
 
     public Piece getSelected() {
         return this.selected;
+    }
+
+    public void placeSelected() {
+        BoardHelper.placeSelected(this);
     }
 
     public void setPieces(final Piece[][] pieces) {
@@ -220,95 +232,7 @@ public class Board implements ICommon {
 
     @Override
     public void reset() {
-
-        //create new array if the size does not match
-        if (getPieces().length != getRows() || getPieces()[0].length != getCols())
-            setPieces(new Piece[getRows()][getCols()]);
-
-        int index = 0;
-
-        for (int col = 0; col < getCols(); col++) {
-            for (int row = 0; row < getRows(); row++) {
-
-                //create the piece and make sure location is correct
-                if (getPieces()[row][col] == null) {
-                    getPieces()[row][col] = new Piece(col, row);
-                } else {
-                    getPieces()[row][col].setCol(col);
-                    getPieces()[row][col].setRow(row);
-                }
-
-                //each image will belong to their own group until they are combined
-                getPieces()[row][col].setGroup(index);
-
-                //keep track of index so we can map the open gl coordinates
-                getPieces()[row][col].setIndex(index);
-
-                //keep track of index
-                index++;
-            }
-        }
-
-        //now that all pieces are created, create the connectors
-        for (int col = 0; col < getCols(); col++) {
-            for (int row = 0; row < getRows(); row++) {
-
-                //get the current piece
-                Piece piece = getPieces()[row][col];
-
-                //our neighbor piece
-                Piece neighbor;
-
-                //certain sides won't have any connectors depending on the puzzle position
-                if (row == 0)
-                    piece.setNorth(Connector.None);
-                if (row == getRows() - 1)
-                    piece.setSouth(Connector.None);
-                if (col == 0)
-                    piece.setWest(Connector.None);
-                if (col == getCols() - 1)
-                    piece.setEast(Connector.None);
-
-                //if we aren't on the end set the connector with our neighbor
-                if (col < getCols() - 1) {
-
-                    //make random decision
-                    boolean result = getRandomObject().nextBoolean();
-
-                    //east neighbor
-                    neighbor = getPieces()[row][col + 1];
-
-                    //make sure we can connect to our neighbor
-                    piece.setEast(result ? Connector.Male : Connector.Female);
-                    neighbor.setWest(result ? Connector.Female : Connector.Male);
-                }
-
-                //if we aren't on the end set the connector with our neighbor
-                if (row < getRows() - 1) {
-
-                    //make random decision
-                    boolean result = getRandomObject().nextBoolean();
-
-                    //south neighbor
-                    neighbor = getPieces()[row + 1][col];
-
-                    //make sure we can connect to our neighbor
-                    piece.setSouth(result ? Connector.Male : Connector.Female);
-                    neighbor.setNorth(result ? Connector.Female : Connector.Male);
-                }
-            }
-        }
-
-        //cut the pieces
-        BoardHelper.cut(this);
-
-        //update open gl coordinates
-        updateCoordinates(this);
-
-        //we need to recalculate coordinates
-        CALCULATE_UVS = true;
-        CALCULATE_INDICES = true;
-        CALCULATE_VERTICES = true;
+        BoardHelper.reset(this);
     }
 
     @Override
@@ -334,7 +258,7 @@ public class Board implements ICommon {
             } else if (getSelected() != null) {
 
                 //if a puzzle piece is selected we need to update the coordinates
-                updatePiece(this, getSelected());
+                updatePieces(this, getSelected().getGroup());
             }
 
             //only do these calculations when necessary
