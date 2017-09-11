@@ -65,9 +65,10 @@ public abstract class BaseActivity extends com.gamesbykevin.androidframeworkv2.a
      */
     private void setupDefaultOptions() {
 
-        /*
         //store default shape, if not set yet
-        if (getObjectValue(R.string.game_shape_file_key, Board.Shape.class) == null) {
+
+        /*
+        if (getObjectValue(R.string.open_gl_zoom_file_key) == null) {
             SharedPreferences.Editor edit = getSharedPreferences().edit();
             edit.putString(getString(R.string.game_shape_file_key), GSON.toJson(Board.Shape.Square));
             edit.commit();

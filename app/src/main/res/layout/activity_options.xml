@@ -8,6 +8,7 @@
     <include layout="@layout/layout_logo" />
 
     <TableLayout style="@style/tableMenu">
+
         <TableRow style="@style/rowMenu">
             <ToggleButton
                 style="@style/buttonMenu"
@@ -17,6 +18,7 @@
                 android:onClick="onClickVibrate"
                 android:checked="true" />
         </TableRow>
+
         <TableRow style="@style/rowMenu">
             <ToggleButton
                 style="@style/buttonMenu"
@@ -27,15 +29,16 @@
                 android:checked="true" />
         </TableRow>
 
-        <!--
         <TableRow style="@style/rowMenu">
-            <com.gamesbykevin.androidframeworkv2.ui.MultiStateToggleButton
-                style="@style/ButtonMenu"
-                android:id="@+id/toggleButtonShape"
-                android:onClick="onClickShape"
+            <ToggleButton
+                style="@style/buttonMenu"
+                android:id="@+id/toggleButtonZoom"
+                android:textOn="@string/zoom_on"
+                android:textOff="@string/zoom_off"
+                android:onClick="onClickZoom"
                 android:checked="true" />
         </TableRow>
-        -->
+
     </TableLayout>
 
     <include layout="@layout/layout_social_icons" />

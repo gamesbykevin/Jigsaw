@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ToggleButton;
 
+import com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceViewHelper;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 import com.gamesbykevin.jigsaw.R;
 
@@ -77,6 +78,9 @@ public class OptionsActivity extends BaseActivity {
             //store the vibrate setting based on the toggle button
             editor.putBoolean(getString(R.string.vibrate_file_key), ((ToggleButton)findViewById(R.id.toggleButtonVibrate)).isChecked());
 
+            //store the zoom setting based on the toggle button
+            editor.putBoolean(getString(R.string.open_gl_zoom_file_key), ((ToggleButton)findViewById(R.id.toggleButtonZoom)).isChecked());
+
             //store the shape setting as well
             //editor.putString(getString(R.string.game_shape_file_key), GSON.toJson(buttonShape.getValue()));
 
@@ -116,5 +120,15 @@ public class OptionsActivity extends BaseActivity {
             //ifi enabled play menu theme
             super.playMenu();
         }
+    }
+
+    public void onClickZoom(View view) {
+
+        //get the button
+        ToggleButton button = (ToggleButton)view.findViewById(R.id.toggleButtonZoom);
+
+        //update the view  options
+        OpenGLSurfaceViewHelper.ZOOM_ENABLED = button.isChecked();
+        OpenGLSurfaceViewHelper.DRAG_ENABLED = button.isChecked();
     }
 }

@@ -6,6 +6,8 @@ import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.Toast;
 
+import com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView;
+import com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceViewHelper;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 import com.gamesbykevin.jigsaw.R;
 import com.gamesbykevin.jigsaw.game.Game;
@@ -113,6 +115,8 @@ public class MainActivity extends BaseActivity {
 
         //store our shape selection
         //OptionsActivity.OPTION_BOARD_SHAPE = (Board.Shape)getObjectValue(R.string.game_shape_file_key, Board.Shape.class);
+        OpenGLSurfaceViewHelper.DRAG_ENABLED = getBooleanValue(R.string.open_gl_zoom_file_key);
+        OpenGLSurfaceViewHelper.ZOOM_ENABLED = getBooleanValue(R.string.open_gl_zoom_file_key);
 
         //play the main theme
         super.playTheme();

@@ -5,6 +5,7 @@
 
     <!-- keys for shared preferences -->
     <string name="game_stats_file_key" translatable="false">com.gamesbykevin.jigsaw.GAME_STATS_FILE_KEY</string>
+    <string name="open_gl_zoom_file_key" translatable="false">com.gamesbykevin.jigsaw.OPEN_GL_ZOOM_FILE_KEY</string>
 
     <!-- button text -->
     <string name="button_text_next">Continue</string>
@@ -26,6 +27,8 @@
     <string name="vibrate_off">Vibrate: Off</string>
     <string name="sound_on">Sound: On</string>
     <string name="sound_off">Sound: Off</string>
+    <string name="zoom_on">Zoom: On</string>
+    <string name="zoom_off">Zoom: Off</string>
 
     <!-- text to display in  the tutorial -->
     <string name="tutorial_instructions_1">Tutorial Part 1\nTo solve you have to connect all the pipes together</string>
