@@ -13,6 +13,7 @@ import static com.gamesbykevin.jigsaw.board.BoardHelper.CALCULATE_VERTICES;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.PUZZLE_TEXTURE_GENERATED;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.getSquare;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.updateCoordinates;
+import static com.gamesbykevin.jigsaw.board.BoardHelper.updateGroup;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.updatePieces;
 import static com.gamesbykevin.jigsaw.game.Game.INITIAL_RENDER;
 
@@ -44,6 +45,18 @@ public class Board implements ICommon {
     //the default size of a puzzle piece without the end connectors
     private int defaultWidth, defaultHeight;
 
+    //do we update the current selected piece?
+    private boolean place = false;
+
+    //the coordinates to update
+    private float placeX, placeY;
+
+    //have we selected a piece?
+    private boolean selection = false;
+
+    //are we done with our selection?
+    private boolean complete = false;
+
     /**
      * Default constructor
      */
@@ -51,6 +64,22 @@ public class Board implements ICommon {
         setCols(DEFAULT_COLS);
         setRows(DEFAULT_ROWS);
         reset();
+    }
+
+    public boolean hasSelection() {
+        return this.selection;
+    }
+
+    public void setSelection(final boolean selection) {
+        this.selection = selection;
+    }
+
+    public boolean hasComplete() {
+        return this.complete;
+    }
+
+    public void setComplete(final boolean complete) {
+        this.complete = complete;
     }
 
     public void setDefaultWidth(final int defaultWidth) {
@@ -69,34 +98,10 @@ public class Board implements ICommon {
         return this.defaultHeight;
     }
 
-    public void updateSelected(final float x, final float y) {
-
-        //we can't update anything if nothing is selected
-        if (getSelected() == null)
-            return;;
-
-        //check all pieces that have the same group
-        for (int col = 0; col < getPieces()[0].length; col++) {
-            for (int row = 0; row < getPieces().length; row++) {
-
-                //get the current piece
-                Piece piece = getPieces()[row][col];
-
-                //skip if not part of the group
-                if (getSelected().getGroup() != piece.getGroup())
-                    continue;
-
-                //update the piece coordinates
-                piece.setX(piece.getX() + x);
-                piece.setY(piece.getY() + y);
-            }
-        }
-    }
-
     public void setSelected(final float x, final float y) {
 
         if (getPieces() == null)
-            removeSelected();
+            return;
 
         for (int col = 0; col < getPieces()[0].length; col++) {
             for (int row = 0; row < getPieces().length; row++) {
@@ -106,6 +111,10 @@ public class Board implements ICommon {
 
                     //assign our selected piece
                     setSelected(getPieces()[row][col]);
+
+                    //flag that we have a selection
+                    setSelection(true);
+                    setComplete(false);
 
                     //no need to continue
                     return;
@@ -118,6 +127,17 @@ public class Board implements ICommon {
     }
 
     public void removeSelected() {
+
+        //we don't want to update the place since we are removing our selection
+        this.place = false;
+
+        //flag false
+        setComplete(false);
+
+        //flag false
+        setSelection(false);
+
+        //remove selection
         setSelected(null);
     }
 
@@ -129,8 +149,15 @@ public class Board implements ICommon {
         return this.selected;
     }
 
-    public void placeSelected() {
-        BoardHelper.placeSelected(this);
+    public void updatePlace(float x, float y) {
+
+        this.placeX = x;
+        this.placeY = y;
+        this.place = true;
+    }
+
+    public boolean hasUpdatePlace() {
+        return this.place;
     }
 
     public void setPieces(final Piece[][] pieces) {
@@ -254,7 +281,38 @@ public class Board implements ICommon {
 
     @Override
     public void update() {
-        //do we update anything here?
+
+        //move the piece and others in the group
+        if (hasUpdatePlace() && getSelected() != null) {
+
+            //flag false
+            this.place = false;
+
+            getSelected().setX(placeX - (getSelected().getWidth() / 2));
+            getSelected().setY(placeY - (getSelected().getHeight() / 2));
+
+            //update every other piece that is part of the same group
+            updateGroup(this, -1, getSelected());
+
+            //update the render coordinates
+            updatePieces(this, getSelected().getGroup());
+
+        } else if (hasSelection()) {
+
+            //update the render coordinates
+            updatePieces(this, getSelected().getGroup());
+
+            //do we want to stop our selection?
+            if (hasComplete()) {
+
+                //place the piece on the board accordingly
+                BoardHelper.placeSelected(this);
+
+                //remove the selected piece
+                removeSelected();
+            }
+        }
+
     }
 
     @Override
@@ -268,15 +326,8 @@ public class Board implements ICommon {
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, Textures.TEXTURE_ID_IMAGE_SOURCE);
 
             //if null we need to setup the coordinates
-            if (getUvs() == null || getIndices() == null || getVertices() == null) {
-
-                //initialize all coordinates if null
+            if (getUvs() == null || getIndices() == null || getVertices() == null)
                 updateCoordinates(this);
-            } else if (getSelected() != null) {
-
-                //if a puzzle piece is selected we need to update the coordinates
-                updatePieces(this, getSelected().getGroup());
-            }
 
             //only do these calculations when necessary
             if (CALCULATE_UVS) {

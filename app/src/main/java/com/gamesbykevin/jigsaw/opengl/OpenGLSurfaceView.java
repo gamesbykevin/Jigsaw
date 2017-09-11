@@ -14,6 +14,8 @@ import com.gamesbykevin.jigsaw.util.UtilityHelper;
 import static com.gamesbykevin.jigsaw.game.Game.STEP;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLRenderer.ZOOM_SCALE_MOTION_X;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLRenderer.ZOOM_SCALE_MOTION_Y;
+import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceViewHelper.OFFSET_X;
+import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceViewHelper.OFFSET_Y;
 import static com.gamesbykevin.jigsaw.util.UtilityHelper.DEBUG;
 import static com.gamesbykevin.jigsaw.activity.GameActivity.getGame;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLRenderer.LOADED;
@@ -27,12 +29,7 @@ public class OpenGLSurfaceView extends GLSurfaceView implements Runnable {
     /**
      * Frames per second
      */
-    public static final int FPS = 90;
-
-    /**
-     * Can we zoom in/out of the game?
-     */
-    public static final boolean ZOOM_ENABLED = true;
+    public static final int FPS = 60;
 
     /**
      * Default dimensions this game was designed for
@@ -81,42 +78,6 @@ public class OpenGLSurfaceView extends GLSurfaceView implements Runnable {
     //keep track of time for debug purposes
     private long timestamp = System.currentTimeMillis();
 
-    //how many fingers are touching the screen
-    private int fingers = 0;
-
-    /**
-     * How many fingers do we need to zoom in/out
-     */
-    private static final int FINGERS_ZOOM = 2;
-
-    //what is the distance between our finger coordinates
-    private double pinchDistance = 0;
-
-    /**
-     * The minimum distance required to be considered a valid pinch
-     */
-    private static final float PINCH_THRESHOLD = 10;
-
-    /**
-     * The minimum pixel distance required to be considered a valid drag
-     */
-    private static final float DRAG_THRESHOLD = 15;
-
-    //where are we moving our finger
-    private float motionMoveX = 0.0f, motionMoveY = 0.0f;
-
-    //do we offset the render for our game
-    public static float OFFSET_X = 0.0f, OFFSET_Y = 0.0f;
-
-    //do we offset the render for our game
-    public static float OFFSET_ORIGINAL_X = 0.0f, OFFSET_ORIGINAL_Y = 0.0f;
-
-    //are we zooming?
-    private boolean zooming = false;
-
-    //are we dragging
-    private boolean dragging = false;
-
     public OpenGLSurfaceView(Context activity) {
 
         //call overloaded constructor
@@ -148,7 +109,7 @@ public class OpenGLSurfaceView extends GLSurfaceView implements Runnable {
      * Get our OpenGL Renderer
      * @return Object used for all texture mapping
      */
-    private OpenGLRenderer getOpenGlRenderer() {
+    protected OpenGLRenderer getOpenGlRenderer() {
         return this.openGlRenderer;
     }
 
@@ -206,6 +167,7 @@ public class OpenGLSurfaceView extends GLSurfaceView implements Runnable {
         while (running) {
 
             try {
+
                 //get the current time
                 this.previous = System.currentTimeMillis();
 
@@ -261,15 +223,18 @@ public class OpenGLSurfaceView extends GLSurfaceView implements Runnable {
         //sleep the thread to maintain a steady game speed
         thread.sleep(remaining);
 
-        //if debugging track performance
-        if (DEBUG)
-            trackProgress();
+        //track performance (if debugging)
+        trackProgress();
     }
 
     /**
      * Track progress for debugging purposes
      */
     private void trackProgress() {
+
+        //don't continue if not debugging
+        if (!DEBUG)
+            return;
 
         //keep track of the frames
         frames++;
@@ -308,200 +273,8 @@ public class OpenGLSurfaceView extends GLSurfaceView implements Runnable {
                     return true;
             }
 
-            final float x = event.getX();
-            final float y = event.getY();
-
-            //adjust the coordinates where touch event occurred
-            float checkX = (x * ZOOM_SCALE_MOTION_X) - OFFSET_X;
-            float checkY = (y * ZOOM_SCALE_MOTION_Y) - OFFSET_Y;
-
-            //adjust the coordinates based on the window displayed
-            if (getOpenGlRenderer() != null) {
-                checkX += OpenGLRenderer.LEFT;
-                checkY += OpenGLRenderer.TOP;
-            }
-
-            //if zoom functionality is enabled, check for it
-            if (ZOOM_ENABLED) {
-
-                switch (event.getAction() & MotionEvent.ACTION_MASK) {
-
-                    //keep track of how many fingers are on the screen
-                    case MotionEvent.ACTION_DOWN:
-                    case MotionEvent.ACTION_POINTER_DOWN:
-
-                        //keep track of how many fingers we have on screen
-                        fingers++;
-
-                        //if only 1 finger is pressed
-                        if (fingers == 1) {
-
-                            //check if we selected a puzzle piece
-                            getGame().getBoard().setSelected(checkX, checkY);
-
-                        } else {
-
-                            //if more than 1 finger is on the screen we can't select a piece
-                            getGame().getBoard().removeSelected();
-                        }
-
-                        //reset distance
-                        pinchDistance = 0;
-
-                        //store the coordinates
-                        motionMoveX = x;
-                        motionMoveY = y;
-                        break;
-
-                    //keep track of how many fingers are on the screen
-                    case MotionEvent.ACTION_UP:
-                    case MotionEvent.ACTION_POINTER_UP:
-
-                        //keep track of how many fingers we have on screen
-                        fingers--;
-
-                        //reset distance
-                        pinchDistance = 0;
-
-                        //if we selected a piece, de-select it
-                        if (getGame().getBoard().getSelected() != null)
-                            getGame().getBoard().placeSelected();
-
-                        //if we are zooming
-                        if (zooming) {
-
-                            //if no more fingers are touching the screen, flag zoom over
-                            if (fingers < 1)
-                                zooming = false;
-
-                            //don't continue because we don't want to update the game at this point
-                            return true;
-                        }
-
-                        //if we were dragging
-                        if (dragging) {
-
-                            //flag false
-                            dragging = false;
-
-                            //don't continue because we don't want to update the game at this point
-                            return true;
-                        }
-                        break;
-
-                    case MotionEvent.ACTION_MOVE:
-
-                        //if there are 2 coordinates and we recorded 2 fingers
-                        if (fingers == 2 && event.getPointerCount() == 2) {
-
-                            //flag that we are zooming
-                            zooming = true;
-
-                            //if we have 2 fingers, make sure we removed the selected piece
-                            getGame().getBoard().removeSelected();
-
-                            //get the distance between the two points
-                            double distance = Entity.getDistance(event.getX(0), event.getY(0), event.getX(1), event.getY(1));
-
-                            if (pinchDistance == 0) {
-
-                                //store the previous distance for our zoom
-                                pinchDistance = distance;
-
-                            } else {
-
-                                //calculate the difference
-                                double diff = (distance > pinchDistance) ? distance - pinchDistance : pinchDistance - distance;
-
-                                //make sure the finger distance is great enough to be valid
-                                if (diff > PINCH_THRESHOLD) {
-
-                                    if (pinchDistance > distance) {
-
-                                        //if the distance is greater we are zooming in
-                                        OpenGLRenderer.adjustZoom(ZOOM_RATIO_ADJUST);
-
-                                    } else {
-
-                                        //if the distance is shorter we are zooming out
-                                        OpenGLRenderer.adjustZoom(-ZOOM_RATIO_ADJUST);
-                                    }
-
-                                    //reset pinch distance so if doesn't zoom too fast
-                                    pinchDistance = 0;
-                                }
-                            }
-
-                            //don't interact with the game since that is not the intention
-                            return true;
-
-                        } else if (fingers == 1 && event.getPointerCount() == 1) {
-
-                            //if we are zooming we can't offset the board
-                            if (zooming)
-                                return true;
-
-                            //adjust the coordinates where touch event occurred
-                            final float x1 = x;
-                            final float y1 = y;
-                            final float x2 = motionMoveX;
-                            final float y2 = motionMoveY;
-
-                            //get our move difference
-                            float xDiff = ((x2 > x1) ? -(x2 - x1) : (x1 - x2));
-                            float yDiff = ((y2 > y1) ? -(y2 - y1) : (y1 - y2));
-
-                            //if we have a piece selected, move all pieces of the same group
-                            if (getGame().getBoard().getSelected() != null) {
-
-                                //update the piece x,y for any connected pieces
-                                getGame().getBoard().updateSelected(xDiff * ZOOM_SCALE_MOTION_X, yDiff * ZOOM_SCALE_MOTION_Y);
-
-                            } else {
-
-                                //don't continue if we didn't move enough to register
-                                if (Math.abs(xDiff) < DRAG_THRESHOLD && Math.abs(yDiff) < DRAG_THRESHOLD)
-                                    return true;
-
-                                //flag that we are dragging
-                                dragging = true;
-
-                                //keep track of original coordinates
-                                OFFSET_ORIGINAL_X += xDiff;
-                                OFFSET_ORIGINAL_Y += yDiff;
-
-                                //if one finger is moved, offset the x,y coordinates
-                                OFFSET_X += (xDiff * ZOOM_SCALE_MOTION_X);
-                                OFFSET_Y += (yDiff * ZOOM_SCALE_MOTION_Y);
-                            }
-
-                            //update the coordinates
-                            motionMoveX = x1;
-                            motionMoveY = y1;
-
-                            //don't interact with the game since that is not the intention
-                            return true;
-                        }
-                        break;
-                }
-            }
-
-            //make sure we aren't using too many fingers
-            if (fingers < 2) {
-
-                //adjust the coordinates where touch event occurred
-                float adjustX = (x * ZOOM_SCALE_MOTION_X) - OFFSET_X;
-                float adjustY = (y * ZOOM_SCALE_MOTION_Y) - OFFSET_Y;
-
-                //adjust the coordinates based on the window displayed
-                if (getOpenGlRenderer() != null) {
-                    adjustX += OpenGLRenderer.LEFT;
-                    adjustY += OpenGLRenderer.TOP;
-                }
-
-                //update game accordingly
-                getGame().onTouchEvent(event.getAction(), adjustX, adjustY);
-            }
+            //update the motion event
+            OpenGLSurfaceViewHelper.onTouchEvent(this, event);
         }
         catch (Exception e)
         {

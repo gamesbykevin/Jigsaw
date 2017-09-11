@@ -13,8 +13,10 @@ import org.w3c.dom.Text;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.OFFSET_ORIGINAL_X;
-import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.OFFSET_ORIGINAL_Y;
+import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceViewHelper.OFFSET_ORIGINAL_X;
+import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceViewHelper.OFFSET_ORIGINAL_Y;
+import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceViewHelper.OFFSET_X;
+import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceViewHelper.OFFSET_Y;
 import static com.gamesbykevin.jigsaw.util.UtilityHelper.DEBUG;
 import static com.gamesbykevin.jigsaw.activity.GameActivity.getGame;
 
@@ -22,8 +24,6 @@ import static com.gamesbykevin.jigsaw.game.GameHelper.getSquareBackground;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.FRAME_DURATION;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.HEIGHT;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.WIDTH;
-import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.OFFSET_X;
-import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.OFFSET_Y;
 
 /**
  * Created by Kevin on 6/1/2017.

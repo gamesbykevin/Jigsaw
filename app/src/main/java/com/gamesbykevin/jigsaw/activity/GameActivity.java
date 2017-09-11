@@ -299,4 +299,28 @@ public class GameActivity extends BaseActivity implements Disposable {
     public void onClickBackgroundRed(View view) {
         OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_RED;
     }
+
+    public void onClickBackgroundBlue(View view) {
+        OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_BLUE;
+    }
+
+    public void onClickBackgroundBrown(View view) {
+        OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_BROWN;
+    }
+
+    public void onClickBackgroundPink(View view) {
+        OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_PINK;
+    }
+
+    public void onClickBackgroundPurple(View view) {
+        OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_PURPLE;
+    }
+
+    public void onClickBackgroundOrange(View view) {
+        OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_ORANGE;
+    }
+
+    public void onClickBackgroundGreen(View view) {
+        OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_GREEN;
+    }
 }

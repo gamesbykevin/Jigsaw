@@ -32,6 +32,13 @@ public class Textures implements Disposable {
     public static int TEXTURE_ID_BACKGROUND_GRAY = 0;
     public static int TEXTURE_ID_BACKGROUND_RED = 0;
     public static int TEXTURE_ID_BACKGROUND_YELLOW = 0;
+    public static int TEXTURE_ID_BACKGROUND_BLUE = 0;
+    public static int TEXTURE_ID_BACKGROUND_BROWN = 0;
+    public static int TEXTURE_ID_BACKGROUND_GREEN = 0;
+    public static int TEXTURE_ID_BACKGROUND_ORANGE = 0;
+    public static int TEXTURE_ID_BACKGROUND_PINK = 0;
+    public static int TEXTURE_ID_BACKGROUND_PURPLE = 0;
+
 
     //the id of our source image to create the puzzle
     public static int TEXTURE_ID_IMAGE_SOURCE = 0;
@@ -49,7 +56,7 @@ public class Textures implements Disposable {
         this.activity = activity;
 
         //create array containing all the texture ids
-        IDS = new int[7];
+        IDS = new int[13];
 
         //reset custom texture image id
         TEXTURE_ID_IMAGE_SOURCE = 0;
@@ -85,6 +92,12 @@ public class Textures implements Disposable {
         TEXTURE_ID_BACKGROUND_GRAY = loadTexture(R.drawable.background_gray);
         TEXTURE_ID_BACKGROUND_RED = loadTexture(R.drawable.background_red);
         TEXTURE_ID_BACKGROUND_YELLOW = loadTexture(R.drawable.background_yellow);
+        TEXTURE_ID_BACKGROUND_BLUE = loadTexture(R.drawable.background_blue);
+        TEXTURE_ID_BACKGROUND_BROWN = loadTexture(R.drawable.background_brown);
+        TEXTURE_ID_BACKGROUND_GREEN = loadTexture(R.drawable.background_green);
+        TEXTURE_ID_BACKGROUND_ORANGE = loadTexture(R.drawable.background_orange);
+        TEXTURE_ID_BACKGROUND_PINK = loadTexture(R.drawable.background_pink);
+        TEXTURE_ID_BACKGROUND_PURPLE = loadTexture(R.drawable.background_purple);
     }
 
     /**
@@ -129,13 +142,13 @@ public class Textures implements Disposable {
             //bind texture to texture id
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, IDS[index]);
 
-            // Set filtering
+            //set filtering
             //GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
             //GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
             GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
             GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
 
-            // Load the bitmap into the bound texture.
+            //load the bitmap into the bound texture
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
 
             //if true, recycle the bitmap
