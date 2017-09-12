@@ -54,47 +54,42 @@ public class OtherActivity extends BaseActivity {
 
         //call parent
         super.onResume();
-
-        /*
-        //delay a couple seconds before going to main page
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-
-                //start the new activity
-                startActivity(new Intent(OtherActivity.this, GameActivity.class));
-
-                //close the activity
-                finish();
-
-            }
-
-        }, DEFAULT_DELAY);
-        */
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        //if (requestCode == SELECT_IMAGE)
 
+        //call parent
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //if everything is ok
         if (resultCode == Activity.RESULT_OK) {
+
+            //get the location of the image
             Uri selectedImage = data.getData();
 
             try {
+
+                //load the image
                 Board.IMAGE_SOURCE = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+
+                //start the new activity
+                startActivity(new Intent(OtherActivity.this, GameActivity.class));
+
             } catch (Exception e) {
+
                 UtilityHelper.handleException(e);
+
+                //any issue we go back to the previous page
+                super.onBackPressed();
             }
 
-            // TODO Do something with the select image URI
+        } else {
+            //any issue we go back to the previous page
+            super.onBackPressed();
         }
 
-        //start the new activity
-        startActivity(new Intent(OtherActivity.this, GameActivity.class));
-
-        //close the activity
+        //close this activity
         finish();
     }
 
@@ -102,6 +97,7 @@ public class OtherActivity extends BaseActivity {
     public void onBackPressed() {
 
         //don't allow user to press back button
-        return;
+        //return;
+        super.onBackPressed();
     }
 }

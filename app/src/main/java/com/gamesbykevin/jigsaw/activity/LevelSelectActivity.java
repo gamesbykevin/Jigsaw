@@ -23,10 +23,10 @@ public class LevelSelectActivity extends BaseActivity {
      * Our list of images to choose from
      */
     private final Integer[] RES_IDS = {
-        R.drawable.picture1, R.drawable.picture2, R.drawable.picture3,
-        R.drawable.picture4, R.drawable.picture5, R.drawable.picture6,
-        R.drawable.picture7, R.drawable.picture8, R.drawable.picture9,
-        R.drawable.picture10,
+        R.drawable.picture0, R.drawable.picture1, R.drawable.picture2,
+        R.drawable.picture3, R.drawable.picture4, R.drawable.picture5,
+        R.drawable.picture6, R.drawable.picture7, R.drawable.picture8,
+        R.drawable.picture9, R.drawable.picture10,
     };
 
     @Override
@@ -55,9 +55,6 @@ public class LevelSelectActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                //assign our image source
-                Board.IMAGE_SOURCE = BitmapFactory.decodeResource(getResources(), RES_IDS[position]);
-
                 //the position will determine the size of the puzzle board
                 final int size = seekBar.getProgress() + 3;
 
@@ -65,8 +62,20 @@ public class LevelSelectActivity extends BaseActivity {
                 Board.BOARD_COLS = size;
                 Board.BOARD_ROWS = size;
 
-                //start the game activity
-                startActivity(new Intent(LevelSelectActivity.this, GameActivity.class));
+                //if the user wants to use a custom image
+                if (position == 0) {
+
+                    //start the other activity which will let us choose the image
+                    startActivity(new Intent(LevelSelectActivity.this, OtherActivity.class));
+
+                } else {
+
+                    //assign our image source
+                    Board.IMAGE_SOURCE = BitmapFactory.decodeResource(getResources(), RES_IDS[position]);
+
+                    //start the game activity
+                    startActivity(new Intent(LevelSelectActivity.this, GameActivity.class));
+                }
             }
         });
 
