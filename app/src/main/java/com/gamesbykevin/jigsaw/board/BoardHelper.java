@@ -100,13 +100,13 @@ public class BoardHelper {
         if (imageHeight % 2 != 0)
             imageHeight++;
 
-        //dimensions need to be a multiple of 16
-        while (imageWidth % 16 != 0) {
+        //dimensions need to be a multiple of x
+        while (imageWidth % 8 != 0) {
             imageWidth -= 2;
         }
 
-        //dimensions need to be a multiple of 16
-        while (imageHeight % 16 != 0) {
+        //dimensions need to be a multiple of x
+        while (imageHeight % 8 != 0) {
             imageHeight -= 2;
         }
 

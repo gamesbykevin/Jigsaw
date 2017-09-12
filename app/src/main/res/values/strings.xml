@@ -30,6 +30,11 @@
     <string name="zoom_on">Zoom: On</string>
     <string name="zoom_off">Zoom: Off</string>
 
+    <!-- text displayed on the picture select screen -->
+    <string name="level_select_text">Select Picture</string>
+    <string name="count_description">Pieces</string>
+
+
     <!-- text to display in  the tutorial -->
     <string name="tutorial_instructions_1">Tutorial Part 1\nTo solve you have to connect all the pipes together</string>
 

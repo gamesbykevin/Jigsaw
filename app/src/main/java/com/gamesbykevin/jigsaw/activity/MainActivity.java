@@ -125,7 +125,7 @@ public class MainActivity extends BaseActivity {
         //LevelSelectActivity.CURRENT_PAGE = 0;
 
         //start game
-        startActivity(new Intent(this, OtherActivity.class));
+        startActivity(new Intent(this, LevelSelectActivity.class));
     }
 
     public void onClickTutorial(View view) {

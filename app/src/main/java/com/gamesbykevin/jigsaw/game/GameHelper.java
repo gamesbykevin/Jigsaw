@@ -73,7 +73,7 @@ public final class GameHelper {
 
         //assign the image for the puzzle we need to cut
         if (Board.IMAGE_SOURCE == null)
-            Board.IMAGE_SOURCE = BitmapFactory.decodeResource(game.getActivity().getResources(), R.drawable.picture);
+            Board.IMAGE_SOURCE = BitmapFactory.decodeResource(game.getActivity().getResources(), R.drawable.picture1);
 
         //create new board
         game.setBoard(new Board());

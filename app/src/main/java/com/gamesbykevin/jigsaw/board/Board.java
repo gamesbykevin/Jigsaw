@@ -28,6 +28,10 @@ public class Board implements ICommon {
     private static final int DEFAULT_COLS = 4;
     private static final int DEFAULT_ROWS = 4;
 
+    //desired size of the board
+    public static int BOARD_COLS = DEFAULT_COLS;
+    public static int BOARD_ROWS = DEFAULT_ROWS;
+
     //the pieces on our board
     private Piece[][] pieces;
 
@@ -61,8 +65,15 @@ public class Board implements ICommon {
      * Default constructor
      */
     public Board() {
-        setCols(DEFAULT_COLS);
-        setRows(DEFAULT_ROWS);
+
+        //make sure minimum dimensions are set
+        if (BOARD_COLS < 1)
+            BOARD_COLS = DEFAULT_COLS;
+        if (BOARD_ROWS < 1)
+            BOARD_ROWS = DEFAULT_ROWS;
+
+        setCols(BOARD_COLS);
+        setRows(BOARD_ROWS);
         reset();
     }
 
