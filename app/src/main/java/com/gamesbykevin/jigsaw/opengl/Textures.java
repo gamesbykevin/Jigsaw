@@ -23,9 +23,6 @@ public class Textures implements Disposable {
     //array containing all the texture ids
     public static int[] IDS;
 
-    //background image
-    public static int TEXTURE_ID_BACKGROUND = 0;
-
     //texture id for each shape
     public static int TEXTURE_ID_BACKGROUND_WHITE = 0;
     public static int TEXTURE_ID_BACKGROUND_BLACK = 0;
@@ -39,6 +36,7 @@ public class Textures implements Disposable {
     public static int TEXTURE_ID_BACKGROUND_PINK = 0;
     public static int TEXTURE_ID_BACKGROUND_PURPLE = 0;
 
+    public static int TEXTURE_ID_PLACEMENT_BORDER = 0;
 
     //the id of our source image to create the puzzle
     public static int TEXTURE_ID_IMAGE_SOURCE = 0;
@@ -86,7 +84,6 @@ public class Textures implements Disposable {
         //Bitmap ball = Bitmap.createBitmap(sheet, (Ball.DIMENSIONS * i), 0, Ball.DIMENSIONS, Ball.DIMENSIONS);
 
         //load the textures
-        TEXTURE_ID_BACKGROUND = loadTexture(R.drawable.background);
         TEXTURE_ID_BACKGROUND_WHITE = loadTexture(R.drawable.background_white);
         TEXTURE_ID_BACKGROUND_BLACK = loadTexture(R.drawable.background_black);
         TEXTURE_ID_BACKGROUND_GRAY = loadTexture(R.drawable.background_gray);
@@ -98,6 +95,7 @@ public class Textures implements Disposable {
         TEXTURE_ID_BACKGROUND_ORANGE = loadTexture(R.drawable.background_orange);
         TEXTURE_ID_BACKGROUND_PINK = loadTexture(R.drawable.background_pink);
         TEXTURE_ID_BACKGROUND_PURPLE = loadTexture(R.drawable.background_purple);
+        TEXTURE_ID_PLACEMENT_BORDER = loadTexture(R.drawable.border);
     }
 
     /**

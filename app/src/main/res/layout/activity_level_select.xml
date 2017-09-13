@@ -41,17 +41,16 @@
         android:textColor="@color/colorWhite"
         android:id="@+id/myTextView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="9 Pieces"/>
+        android:layout_height="wrap_content" />
 
     <SeekBar
-        android:padding="10dp"
+        android:padding="15dp"
         android:id="@+id/mySeekBar"
-        android:max="9"
+        android:max="13"
         android:splitTrack="false"
         android:progressDrawable="@drawable/custom_seekbar"
         android:thumb="@drawable/custom_seekbar_thumb"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

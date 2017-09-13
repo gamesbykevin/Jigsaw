@@ -52,6 +52,7 @@ public class LevelSelectActivity extends BaseActivity {
 
         //assign our on click listener so we know what was selected
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -102,8 +103,11 @@ public class LevelSelectActivity extends BaseActivity {
             }
         });
 
-        //reset progress to 0 during on create
+        //reset progress to 0
         seekBar.setProgress(0);
+
+        //default text for the puzzle cut
+        myTextView.setText("9 " + getString(R.string.count_description));
     }
 
     @Override

@@ -3,7 +3,9 @@ package com.gamesbykevin.jigsaw.board;
 import android.graphics.Bitmap;
 import android.opengl.GLES20;
 
+import com.gamesbykevin.jigsaw.base.Entity;
 import com.gamesbykevin.jigsaw.common.ICommon;
+import com.gamesbykevin.jigsaw.game.GameHelper;
 import com.gamesbykevin.jigsaw.opengl.Textures;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 
@@ -12,9 +14,11 @@ import static com.gamesbykevin.jigsaw.board.BoardHelper.CALCULATE_UVS;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.CALCULATE_VERTICES;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.PUZZLE_TEXTURE_GENERATED;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.getSquare;
+import static com.gamesbykevin.jigsaw.board.BoardHelper.isGameOver;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.updateCoordinates;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.updateGroup;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.updatePieces;
+import static com.gamesbykevin.jigsaw.board.Piece.CONNECTOR_RATIO;
 import static com.gamesbykevin.jigsaw.game.Game.INITIAL_RENDER;
 
 /**
@@ -50,10 +54,10 @@ public class Board implements ICommon {
     private int defaultWidth, defaultHeight;
 
     //do we update the current selected piece?
-    private boolean place = false;
+    private boolean update = false;
 
     //the coordinates to update
-    private float placeX, placeY;
+    private float updateX, updateY;
 
     //have we selected a piece?
     private boolean selection = false;
@@ -114,8 +118,13 @@ public class Board implements ICommon {
         if (getPieces() == null)
             return;
 
-        for (int col = 0; col < getPieces()[0].length; col++) {
-            for (int row = 0; row < getPieces().length; row++) {
+        //check for collision in reverse order, because the last piece will be rendered on top
+        for (int col = getPieces()[0].length - 1; col >= 0; col--) {
+            for (int row = getPieces().length - 1; row >= 0; row--) {
+
+                //don't continue if the piece has already been placed
+                if (getPieces()[row][col].isPlaced())
+                    continue;
 
                 //if the coordinate is within the piece, return result
                 if (getPieces()[row][col].contains(x, y)) {
@@ -139,8 +148,8 @@ public class Board implements ICommon {
 
     public void removeSelected() {
 
-        //we don't want to update the place since we are removing our selection
-        this.place = false;
+        //stop updating the piece
+        this.update = false;
 
         //flag false
         setComplete(false);
@@ -162,13 +171,13 @@ public class Board implements ICommon {
 
     public void updatePlace(float x, float y) {
 
-        this.placeX = x;
-        this.placeY = y;
-        this.place = true;
+        this.updateX = x;
+        this.updateY = y;
+        this.update = true;
     }
 
-    public boolean hasUpdatePlace() {
-        return this.place;
+    public boolean hasUpdate() {
+        return this.update;
     }
 
     public void setPieces(final Piece[][] pieces) {
@@ -294,13 +303,13 @@ public class Board implements ICommon {
     public void update() {
 
         //move the piece and others in the group
-        if (hasUpdatePlace() && getSelected() != null) {
+        if (hasUpdate() && getSelected() != null) {
 
             //flag false
-            this.place = false;
+            this.update = false;
 
-            getSelected().setX(placeX - (getSelected().getWidth() / 2));
-            getSelected().setY(placeY - (getSelected().getHeight() / 2));
+            getSelected().setX(updateX - (getSelected().getWidth() / 2));
+            getSelected().setY(updateY - (getSelected().getHeight() / 2));
 
             //update every other piece that is part of the same group
             updateGroup(this, -1, getSelected());
@@ -316,6 +325,25 @@ public class Board implements ICommon {
             //do we want to stop our selection?
             if (hasComplete()) {
 
+                //check how far we are from our final destination
+                final double distance = Entity.getDistance(getSelected().getX(), getSelected().getY(), getSelected().getDestinationX(), getSelected().getDestinationY());
+
+                //if we are close enough place the piece at its destination
+                if (distance <= getSelected().getWidth() * CONNECTOR_RATIO) {
+                    getSelected().setX(getSelected().getDestinationX());
+                    getSelected().setY(getSelected().getDestinationY());
+                    getSelected().setPlaced(true);
+
+                    //update the group
+                    updateGroup(this, -1, getSelected());
+
+                    //update the location as well
+                    updatePieces(this, getSelected().getGroup());
+
+                    //game over?
+                    GameHelper.GAME_OVER = isGameOver(this);
+                }
+
                 //place the piece on the board accordingly
                 BoardHelper.placeSelected(this);
 
@@ -323,7 +351,6 @@ public class Board implements ICommon {
                 removeSelected();
             }
         }
-
     }
 
     @Override

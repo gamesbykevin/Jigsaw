@@ -96,8 +96,7 @@ public class OtherActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
 
-        //don't allow user to press back button
-        //return;
+        //call parent
         super.onBackPressed();
     }
 }

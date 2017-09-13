@@ -43,11 +43,41 @@ public class Piece extends Entity {
     //add texture padding to prevent texture bleeding
     public static final int TEXTURE_PADDING = 2;
 
+    //where do we place this piece to solve the board
+    private int destinationX, destinationY;
+
+    //has this piece been placed
+    private boolean placed = false;
+
     public Piece(int col, int row) {
 
         //set the location
         super.setCol(col);
         super.setRow(row);
+    }
+
+    public void setPlaced(final boolean placed) {
+        this.placed = placed;
+    }
+
+    public boolean isPlaced() {
+        return this.placed;
+    }
+
+    public void setDestinationX(final int destinationX) {
+        this.destinationX = destinationX;
+    }
+
+    public void setDestinationY(final int destinationY) {
+        this.destinationY = destinationY;
+    }
+
+    public int getDestinationX() {
+        return this.destinationX;
+    }
+
+    public int getDestinationY() {
+        return this.destinationY;
     }
 
     public void setGroup(final int group) {
@@ -132,8 +162,8 @@ public class Piece extends Entity {
         final int connectorW = (int)(w * CONNECTOR_RATIO);
         final int connectorH = (int)(h * CONNECTOR_RATIO);
 
-        final int fullW = w + (connectorW * 2) + TEXTURE_PADDING;
-        final int fullH = h + (connectorH * 2) + TEXTURE_PADDING;
+        int fullW = w + (connectorW * 2) + TEXTURE_PADDING;
+        int fullH = h + (connectorH * 2) + TEXTURE_PADDING;
 
         //create an empty mutable bitmap
         Bitmap tmp = Bitmap.createBitmap(fullW, fullH, Bitmap.Config.ARGB_8888);
@@ -255,106 +285,6 @@ public class Piece extends Entity {
             src.set(0, 0, north.getWidth(), north.getHeight());
             canvas.drawBitmap(north, src, dest, paint);
         }
-
-
-        /*
-        //draw the middle part of the image in the middle
-        src.set(startX, startY, startX + w, startY + h);
-        dest.set(connectorW, connectorH, connectorW + w, connectorH + h);
-        canvas.drawBitmap(picture, src, dest, null);
-
-        if (isMale(getWest())) {
-
-            //draw the side image
-            dest.set(0, connectorH, connectorW, connectorH + h);
-            src.set(startX - connectorW, startY, startX, startY + h);
-            canvas.drawBitmap(picture, src, dest, null);
-
-            //cut the puzzle connector
-            paint.setXfermode(modeIn);
-            src.set(0, 0, west.getWidth(), west.getHeight());
-            canvas.drawBitmap(west, src, dest, paint);
-
-        } else if (isFemale(getWest())) {
-
-            //update destination
-            dest.set(connectorW, connectorH, connectorW + connectorW, connectorH + h);
-
-            //cut the puzzle connector
-            paint.setXfermode(modeOut);
-            src.set(0, 0, east.getWidth(), east.getHeight());
-            canvas.drawBitmap(east, src, dest, paint);
-        }
-
-        if (isMale(getEast())) {
-
-            //draw the side image
-            dest.set(tmp.getWidth() - connectorW, connectorH, tmp.getWidth(), connectorH + h);
-            src.set(startX + w, startY, startX + w + connectorW, startY + h);
-            canvas.drawBitmap(picture, src, dest, null);
-
-            //cut the puzzle connector
-            paint.setXfermode(modeIn);
-            src.set(0, 0, east.getWidth(), east.getHeight());
-            canvas.drawBitmap(east, src, dest, paint);
-
-        } else if (isFemale(getEast())) {
-
-            //update destination
-            dest.set(connectorW + w - connectorW, connectorH, connectorW + w, connectorH + h);
-
-            //cut the puzzle connector
-            paint.setXfermode(modeOut);
-            src.set(0, 0, west.getWidth(), west.getHeight());
-            canvas.drawBitmap(west, src, dest, paint);
-        }
-
-        if (isMale(getNorth())) {
-
-            //draw the side image
-            dest.set(connectorW, 0, connectorW + w, connectorH);
-            src.set(startX, startY - connectorH, startX + w, startY);
-            canvas.drawBitmap(picture, src, dest, null);
-
-            //cut the puzzle connector
-            paint.setXfermode(modeIn);
-            src.set(0, 0, north.getWidth(), north.getHeight());
-            canvas.drawBitmap(north, src, dest, paint);
-
-        } else if (isFemale(getNorth())) {
-
-            //update destination
-            dest.set(connectorW, connectorH, tmp.getWidth() - connectorW, connectorH + connectorH);
-
-            //cut the puzzle connector
-            paint.setXfermode(modeOut);
-            src.set(0, 0, south.getWidth(), south.getHeight());
-            canvas.drawBitmap(south, src, dest, paint);
-        }
-
-        if (isMale(getSouth())) {
-
-            //draw the side image
-            dest.set(connectorW, connectorH + h, connectorW + w, tmp.getHeight());
-            src.set(startX, startY + h, startX + w, startY + h + connectorH);
-            canvas.drawBitmap(picture, src, dest, null);
-
-            //cut the puzzle connector
-            paint.setXfermode(modeIn);
-            src.set(0, 0, south.getWidth(), south.getHeight());
-            canvas.drawBitmap(south, src, dest, paint);
-
-        } else if (isFemale(getSouth())) {
-
-            //update destination
-            dest.set(connectorW, connectorH + h - connectorH, connectorW + w, tmp.getHeight() - connectorH);
-
-            //cut the puzzle connector
-            paint.setXfermode(modeOut);
-            src.set(0, 0, north.getWidth(), north.getHeight());
-            canvas.drawBitmap(north, src, dest, paint);
-        }
-        */
 
         //return our result
         return tmp;

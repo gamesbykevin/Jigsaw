@@ -3,14 +3,21 @@ package com.gamesbykevin.jigsaw.board;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.PointF;
 
 import com.gamesbykevin.jigsaw.R;
 import com.gamesbykevin.jigsaw.opengl.Square;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.gamesbykevin.jigsaw.activity.GameActivity.getGame;
 import static com.gamesbykevin.jigsaw.activity.GameActivity.getRandomObject;
+import static com.gamesbykevin.jigsaw.board.Piece.CONNECTOR_RATIO;
 import static com.gamesbykevin.jigsaw.board.Piece.TEXTURE_PADDING;
+import static com.gamesbykevin.jigsaw.game.GameHelper.getEntityPlaceBorder;
+import static com.gamesbykevin.jigsaw.game.GameHelper.getSquarePlaceBorder;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.HEIGHT;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.WIDTH;
 
@@ -30,6 +37,9 @@ public class BoardHelper {
 
     //has the puzzle texture been generated
     public static boolean PUZZLE_TEXTURE_GENERATED = false;
+
+    //how much to trim the final image size
+    private static float TRIM_RATIO = .9f;
 
     /**
      * Cleanup resources
@@ -92,7 +102,12 @@ public class BoardHelper {
 
             imageWidth = Board.IMAGE_SOURCE.getWidth();
             imageHeight = Board.IMAGE_SOURCE.getHeight();
+
         }
+
+        //now that we have maintained aspect ratio take a % off the width and height
+        imageWidth  *= TRIM_RATIO;
+        imageHeight *= TRIM_RATIO;
 
         //make sure dimensions are an even number
         if (imageWidth % 2 != 0)
@@ -101,28 +116,46 @@ public class BoardHelper {
             imageHeight++;
 
         //dimensions need to be a multiple of x
-        while (imageWidth % 8 != 0) {
+        while (imageWidth % 16 != 0) {
             imageWidth -= 2;
         }
 
         //dimensions need to be a multiple of x
-        while (imageHeight % 8 != 0) {
+        while (imageHeight % 16 != 0) {
             imageHeight -= 2;
         }
 
+        //create our new image for us to cut with the new dimensions
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(Board.IMAGE_SOURCE, imageWidth, imageHeight, false);
 
         //typical size of piece, not including connectors
-        final int w = imageWidth / board.getCols();
-        final int h = imageHeight / board.getRows();
+        int w = imageWidth / board.getCols();
+        int h = imageHeight / board.getRows();
+
+        //make sure the size of each image is even to make our math perfect
+        if (w % 2 != 0)
+            w--;
+        if (h % 2 != 0)
+            h--;
 
         //set the default size
         board.setDefaultWidth(w);
         board.setDefaultHeight(h);
 
+        //get the size of a connector so we can correct our starting coordinates
+        final int connectorW = (int)(w * CONNECTOR_RATIO);
+        final int connectorH = (int)(h * CONNECTOR_RATIO);
+
         //where will the first piece be rendered
-        final int startX = (WIDTH / 2) - (imageWidth / 2);
-        final int startY = (HEIGHT / 2) - (imageHeight / 2);
+        final int startX = (WIDTH / 2) - (imageWidth / 2) - connectorW - (TEXTURE_PADDING / 2);
+        final int startY = (HEIGHT / 2) - (imageHeight / 2) - connectorH - (TEXTURE_PADDING / 2);
+
+        //setup where our place border will be rendered
+        getEntityPlaceBorder().setX((WIDTH / 2) - (imageWidth / 2));
+        getEntityPlaceBorder().setY((HEIGHT / 2) - (imageHeight / 2));
+        getEntityPlaceBorder().setWidth(board.getCols() * w);
+        getEntityPlaceBorder().setHeight(board.getRows() * h);
+        getSquarePlaceBorder().setupVertices(getEntityPlaceBorder().getVertices());
 
         //now that all pieces are created, create the connectors
         for (int col = 0; col < board.getCols(); col++) {
@@ -141,6 +174,10 @@ public class BoardHelper {
                 //assign the coordinates
                 piece.setX(startX + (col * w));
                 piece.setY(startY + (row * h));
+
+                //assign the destination coordinates
+                piece.setDestinationX((int)piece.getX());
+                piece.setDestinationY((int)piece.getY());
 
                 //set the size of the piece
                 piece.setWidth(tmpImages[row][col].getWidth());
@@ -163,6 +200,49 @@ public class BoardHelper {
             tmpImages[0][0].getHeight()* board.getRows(),
             Bitmap.Config.ARGB_8888
         );
+
+        //create a list of possible coordinates to place the puzzle pieces
+        List<PointF> coordinates = new ArrayList<>();
+
+        final int tmpW = tmpImages[0][0].getWidth() / 3;
+        final int tmpH = tmpImages[0][0].getHeight() / 3;
+
+        //locate all our possible locations to place the puzzle pieces
+        for (int x = -connectorW; x < WIDTH - connectorW - connectorW - tmpW; x += tmpW) {
+            for (int y = -connectorH; y < HEIGHT - connectorH - connectorH - tmpH; y += tmpH) {
+
+                //don't use the coordinates that cover the placement border
+                if (x >= getEntityPlaceBorder().getX() && x <= getEntityPlaceBorder().getX() + getEntityPlaceBorder().getWidth() &&
+                    y >= getEntityPlaceBorder().getY() && y <= getEntityPlaceBorder().getY() + getEntityPlaceBorder().getHeight())
+                    continue;
+
+                //add this location to our list
+                coordinates.add(new PointF(x, y));
+            }
+        }
+
+        for (int col = 0; col < board.getCols(); col++) {
+            for (int row = 0; row < board.getRows(); row++) {
+
+                //get the current piece
+                Piece piece = board.getPieces()[row][col];
+
+                //pick a random location from our coordinate list
+                final int index = getRandomObject().nextInt(coordinates.size());
+
+                //assign our new location
+                piece.setX(coordinates.get(index).x);
+                piece.setY(coordinates.get(index).y);
+
+                //remove location so we don't pick it again, as long as there are more options
+                if (coordinates.size() > 1)
+                    coordinates.remove(index);
+            }
+        }
+
+        //remove list
+        coordinates.clear();
+        coordinates = null;
 
         //convert bitmap to mutable object that we will convert to texture
         PUZZLE_TEXTURE = texture.copy(Bitmap.Config.ARGB_8888, true);
@@ -330,8 +410,8 @@ public class BoardHelper {
         }
 
         //get the size of the connectors
-        final int connectorW = (int)(board.getDefaultWidth() * Piece.CONNECTOR_RATIO);
-        final int connectorH = (int)(board.getDefaultHeight() * Piece.CONNECTOR_RATIO);
+        final int connectorW = (int)(board.getDefaultWidth() * CONNECTOR_RATIO);
+        final int connectorH = (int)(board.getDefaultHeight() * CONNECTOR_RATIO);
 
         for (int col = 0; col < board.getPieces()[0].length; col++) {
             for (int row = 0; row < board.getPieces().length; row++) {
@@ -356,6 +436,9 @@ public class BoardHelper {
                     //update the position to be relative
                     tmp.setX(piece.getX() + offsetX);
                     tmp.setY(piece.getY() + offsetY);
+
+                    //update if the piece is placed
+                    tmp.setPlaced(piece.isPlaced());
 
                 } catch (Exception e) {
                     UtilityHelper.handleException(e);
@@ -386,6 +469,9 @@ public class BoardHelper {
                     board.getPieces()[row][col].setCol(col);
                     board.getPieces()[row][col].setRow(row);
                 }
+
+                //flag placed false
+                board.getPieces()[row][col].setPlaced(false);
 
                 //each image will belong to their own group until they are combined
                 board.getPieces()[row][col].setGroup(index);
@@ -470,8 +556,8 @@ public class BoardHelper {
         boolean flag = false;
 
         //calculate the size of our end connectors
-        final int connectorW = (int) (board.getSelected().getWidth() * Piece.CONNECTOR_RATIO);
-        final int connectorH = (int) (board.getSelected().getHeight() * Piece.CONNECTOR_RATIO);
+        final int connectorW = (int) (board.getSelected().getWidth() * CONNECTOR_RATIO);
+        final int connectorH = (int) (board.getSelected().getHeight() * CONNECTOR_RATIO);
 
         //each piece will be the same size
         final int width = (int)(board.getSelected().getWidth() - connectorW - connectorW);
@@ -600,5 +686,19 @@ public class BoardHelper {
         //only update if changes were made
         if (flag)
             updatePieces(board, board.getSelected().getGroup());
+    }
+
+    protected static boolean isGameOver(final Board board) {
+        for (int col = 0; col < board.getPieces()[0].length; col++) {
+            for (int row = 0; row < board.getPieces().length; row++) {
+
+                //if at least 1 piece is not placed, the game is not over
+                if (!board.getPieces()[row][col].isPlaced())
+                    return false;
+            }
+        }
+
+        //all pieces are placed, game over
+        return true;
     }
 }

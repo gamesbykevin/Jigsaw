@@ -326,11 +326,11 @@ public class OpenGLRenderer implements Renderer {
     private void setupBackground() {
 
         if (BACKGROUND_TEXTURE_ID_CURRENT < 0)
-            BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_WHITE;
+            BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_BLACK;
 
         //set the correct texture for rendering
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, BACKGROUND_TEXTURE_ID_CURRENT);//Textures.TEXTURE_ID_BACKGROUND);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, BACKGROUND_TEXTURE_ID_CURRENT);
 
         //reset to normal screen size so background is displayed without transformation
         Matrix.orthoM(mtrxProjection, 0, 0f, WIDTH, HEIGHT, 0f, 0f, 50f);
