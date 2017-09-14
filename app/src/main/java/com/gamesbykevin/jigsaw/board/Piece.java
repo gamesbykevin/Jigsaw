@@ -290,19 +290,13 @@ public class Piece extends Entity {
         return tmp;
     }
 
-    public boolean contains(final float x, final float y) {
+    public boolean contains(final float x, final float y, final float w) {
 
-        //if any of these are true, it is outside (false)
-        if (x < getX())
-            return false;
-        if (y < getY())
-            return false;
-        if (x > getX() + getWidth())
-            return false;
-        if (y > getY() + getHeight())
-            return false;
+        //get the center
+        final float mx = getX() + (getWidth() / 2);
+        final float my = getY() + (getHeight() / 2);
 
-        //the coordinate is inside (true)
-        return true;
+        //if close enough, contains is true
+        return (getDistance(x, y, mx, my) <= w);
     }
 }

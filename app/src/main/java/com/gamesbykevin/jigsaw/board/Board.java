@@ -13,8 +13,11 @@ import static com.gamesbykevin.jigsaw.board.BoardHelper.CALCULATE_INDICES;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.CALCULATE_UVS;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.CALCULATE_VERTICES;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.PUZZLE_TEXTURE_GENERATED;
+import static com.gamesbykevin.jigsaw.board.BoardHelper.getIndexPiece;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.getSquare;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.isGameOver;
+import static com.gamesbykevin.jigsaw.board.BoardHelper.orderGroup;
+import static com.gamesbykevin.jigsaw.board.BoardHelper.orderPlaced;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.updateCoordinates;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.updateGroup;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.updatePieces;
@@ -118,28 +121,41 @@ public class Board implements ICommon {
         if (getPieces() == null)
             return;
 
-        //check for collision in reverse order, because the last piece will be rendered on top
-        for (int col = getPieces()[0].length - 1; col >= 0; col--) {
-            for (int row = getPieces().length - 1; row >= 0; row--) {
+        //start checking the last index
+        int index = (getCols() * getRows()) - 1;
 
-                //don't continue if the piece has already been placed
-                if (getPieces()[row][col].isPlaced())
-                    continue;
+        //keep going back till we find the piece
+        while (index >= 0) {
 
-                //if the coordinate is within the piece, return result
-                if (getPieces()[row][col].contains(x, y)) {
+            //get the piece at the index
+            Piece piece = getIndexPiece(this, index);
+
+            //we can only select a piece that is not placed
+            if (!piece.isPlaced()) {
+
+                //if we are within the bounds
+                if (piece.contains(x, y, getDefaultWidth())) {
 
                     //assign our selected piece
-                    setSelected(getPieces()[row][col]);
+                    setSelected(piece);
 
                     //flag that we have a selection
                     setSelection(true);
                     setComplete(false);
 
+                    //order the group to be on top
+                    orderGroup(this);
+
+                    //update the coordinates
+                    updateCoordinates(this);
+
                     //no need to continue
                     return;
                 }
             }
+
+            //check the next index
+            index--;
         }
 
         //we couldn't find anything
@@ -161,7 +177,7 @@ public class Board implements ICommon {
         setSelected(null);
     }
 
-    private void setSelected(final Piece piece) {
+    protected void setSelected(final Piece piece) {
         this.selected = piece;
     }
 
@@ -330,8 +346,12 @@ public class Board implements ICommon {
 
                 //if we are close enough place the piece at its destination
                 if (distance <= getSelected().getWidth() * CONNECTOR_RATIO) {
+
+                    //place at the destination
                     getSelected().setX(getSelected().getDestinationX());
                     getSelected().setY(getSelected().getDestinationY());
+
+                    //flag placed true
                     getSelected().setPlaced(true);
 
                     //update the group
@@ -342,6 +362,9 @@ public class Board implements ICommon {
 
                     //game over?
                     GameHelper.GAME_OVER = isGameOver(this);
+
+                    //order the pieces placed so they won't appear over the other pieces
+                    BoardHelper.orderPlaced(this);
                 }
 
                 //place the piece on the board accordingly

@@ -274,6 +274,121 @@ public class BoardHelper {
 
         resizedBitmap.recycle();
         resizedBitmap = null;
+
+        //select the first piece
+        board.setSelected(board.getPieces()[0][0]);
+
+        //order the group
+        orderGroup(board);
+
+        //update the coordinates
+        updateCoordinates(board);
+
+        //de-select the piece
+        board.setSelected(null);
+    }
+
+    protected static Piece getIndexPiece(Board board, int index) {
+
+        //check each piece
+        for (int col = 0; col < board.getCols(); col++) {
+            for (int row = 0; row < board.getRows(); row++) {
+
+                try {
+
+                    //get the current piece
+                    Piece piece = board.getPieces()[row][col];
+
+                    if (piece.getIndex() == index)
+                        return piece;
+
+                } catch (Exception e) {
+                    UtilityHelper.handleException(e);
+                }
+            }
+        }
+
+        //no piece found, return null
+        return null;
+    }
+
+    protected static void orderGroup(Board board) {
+
+        //have to have a selected piece
+        if (board.getSelected() == null)
+            return;
+
+        //we want to order the group last so they are displayed on top
+        int indexNotPlaced = (board.getCols() * board.getRows()) - 1;
+
+        //check each piece
+        for (int col = 0; col < board.getCols(); col++) {
+            for (int row = 0; row < board.getRows(); row++) {
+
+                try {
+
+                    //get the current piece
+                    Piece piece = board.getPieces()[row][col];
+
+                    //if the group matches we need to re-arrange
+                    if (piece.getGroup() == board.getSelected().getGroup()) {
+
+                        //update the other piece index
+                        getIndexPiece(board, indexNotPlaced).setIndex(piece.getIndex());
+
+                        //set the new index so this piece is rendered on top
+                        piece.setIndex(indexNotPlaced);
+
+                        //assign the next position
+                        indexNotPlaced--;
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    protected static void orderPlaced(Board board) {
+
+        int indexPlaced = 0;
+        int indexNotPlaced = (board.getCols() * board.getRows()) - 1;
+
+        for (int col = 0; col < board.getCols(); col++) {
+            for (int row = 0; row < board.getRows(); row++) {
+
+                try {
+
+                    //get the current piece
+                    Piece piece = board.getPieces()[row][col];
+
+                    //if this piece isn't placed yet it is a good swap
+                    if (!piece.isPlaced()) {
+
+                        //set index at the end
+                        piece.setIndex(indexNotPlaced);
+
+                        //decrease index
+                        indexNotPlaced--;
+
+                    } else {
+
+                        //set index at the beginning
+                        piece.setIndex(indexPlaced);
+
+                        //increase index
+                        indexPlaced++;
+                    }
+
+                } catch (Exception e) {
+                    UtilityHelper.handleException(e);
+                }
+            }
+        }
+
+        //update the coordinates
+        updateCoordinates(board);
     }
 
     /**
@@ -281,12 +396,12 @@ public class BoardHelper {
      */
     protected static void updateCoordinates(Board board) {
 
-        for (int col = 0; col < board.getPieces()[0].length; col++) {
-            for (int row = 0; row < board.getPieces().length; row++) {
+        for (int col = 0; col < board.getCols(); col++) {
+            for (int row = 0; row < board.getRows(); row++) {
 
                 try {
 
-                    //get the current shape
+                    //get the current piece
                     Piece piece = board.getPieces()[row][col];
 
                     if (piece == null)
@@ -345,12 +460,12 @@ public class BoardHelper {
 
     protected static void updatePieces(Board board, final int groupId) {
 
-        for (int col = 0; col < board.getPieces()[0].length; col++) {
-            for (int row = 0; row < board.getPieces().length; row++) {
+        for (int col = 0; col < board.getCols(); col++) {
+            for (int row = 0; row < board.getRows(); row++) {
 
                 try {
 
-                    //get the current shape
+                    //get the current piece
                     Piece tmp = board.getPieces()[row][col];
 
                     if (tmp == null || groupId != tmp.getGroup())
@@ -384,12 +499,12 @@ public class BoardHelper {
         //if there is no group id to compare to, ignore this step
         if (oldGroupId > -1) {
 
-            for (int col = 0; col < board.getPieces()[0].length; col++) {
-                for (int row = 0; row < board.getPieces().length; row++) {
+            for (int col = 0; col < board.getCols(); col++) {
+                for (int row = 0; row < board.getRows(); row++) {
 
                     try {
 
-                        //get the current shape
+                        //get the current piece
                         Piece tmp = board.getPieces()[row][col];
 
                         //if matching the old, update to new
@@ -413,12 +528,12 @@ public class BoardHelper {
         final int connectorW = (int)(board.getDefaultWidth() * CONNECTOR_RATIO);
         final int connectorH = (int)(board.getDefaultHeight() * CONNECTOR_RATIO);
 
-        for (int col = 0; col < board.getPieces()[0].length; col++) {
-            for (int row = 0; row < board.getPieces().length; row++) {
+        for (int col = 0; col < board.getCols(); col++) {
+            for (int row = 0; row < board.getRows(); row++) {
 
                 try {
 
-                    //get the current shape
+                    //get the current piece
                     Piece tmp = board.getPieces()[row][col];
 
                     //we only want matching groups
@@ -563,12 +678,12 @@ public class BoardHelper {
         final int width = (int)(board.getSelected().getWidth() - connectorW - connectorW);
         final int height = (int)(board.getSelected().getHeight() - connectorH - connectorH);
 
-        for (int col = 0; col < board.getPieces()[0].length; col++) {
+        for (int col = 0; col < board.getCols(); col++) {
 
             if (flag)
                 break;
 
-            for (int row = 0; row < board.getPieces().length; row++) {
+            for (int row = 0; row < board.getRows(); row++) {
 
                 if (flag)
                     break;
@@ -689,8 +804,9 @@ public class BoardHelper {
     }
 
     protected static boolean isGameOver(final Board board) {
-        for (int col = 0; col < board.getPieces()[0].length; col++) {
-            for (int row = 0; row < board.getPieces().length; row++) {
+
+        for (int col = 0; col < board.getCols(); col++) {
+            for (int row = 0; row < board.getRows(); row++) {
 
                 //if at least 1 piece is not placed, the game is not over
                 if (!board.getPieces()[row][col].isPlaced())
