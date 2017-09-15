@@ -5,37 +5,13 @@
     android:layout_height="match_parent"
     android:visibility="invisible">
 
-    <!--
-    <TableLayout style="@style/background_selector_table">
+    <ImageView
+        android:onClick="onClickSettings"
+        android:src="@drawable/settings"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="15dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp" />
 
-        <TableRow>
-            <ImageView style="@style/background_selector" android:src="@drawable/background_selector_white" android:onClick="onClickBackgroundWhite" />
-            <ImageView style="@style/background_selector" android:src="@drawable/background_selector_black" android:onClick="onClickBackgroundBlack" />
-        </TableRow>
-
-        <TableRow>
-            <ImageView style="@style/background_selector" android:src="@drawable/background_selector_gray" android:onClick="onClickBackgroundGray"  />
-            <ImageView style="@style/background_selector" android:src="@drawable/background_selector_yellow" android:onClick="onClickBackgroundYellow" />
-        </TableRow>
-
-        <TableRow>
-            <ImageView style="@style/background_selector" android:src="@drawable/background_selector_red" android:onClick="onClickBackgroundRed" />
-            <ImageView style="@style/background_selector" android:src="@drawable/background_selector_brown" android:onClick="onClickBackgroundBrown" />
-        </TableRow>
-
-        <TableRow>
-            <ImageView style="@style/background_selector" android:src="@drawable/background_selector_blue" android:onClick="onClickBackgroundBlue" />
-            <ImageView style="@style/background_selector" android:src="@drawable/background_selector_green" android:onClick="onClickBackgroundGreen" />
-        </TableRow>
-
-        <TableRow>
-            <ImageView style="@style/background_selector" android:src="@drawable/background_selector_orange" android:onClick="onClickBackgroundOrange" />
-            <ImageView style="@style/background_selector" android:src="@drawable/background_selector_pink" android:onClick="onClickBackgroundPink" />
-        </TableRow>
-
-        <TableRow>
-            <ImageView style="@style/background_selector" android:src="@drawable/background_selector_purple" android:onClick="onClickBackgroundPurple" />
-        </TableRow>
-    </TableLayout>
-    -->
 </RelativeLayout>

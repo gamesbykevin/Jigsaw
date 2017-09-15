@@ -6,12 +6,12 @@
     <color name="colorYellow">#FFFF00</color>
     <color name="colorGray">#CCCCCC</color>
     <color name="colorRed">#FF0000</color>
-
     <color name="colorBlue">#1E90FF</color>
     <color name="colorBrown">#C59169</color>
     <color name="colorGreen">#64B928</color>
     <color name="colorOrange">#CE5707</color>
     <color name="colorPink">#FA798D</color>
     <color name="colorPurple">#5B005D</color>
+    <color name="colorTurquoise">#1BA086</color>
 
 </resources>

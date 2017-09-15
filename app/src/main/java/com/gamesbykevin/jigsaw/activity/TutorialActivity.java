@@ -1,10 +1,10 @@
 package com.gamesbykevin.jigsaw.activity;
 
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,10 +57,10 @@ public class TutorialActivity extends BaseActivity {
         setContentView(R.layout.activity_tutorial);
 
         //get our pages container
-        listPageContainer = (LinearLayout)findViewById(R.id.listPageContainer);
+        listPageContainer = findViewById(R.id.listPageContainer);
 
         //get our view pager
-        customPager = (ViewPager) findViewById(R.id.customPager);
+        customPager = findViewById(R.id.customPager);
 
         //create new array list
         fragments = new ArrayList<>();
@@ -113,6 +113,19 @@ public class TutorialActivity extends BaseActivity {
 
         //call parent
         super.onDestroy();
+
+        if (fragments != null) {
+
+            //make sure every fragment is removed
+            for (int i = 0; i < fragments.size(); i++) {
+
+                //remove any existing fragment from our fragment manager
+                if (fragments.get(i) != null)
+                    fragments.set(i, null);
+            }
+
+            fragments.clear();
+        }
 
         customPager = null;
         fragments = null;
@@ -243,6 +256,10 @@ public class TutorialActivity extends BaseActivity {
 
         public TutorialPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
+
+            //clear list if elements exist
+            if (!getFragments().isEmpty())
+                getFragments().clear();
         }
 
         @Override

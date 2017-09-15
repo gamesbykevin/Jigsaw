@@ -2,6 +2,7 @@ package com.gamesbykevin.jigsaw.opengl;
 
 import android.view.MotionEvent;
 
+import com.gamesbykevin.jigsaw.activity.GameActivity;
 import com.gamesbykevin.jigsaw.base.Entity;
 
 import static com.gamesbykevin.jigsaw.activity.GameActivity.getGame;
@@ -101,12 +102,12 @@ public class OpenGLSurfaceViewHelper {
                 if (FINGERS == 1) {
 
                     //check if we selected a puzzle piece
-                    getGame().getBoard().setSelected(getCheckX(view, event), getCheckY(view, event));
+                    getGame().setSelected(getCheckX(view, event), getCheckY(view, event));
 
                 } else {
 
                     //if more than 1 finger is on the screen we can't select a piece
-                    getGame().getBoard().removeSelected();
+                    getGame().removeSelected();
                 }
 
                 //reset distance
@@ -128,8 +129,8 @@ public class OpenGLSurfaceViewHelper {
                 PINCH_DISTANCE = 0;
 
                 //if we selected a piece, de-select it
-                if (getGame().getBoard().hasSelection())
-                    getGame().getBoard().setComplete(true);
+                if (getGame().hasSelection())
+                    getGame().setComplete(true);
 
                 //if we are zooming
                 if (ZOOMING) {
@@ -162,7 +163,7 @@ public class OpenGLSurfaceViewHelper {
                     ZOOMING = true;
 
                     //if we have 2 fingers, make sure we removed the selected piece
-                    getGame().getBoard().removeSelected();
+                    getGame().removeSelected();
 
                     //get the distance between the two points
                     double distance = Entity.getDistance(event.getX(0), event.getY(0), event.getX(1), event.getY(1));
@@ -220,10 +221,10 @@ public class OpenGLSurfaceViewHelper {
                     float yDiff = ((y2 > y1) ? -(y2 - y1) : (y1 - y2));
 
                     //if we have a piece selected, move all pieces of the same group
-                    if (getGame().getBoard().hasSelection()) {
+                    if (getGame().hasSelection()) {
 
                         //update the piece x,y for any connected pieces
-                        getGame().getBoard().updatePlace(getCheckX(view, event), getCheckY(view, event));
+                        getGame().updatePlace(getCheckX(view, event), getCheckY(view, event));
 
                     } else {
 

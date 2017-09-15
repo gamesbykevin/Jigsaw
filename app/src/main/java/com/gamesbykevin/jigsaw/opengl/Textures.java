@@ -35,6 +35,7 @@ public class Textures implements Disposable {
     public static int TEXTURE_ID_BACKGROUND_ORANGE = 0;
     public static int TEXTURE_ID_BACKGROUND_PINK = 0;
     public static int TEXTURE_ID_BACKGROUND_PURPLE = 0;
+    public static int TEXTURE_ID_BACKGROUND_TURQUOISE = 0;
 
     public static int TEXTURE_ID_PLACEMENT_BORDER = 0;
 
@@ -54,7 +55,7 @@ public class Textures implements Disposable {
         this.activity = activity;
 
         //create array containing all the texture ids
-        IDS = new int[13];
+        IDS = new int[14];
 
         //reset custom texture image id
         TEXTURE_ID_IMAGE_SOURCE = 0;
@@ -95,6 +96,8 @@ public class Textures implements Disposable {
         TEXTURE_ID_BACKGROUND_ORANGE = loadTexture(R.drawable.background_orange);
         TEXTURE_ID_BACKGROUND_PINK = loadTexture(R.drawable.background_pink);
         TEXTURE_ID_BACKGROUND_PURPLE = loadTexture(R.drawable.background_purple);
+        TEXTURE_ID_BACKGROUND_TURQUOISE = loadTexture(R.drawable.background_turquoise);
+
         TEXTURE_ID_PLACEMENT_BORDER = loadTexture(R.drawable.border);
     }
 

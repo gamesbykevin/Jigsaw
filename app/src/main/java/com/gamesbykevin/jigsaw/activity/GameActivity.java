@@ -15,7 +15,6 @@ import com.gamesbykevin.jigsaw.R;
 import com.gamesbykevin.jigsaw.game.Game;
 import com.gamesbykevin.jigsaw.game.Game.Step;
 import com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView;
-import com.gamesbykevin.jigsaw.services.BaseGameActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +51,8 @@ public class GameActivity extends BaseActivity implements Disposable {
     public enum Screen {
         Loading,
         Ready,
-        GameOver
+        GameOver,
+        Settings
     }
 
     //current screen we are on
@@ -75,9 +75,10 @@ public class GameActivity extends BaseActivity implements Disposable {
 
         //add the layouts to our list
         this.layouts = new ArrayList<>();
-        this.layouts.add((ViewGroup)findViewById(R.id.gameOverLayoutDefault));
-        this.layouts.add((ViewGroup)findViewById(R.id.loadingScreenLayout));
+        this.layouts.add((ViewGroup)findViewById(R.id.layoutGameOver));
+        this.layouts.add((ViewGroup)findViewById(R.id.layoutLoadingScreen));
         this.layouts.add((ViewGroup)findViewById(R.id.layoutGameControls));
+        this.layouts.add((ViewGroup)findViewById(R.id.layoutGameSettings));
     }
 
     public static Game getGame() {
@@ -235,12 +236,17 @@ public class GameActivity extends BaseActivity implements Disposable {
 
             //show loading screen
             case Loading:
-                setLayoutVisibility((ViewGroup)findViewById(R.id.loadingScreenLayout), true);
+                setLayoutVisibility((ViewGroup)findViewById(R.id.layoutLoadingScreen), true);
+                break;
+
+            //show the game settings
+            case Settings:
+                setLayoutVisibility((ViewGroup)findViewById(R.id.layoutGameSettings), true);
                 break;
 
             //decide which game over screen is displayed
             case GameOver:
-                setLayoutVisibility((ViewGroup)findViewById(R.id.gameOverLayoutDefault), true);
+                setLayoutVisibility((ViewGroup)findViewById(R.id.layoutGameOver), true);
                 break;
 
             //don't re-enable anything
@@ -322,5 +328,15 @@ public class GameActivity extends BaseActivity implements Disposable {
 
     public void onClickBackgroundGreen(View view) {
         OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_GREEN;
+    }
+
+    public void onClickBackgroundTurquoise(View view) {
+        OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_TURQUOISE;
+    }
+
+    public void onClickSettings(View view) {
+
+        //display the settings screen if not yet visible
+        setLayoutVisibility((ViewGroup)findViewById(R.id.layoutGameSettings), (findViewById(R.id.layoutGameSettings).getVisibility() != View.VISIBLE));
     }
 }

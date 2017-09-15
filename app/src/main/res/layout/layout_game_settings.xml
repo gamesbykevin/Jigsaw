@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/transparent50"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="invisible">
+
+    <TableLayout
+        android:id="@+id/tableSettings"
+        android:background="@color/colorBrown"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TableRow>
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:text="Options"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+        </TableRow>
+        <TableRow>
+            <ImageView android:layout_gravity="left" android:gravity="left" android:padding="5dp" android:src="@drawable/sound_on" android:id="@+id/buttonSound" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+            <ImageView android:layout_gravity="left" android:gravity="left" android:padding="5dp" android:src="@drawable/leaderboard_on" android:id="@+id/buttonLeaderboard" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+            <ImageView android:layout_gravity="left" android:gravity="left" android:padding="5dp" android:src="@drawable/rotate_on" android:id="@+id/buttonRotate" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:padding="10dp"
+                android:text="Background"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+            <TableLayout style="@style/background_selector_table">
+                <TableRow>
+                    <ImageView style="@style/background_selector" android:src="@drawable/background_selector_white" android:onClick="onClickBackgroundWhite" />
+                    <ImageView style="@style/background_selector" android:src="@drawable/background_selector_black" android:onClick="onClickBackgroundBlack" />
+                    <ImageView style="@style/background_selector" android:src="@drawable/background_selector_gray" android:onClick="onClickBackgroundGray"  />
+                    <ImageView style="@style/background_selector" android:src="@drawable/background_selector_yellow" android:onClick="onClickBackgroundYellow" />
+                    <ImageView style="@style/background_selector" android:src="@drawable/background_selector_orange" android:onClick="onClickBackgroundOrange" />
+                    <ImageView style="@style/background_selector" android:src="@drawable/background_selector_purple" android:onClick="onClickBackgroundPurple" />
+                </TableRow>
+
+                <TableRow>
+                    <ImageView style="@style/background_selector" android:src="@drawable/background_selector_red" android:onClick="onClickBackgroundRed" />
+                    <ImageView style="@style/background_selector" android:src="@drawable/background_selector_brown" android:onClick="onClickBackgroundBrown" />
+                    <ImageView style="@style/background_selector" android:src="@drawable/background_selector_blue" android:onClick="onClickBackgroundBlue" />
+                    <ImageView style="@style/background_selector" android:src="@drawable/background_selector_green" android:onClick="onClickBackgroundGreen" />
+                    <ImageView style="@style/background_selector" android:src="@drawable/background_selector_pink" android:onClick="onClickBackgroundPink" />
+                    <ImageView style="@style/background_selector" android:src="@drawable/background_selector_turquoise" android:onClick="onClickBackgroundTurquoise" />
+                </TableRow>
+            </TableLayout>
+        </TableRow>
+    </TableLayout>
+
+
+</RelativeLayout>

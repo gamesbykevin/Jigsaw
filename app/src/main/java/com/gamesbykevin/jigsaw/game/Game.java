@@ -50,7 +50,7 @@ public class Game implements IGame {
         this.board = board;
     }
 
-    public Board getBoard() {
+    protected Board getBoard() {
         return this.board;
     }
 
@@ -162,6 +162,35 @@ public class Game implements IGame {
     public void dispose() {
 
         GameHelper.dispose();
+    }
+
+    public void setSelected(final float x, final float y) {
+
+        if (activity.getScreen() == Screen.Ready)
+            getBoard().setSelected(x, y);
+    }
+
+    public void removeSelected() {
+        if (activity.getScreen() == Screen.Ready)
+            getBoard().removeSelected();
+    }
+
+    public boolean hasSelection() {
+        if (activity.getScreen() == Screen.Ready) {
+            return getBoard().hasSelection();
+        } else {
+            return false;
+        }
+    }
+
+    public void setComplete(final boolean complete) {
+        if (activity.getScreen() == Screen.Ready)
+            getBoard().setComplete(complete);
+    }
+
+    public void updatePlace(final float x, final float y) {
+        if (activity.getScreen() == Screen.Ready)
+            getBoard().updatePlace(x, y);
     }
 
     @Override
