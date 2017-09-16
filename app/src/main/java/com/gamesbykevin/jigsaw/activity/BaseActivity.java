@@ -65,15 +65,29 @@ public abstract class BaseActivity extends com.gamesbykevin.androidframeworkv2.a
      */
     private void setupDefaultOptions() {
 
-        //store default shape, if not set yet
+        //get the editor so we can access the shared preferences
+        SharedPreferences.Editor editor = getSharedPreferences().edit();
 
-        /*
-        if (getObjectValue(R.string.open_gl_zoom_file_key) == null) {
-            SharedPreferences.Editor edit = getSharedPreferences().edit();
-            edit.putString(getString(R.string.game_shape_file_key), GSON.toJson(Board.Shape.Square));
-            edit.commit();
+        //was any changes made
+        boolean dirty = false;
+
+        //check every button to make sure a default setting is assigned
+        for (OptionsActivity.Buttons button : OptionsActivity.Buttons.values()) {
+
+            //if the setting does not exist
+            if (!getSharedPreferences().contains(getString(button.settingId))) {
+
+                //default to true
+                editor.putBoolean(getString(button.settingId), true);
+
+                //flag dirty since change was made
+                dirty = true;
+            }
         }
-        */
+
+        //if any changes were made, make it final
+        if (dirty)
+            editor.commit();
     }
 
     private void loadSound(final int resId) {

@@ -39,6 +39,27 @@
                 android:checked="true" />
         </TableRow>
 
+        <TableRow style="@style/rowMenu">
+            <ToggleButton
+                style="@style/buttonMenu"
+                android:id="@+id/toggleButtonTimer"
+                android:textOn="@string/timer_on"
+                android:textOff="@string/timer_off"
+                android:onClick="onClickTimer"
+                android:checked="true" />
+        </TableRow>
+
+        <TableRow style="@style/rowMenu">
+            <ToggleButton
+                style="@style/buttonMenu"
+                android:id="@+id/toggleButtonGoogleLogin"
+                android:textOn="@string/google_play_auto_enabled"
+                android:textOff="@string/google_play_auto_disabled"
+                android:onClick="onClickGoogleLogin"
+                android:checked="true" />
+        </TableRow>
+
+
     </TableLayout>
 
     <include layout="@layout/layout_social_icons" />

@@ -160,12 +160,10 @@ public class Game implements IGame {
      */
     @Override
     public void dispose() {
-
         GameHelper.dispose();
     }
 
     public void setSelected(final float x, final float y) {
-
         if (activity.getScreen() == Screen.Ready)
             getBoard().setSelected(x, y);
     }
@@ -200,22 +198,17 @@ public class Game implements IGame {
         if (STEP != Step.Running)
             return true;
 
-        if (action == MotionEvent.ACTION_UP)
-        {
+        if (action == MotionEvent.ACTION_UP) {
             //check the board for rotations
             //if (this.press)
                 //getBoard().touch(x, y);
 
             //un-flag press
             this.press = false;
-        }
-        else if (action == MotionEvent.ACTION_DOWN)
-        {
+        } else if (action == MotionEvent.ACTION_DOWN) {
             //flag that we pressed down
             this.press = true;
-        }
-        else if (action == MotionEvent.ACTION_MOVE)
-        {
+        } else if (action == MotionEvent.ACTION_MOVE) {
             //flag press
             this.press = true;
         }
@@ -235,6 +228,6 @@ public class Game implements IGame {
         GameHelper.render(m);
 
         //flag that we have performed the initial render
-        //INITIAL_RENDER = true;
+        INITIAL_RENDER = true;
     }
 }

@@ -15,7 +15,7 @@
         </TableRow>
 
         <TableRow>
-            <ImageView android:contentDescription="@null" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/sitelogo" />
+            <ImageView android:contentDescription="@null" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/website" />
         </TableRow>
     </TableLayout>
 </LinearLayout>

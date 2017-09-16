@@ -28,6 +28,9 @@ public final class GameHelper {
     //did we flag the game over?
     public static boolean GAME_OVER = false;
 
+    //do we want to display the timer
+    public static boolean TIMER = true;
+
     //how long do we wait until displaying the game over overlay
     public static final int GAME_OVER_DELAY_FRAMES = (FPS * 3);
 

@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     android:visibility="invisible">
 
+    <ImageView
+        android:onClick="onClickSettings"
+        android:src="@drawable/settings"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="15dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp" />
+
     <TableLayout
         android:id="@+id/tableSettings"
         android:background="@color/colorBrown"

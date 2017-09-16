@@ -336,7 +336,14 @@ public class GameActivity extends BaseActivity implements Disposable {
 
     public void onClickSettings(View view) {
 
-        //display the settings screen if not yet visible
-        setLayoutVisibility((ViewGroup)findViewById(R.id.layoutGameSettings), (findViewById(R.id.layoutGameSettings).getVisibility() != View.VISIBLE));
+        if (findViewById(R.id.layoutGameSettings).getVisibility() != View.VISIBLE) {
+
+            //if the settings are not showing, display it
+            setScreen(Screen.Settings);
+        } else {
+
+            //if the settings are showing, go back to ready
+            setScreen(Screen.Ready);
+        }
     }
 }

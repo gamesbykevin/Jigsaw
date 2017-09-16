@@ -3,9 +3,12 @@ package com.gamesbykevin.jigsaw.activity;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ToggleButton;
 
+import com.gamesbykevin.jigsaw.game.GameHelper;
 import com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceViewHelper;
+import com.gamesbykevin.jigsaw.services.BaseGameActivity;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 import com.gamesbykevin.jigsaw.R;
 
@@ -13,6 +16,24 @@ public class OptionsActivity extends BaseActivity {
 
     //has the activity been paused
     private boolean paused = false;
+
+    /**
+     * List of toggle buttons in the options
+     */
+    public enum Buttons {
+        Sound(R.id.toggleButtonSound, R.string.sound_file_key),
+        Vibrate(R.id.toggleButtonVibrate, R.string.vibrate_file_key),
+        Zoom(R.id.toggleButtonZoom, R.string.open_gl_zoom_file_key),
+        GoogleAutoLogin(R.id.toggleButtonGoogleLogin, R.string.google_play_auto_login_file_key),
+        Timer(R.id.toggleButtonTimer, R.string.timer_file_key);
+
+        public final int buttonId, settingId;
+
+        private Buttons(final int buttonId, final int settingId) {
+            this.buttonId = buttonId;
+            this.settingId = settingId;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,8 +43,14 @@ public class OptionsActivity extends BaseActivity {
         setContentView(R.layout.activity_options);
 
         //retrieve our buttons so we can update based on current setting (shared preferences)
-        ToggleButton buttonSound = (ToggleButton)findViewById(R.id.toggleButtonSound);
-        ToggleButton buttonVibrate = (ToggleButton)findViewById(R.id.toggleButtonVibrate);
+        for (Buttons button : Buttons.values()) {
+
+            //get the current button
+            ToggleButton tmp = findViewById(button.buttonId);
+
+            //load the setting accordingly
+            tmp.setChecked(getBooleanValue(button.settingId));
+        }
 
         /*
         //populate shape options
@@ -31,14 +58,12 @@ public class OptionsActivity extends BaseActivity {
         this.buttonShape.setOptions(Board.Shape.values());
         this.buttonShape.setHeader(getString(R.string.text_header_shape));
         */
-
-        //update our buttons accordingly
-        buttonSound.setChecked(getBooleanValue(R.string.sound_file_key));
-        buttonVibrate.setChecked(getBooleanValue(R.string.vibrate_file_key));
     }
 
     @Override
     public void onPause() {
+
+        //call parent
         super.onPause();
 
         //stop sound
@@ -72,14 +97,12 @@ public class OptionsActivity extends BaseActivity {
             //get the editor so we can change the shared preferences
             Editor editor = getSharedPreferences().edit();
 
-            //store the sound setting based on the toggle button
-            editor.putBoolean(getString(R.string.sound_file_key), ((ToggleButton)findViewById(R.id.toggleButtonSound)).isChecked());
+            //store the setting based on the toggle button state
+            for (Buttons button : Buttons.values()) {
 
-            //store the vibrate setting based on the toggle button
-            editor.putBoolean(getString(R.string.vibrate_file_key), ((ToggleButton)findViewById(R.id.toggleButtonVibrate)).isChecked());
-
-            //store the zoom setting based on the toggle button
-            editor.putBoolean(getString(R.string.open_gl_zoom_file_key), ((ToggleButton)findViewById(R.id.toggleButtonZoom)).isChecked());
+                //update the file setting with the according key and value
+                editor.putBoolean(getString(button.settingId), ((ToggleButton)findViewById(button.buttonId)).isChecked());
+            }
 
             //store the shape setting as well
             //editor.putString(getString(R.string.game_shape_file_key), GSON.toJson(buttonShape.getValue()));
@@ -87,10 +110,10 @@ public class OptionsActivity extends BaseActivity {
             //make it final by committing the change
             editor.commit();
 
-        } catch (Exception ex) {
+        } catch (Exception e) {
 
             //handle exception
-            UtilityHelper.handleException(ex);
+            UtilityHelper.handleException(e);
         }
 
         //call parent function
@@ -100,35 +123,56 @@ public class OptionsActivity extends BaseActivity {
     public void onClickVibrate(View view) {
 
         //get the button
-        ToggleButton button = (ToggleButton)view.findViewById(R.id.toggleButtonVibrate);
+        ToggleButton button = view.findViewById(R.id.toggleButtonVibrate);
 
         //if the button is checked we will vibrate the phone
-        if (button.isChecked()) {
+        if (button.isChecked())
             super.vibrate(true);
-        }
     }
 
     public void onClickSound(View view) {
 
         //get the button
-        ToggleButton button = (ToggleButton)view.findViewById(R.id.toggleButtonSound);
+        ToggleButton button = view.findViewById(R.id.toggleButtonSound);
 
         if (!button.isChecked()) {
+
             //if not enabled stop all sound
             super.stopSound();
+
         } else {
-            //ifi enabled play menu theme
+
+            //if enabled play menu theme
             super.playMenu();
+
         }
     }
 
     public void onClickZoom(View view) {
 
         //get the button
-        ToggleButton button = (ToggleButton)view.findViewById(R.id.toggleButtonZoom);
+        ToggleButton button = view.findViewById(R.id.toggleButtonZoom);
 
         //update the view  options
         OpenGLSurfaceViewHelper.ZOOM_ENABLED = button.isChecked();
         OpenGLSurfaceViewHelper.DRAG_ENABLED = button.isChecked();
+    }
+
+    public void onClickTimer(View view) {
+
+        //get the button
+        ToggleButton button = view.findViewById(R.id.toggleButtonTimer);
+
+        //update the timer display
+        GameHelper.TIMER = button.isChecked();
+    }
+
+    public void onClickGoogleLogin(View view) {
+
+        //get the button
+        ToggleButton button = view.findViewById(R.id.toggleButtonGoogleLogin);
+
+        //update the login setting
+        BaseGameActivity.BYPASS_LOGIN = (!button.isChecked());
     }
 }
