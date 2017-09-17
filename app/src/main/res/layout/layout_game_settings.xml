@@ -38,7 +38,6 @@
         <TableRow>
             <ImageView android:layout_gravity="left" android:gravity="left" android:padding="5dp" android:src="@drawable/sound_on" android:id="@+id/buttonSound" android:layout_width="wrap_content" android:layout_height="wrap_content" />
             <ImageView android:layout_gravity="left" android:gravity="left" android:padding="5dp" android:src="@drawable/leaderboard_on" android:id="@+id/buttonLeaderboard" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-            <ImageView android:layout_gravity="left" android:gravity="left" android:padding="5dp" android:src="@drawable/rotate_on" android:id="@+id/buttonRotate" android:layout_width="wrap_content" android:layout_height="wrap_content" />
         </TableRow>
 
         <TableRow>
