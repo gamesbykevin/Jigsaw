@@ -12,6 +12,8 @@ import com.gamesbykevin.jigsaw.services.BaseGameActivity;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 import com.gamesbykevin.jigsaw.R;
 
+import static com.gamesbykevin.jigsaw.util.UtilityHelper.AMAZON;
+
 public class OptionsActivity extends BaseActivity {
 
     //has the activity been paused
@@ -50,6 +52,10 @@ public class OptionsActivity extends BaseActivity {
 
             //load the setting accordingly
             tmp.setChecked(getBooleanValue(button.settingId));
+
+            //if this is for amazon, google play will be off (disabled)
+            if (AMAZON && button.buttonId == R.id.toggleButtonGoogleLogin)
+                tmp.setChecked(false);
         }
 
         /*
@@ -144,7 +150,6 @@ public class OptionsActivity extends BaseActivity {
 
             //if enabled play menu theme
             super.playMenu();
-
         }
     }
 
@@ -172,7 +177,12 @@ public class OptionsActivity extends BaseActivity {
         //get the button
         ToggleButton button = view.findViewById(R.id.toggleButtonGoogleLogin);
 
+        //if this is for amazon, it will always be false
+        if (AMAZON)
+            button.setChecked(false);
+
         //update the login setting
         BaseGameActivity.BYPASS_LOGIN = (!button.isChecked());
+
     }
 }

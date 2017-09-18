@@ -16,6 +16,7 @@
     <string name="button_text_menu">Menu</string>
     <string name="button_text_start">Start</string>
     <string name="button_text_options">Options</string>
+    <string name="button_text_in_game_options">Game Options</string>
     <string name="button_text_tutorial">Tutorial</string>
     <string name="button_text_play">Play</string>
     <string name="button_text_leaderboard">Leaderboard</string>
@@ -34,13 +35,14 @@
     <string name="timer_on">Timer: On</string>
     <string name="timer_off">Timer: Off</string>
 
-    <string name="google_play_auto_enabled">Google login: On</string>
-    <string name="google_play_auto_disabled">Google login: Off</string>
+    <string name="google_play_auto_enabled">Google Play: On</string>
+    <string name="google_play_auto_disabled">Google Play: Off</string>
 
     <!-- text displayed on the picture select screen -->
     <string name="level_select_text">Select Picture</string>
     <string name="count_description">Pieces</string>
 
+    <string name="settings_background_text">Background Color</string>
 
     <!-- text to display in  the tutorial -->
     <string name="tutorial_instructions_1">Tutorial Part 1\nTo solve you have to connect all the pipes together</string>

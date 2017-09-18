@@ -5,13 +5,24 @@
     android:layout_height="match_parent"
     android:visibility="invisible">
 
-    <ImageView
-        android:onClick="onClickSettings"
-        android:src="@drawable/settings"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_margin="15dp"
-        android:layout_width="40dp"
-        android:layout_height="40dp" />
+    <ImageView style="@style/button_settings" />
+
+    <TableLayout
+        android:id="@+id/tableGameTimer"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TableRow>
+            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/clock1" android:src="@drawable/zero" />
+            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/clock2" android:src="@drawable/zero" />
+            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/colon" />
+            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/clock3" android:src="@drawable/zero" />
+            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/clock4" android:src="@drawable/zero" />
+        </TableRow>
+
+    </TableLayout>
 
 </RelativeLayout>

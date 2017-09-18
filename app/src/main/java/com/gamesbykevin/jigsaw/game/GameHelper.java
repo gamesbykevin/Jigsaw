@@ -34,6 +34,11 @@ public final class GameHelper {
     //how long do we wait until displaying the game over overlay
     public static final int GAME_OVER_DELAY_FRAMES = (FPS * 3);
 
+    /**
+     * Is the game screen frozen? If yes then we prevent all motion events to the open gl surface view
+     */
+    public static boolean SCREEN_FROZEN = true;
+
     //keep track of elapsed frames
     public static int FRAMES = 0;
 

@@ -113,6 +113,9 @@ public class MainActivity extends BaseActivity {
 
     public void onClickStart(View view) {
 
+        //is sound enabled in the game?
+        SOUND_ENABLED = getBooleanValue(R.string.sound_file_key);
+
         //store our shape selection
         //OptionsActivity.OPTION_BOARD_SHAPE = (Board.Shape)getObjectValue(R.string.game_shape_file_key, Board.Shape.class);
         OpenGLSurfaceViewHelper.DRAG_ENABLED = getBooleanValue(R.string.open_gl_zoom_file_key);

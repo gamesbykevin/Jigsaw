@@ -135,8 +135,20 @@ public class Game implements IGame {
                     getBoard().update();
 
                     //if we already rendered the board once, lets display it
-                    if (INITIAL_RENDER && activity.getScreen() == Screen.Loading)
-                        activity.setScreen(Screen.Ready);
+                    if (INITIAL_RENDER) {
+
+                        if (getActivity().getScreen() == Screen.Loading) {
+
+                            //if still loading switch to ready
+                            getActivity().setScreen(Screen.Ready);
+
+                        } else {
+
+                            //if we are playing the game, update the timer
+                            if (getActivity().getScreen() == Screen.Ready)
+                                getActivity().getTimer().update(getActivity());
+                        }
+                    }
                 }
                 break;
 
@@ -144,9 +156,9 @@ public class Game implements IGame {
             case GameOver:
 
                 //switch to game over screen if enough time passed and we haven't set yet
-                if (FRAMES >= GAME_OVER_DELAY_FRAMES && activity.getScreen() != Screen.GameOver) {
+                if (FRAMES >= GAME_OVER_DELAY_FRAMES && getActivity().getScreen() != Screen.GameOver) {
                     //if enough time passed go to game over screen
-                    activity.setScreen(Screen.GameOver);
+                    getActivity().setScreen(Screen.GameOver);
                 } else if (FRAMES <= GAME_OVER_DELAY_FRAMES) {
                     //keep track of time
                     FRAMES++;
@@ -164,17 +176,17 @@ public class Game implements IGame {
     }
 
     public void setSelected(final float x, final float y) {
-        if (activity.getScreen() == Screen.Ready)
+        if (getActivity().getScreen() == Screen.Ready)
             getBoard().setSelected(x, y);
     }
 
     public void removeSelected() {
-        if (activity.getScreen() == Screen.Ready)
+        if (getActivity().getScreen() == Screen.Ready)
             getBoard().removeSelected();
     }
 
     public boolean hasSelection() {
-        if (activity.getScreen() == Screen.Ready) {
+        if (getActivity().getScreen() == Screen.Ready) {
             return getBoard().hasSelection();
         } else {
             return false;
@@ -182,12 +194,12 @@ public class Game implements IGame {
     }
 
     public void setComplete(final boolean complete) {
-        if (activity.getScreen() == Screen.Ready)
+        if (getActivity().getScreen() == Screen.Ready)
             getBoard().setComplete(complete);
     }
 
     public void updatePlace(final float x, final float y) {
-        if (activity.getScreen() == Screen.Ready)
+        if (getActivity().getScreen() == Screen.Ready)
             getBoard().updatePlace(x, y);
     }
 

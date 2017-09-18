@@ -12,6 +12,8 @@ import com.gamesbykevin.jigsaw.R;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static com.gamesbykevin.jigsaw.util.UtilityHelper.AMAZON;
+import static com.gamesbykevin.jigsaw.util.UtilityHelper.displayDensity;
 
 /**
  * Created by Kevin on 5/22/2017.
@@ -29,14 +31,13 @@ public abstract class BaseActivity extends com.gamesbykevin.androidframeworkv2.a
     //collection of music
     private static SparseArray<MediaPlayer> SOUND;
 
+    /**
+     * Is sound enabled in the game?
+     */
+    public static boolean SOUND_ENABLED = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        //flag debug true
-        UtilityHelper.DEBUG = true;
-
-        //this is not an amazon app
-        UtilityHelper.AMAZON = false;
 
         //call parent
         super.onCreate(savedInstanceState);
@@ -58,6 +59,9 @@ public abstract class BaseActivity extends com.gamesbykevin.androidframeworkv2.a
 
         //make sure all options are entered
         setupDefaultOptions();
+
+        //display the screen density of the phone
+        displayDensity(this);
     }
 
     /**
@@ -79,6 +83,10 @@ public abstract class BaseActivity extends com.gamesbykevin.androidframeworkv2.a
 
                 //default to true
                 editor.putBoolean(getString(button.settingId), true);
+
+                //if this is an amazon app we can't perform google play login
+                if (AMAZON && button.buttonId == R.id.toggleButtonGoogleLogin)
+                    editor.putBoolean(getString(button.settingId), false);
 
                 //flag dirty since change was made
                 dirty = true;
@@ -138,12 +146,13 @@ public abstract class BaseActivity extends com.gamesbykevin.androidframeworkv2.a
     private void playSound(final int resId, boolean restart, boolean loop) {
 
         try {
-            //if there is no sound, we can't play it
-            if (SOUND == null || SOUND.size() < 1)
+
+            //we can't play if the sound isn't enabled
+            if (!SOUND_ENABLED)
                 return;
 
-            //we can't play if the sound is not enabled
-            if (!getBooleanValue(R.string.sound_file_key))
+            //if there is no sound, we can't play it
+            if (SOUND == null || SOUND.size() < 1)
                 return;
 
             //if restarting go to beginning of sound

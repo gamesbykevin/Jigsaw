@@ -5,11 +5,15 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
 
 import com.gamesbykevin.androidframeworkv2.base.Disposable;
+import com.gamesbykevin.jigsaw.game.GameHelper;
 import com.gamesbykevin.jigsaw.opengl.OpenGLRenderer;
 import com.gamesbykevin.jigsaw.opengl.Textures;
+import com.gamesbykevin.jigsaw.util.GameTimer;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 import com.gamesbykevin.jigsaw.R;
 import com.gamesbykevin.jigsaw.game.Game;
@@ -19,7 +23,10 @@ import com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.gamesbykevin.jigsaw.game.Game.STEP;
 import static com.gamesbykevin.jigsaw.util.UtilityHelper.DEBUG;
 
@@ -58,6 +65,9 @@ public class GameActivity extends BaseActivity implements Disposable {
     //current screen we are on
     private Screen screen = Screen.Loading;
 
+    //keep track of game time
+    private GameTimer timer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -79,10 +89,26 @@ public class GameActivity extends BaseActivity implements Disposable {
         this.layouts.add((ViewGroup)findViewById(R.id.layoutLoadingScreen));
         this.layouts.add((ViewGroup)findViewById(R.id.layoutGameControls));
         this.layouts.add((ViewGroup)findViewById(R.id.layoutGameSettings));
+
+        //update the timer appropriately
+        updateTimerUI(getBooleanValue(R.string.timer_file_key) ? VISIBLE : GONE);
+
+        //update the ui for the sound setting
+        updateSoundUI();
     }
 
     public static Game getGame() {
         return GAME;
+    }
+
+    public GameTimer getTimer() {
+
+        //create timer if null
+        if (this.timer == null)
+            this.timer = new GameTimer(this);
+
+        //return our timer object
+        return this.timer;
     }
 
     /**
@@ -145,6 +171,11 @@ public class GameActivity extends BaseActivity implements Disposable {
 
             layouts.clear();
             layouts = null;
+        }
+
+        if (timer != null) {
+            timer.dispose();
+            timer = null;
         }
 
         glSurfaceView = null;
@@ -226,6 +257,9 @@ public class GameActivity extends BaseActivity implements Disposable {
 
     public void setScreen(final Screen screen) {
 
+        //flag the screen frozen
+        GameHelper.SCREEN_FROZEN = true;
+
         //default all layouts to hidden
         for (int i = 0; i < layouts.size(); i++) {
             setLayoutVisibility(layouts.get(i), false);
@@ -251,6 +285,10 @@ public class GameActivity extends BaseActivity implements Disposable {
 
             //don't re-enable anything
             case Ready:
+
+                //allow screen interaction
+                GameHelper.SCREEN_FROZEN = false;
+
                 setLayoutVisibility((ViewGroup)findViewById(R.id.layoutGameControls), true);
                 break;
         }
@@ -270,14 +308,27 @@ public class GameActivity extends BaseActivity implements Disposable {
     @Override
     public void onBackPressed() {
 
-        //show loading screen while we reset
-        setScreen(Screen.Loading);
+        //we will do different things depening which screen we are on
+        switch (getScreen()) {
 
-        //move step to do nothing
-        STEP = Step.Start;
+            case Settings:
+                setScreen(Screen.Ready);
+                break;
 
-        //call parent
-        super.onBackPressed();
+            default:
+
+                //show loading screen while we reset
+                setScreen(Screen.Loading);
+
+                //move step to do nothing
+                STEP = Step.Start;
+
+                //call parent
+                super.onBackPressed();
+
+                //done with statement
+                break;
+        }
     }
 
     public void onClickMenu(View view) {
@@ -288,55 +339,94 @@ public class GameActivity extends BaseActivity implements Disposable {
 
     public void onClickBackgroundWhite(View view) {
         OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_WHITE;
+        resetBackgroundSelector();
+        ((ImageView)findViewById(R.id.backgroundWhite)).setImageResource(R.drawable.background_selector_white_selected);
     }
 
     public void onClickBackgroundBlack(View view) {
         OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_BLACK;
+        resetBackgroundSelector();
+        ((ImageView)findViewById(R.id.backgroundBlack)).setImageResource(R.drawable.background_selector_black_selected);
     }
 
     public void onClickBackgroundGray(View view) {
         OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_GRAY;
+        resetBackgroundSelector();
+        ((ImageView)findViewById(R.id.backgroundGray)).setImageResource(R.drawable.background_selector_gray_selected);
     }
 
     public void onClickBackgroundYellow(View view) {
         OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_YELLOW;
+        resetBackgroundSelector();
+        ((ImageView)findViewById(R.id.backgroundYellow)).setImageResource(R.drawable.background_selector_yellow_selected);
     }
 
     public void onClickBackgroundRed(View view) {
         OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_RED;
+        resetBackgroundSelector();
+        ((ImageView)findViewById(R.id.backgroundRed)).setImageResource(R.drawable.background_selector_red_selected);
     }
 
     public void onClickBackgroundBlue(View view) {
         OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_BLUE;
+        resetBackgroundSelector();
+        ((ImageView)findViewById(R.id.backgroundBlue)).setImageResource(R.drawable.background_selector_blue_selected);
     }
 
     public void onClickBackgroundBrown(View view) {
         OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_BROWN;
+        resetBackgroundSelector();
+        ((ImageView)findViewById(R.id.backgroundBrown)).setImageResource(R.drawable.background_selector_brown_selected);
     }
 
     public void onClickBackgroundPink(View view) {
         OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_PINK;
+        resetBackgroundSelector();
+        ((ImageView)findViewById(R.id.backgroundPink)).setImageResource(R.drawable.background_selector_pink_selected);
     }
 
     public void onClickBackgroundPurple(View view) {
         OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_PURPLE;
+        resetBackgroundSelector();
+        ((ImageView)findViewById(R.id.backgroundPurple)).setImageResource(R.drawable.background_selector_purple_selected);
     }
 
     public void onClickBackgroundOrange(View view) {
         OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_ORANGE;
+        resetBackgroundSelector();
+        ((ImageView)findViewById(R.id.backgroundOrange)).setImageResource(R.drawable.background_selector_orange_selected);
     }
 
     public void onClickBackgroundGreen(View view) {
         OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_GREEN;
+        resetBackgroundSelector();
+        ((ImageView)findViewById(R.id.backgroundGreen)).setImageResource(R.drawable.background_selector_green_selected);
     }
 
     public void onClickBackgroundTurquoise(View view) {
         OpenGLRenderer.BACKGROUND_TEXTURE_ID_CURRENT = Textures.TEXTURE_ID_BACKGROUND_TURQUOISE;
+        resetBackgroundSelector();
+        ((ImageView)findViewById(R.id.backgroundTurquoise)).setImageResource(R.drawable.background_selector_turquoise_selected);
+    }
+
+    private void resetBackgroundSelector() {
+        ((ImageView)findViewById(R.id.backgroundWhite)).setImageResource(R.drawable.background_selector_white);
+        ((ImageView)findViewById(R.id.backgroundBlack)).setImageResource(R.drawable.background_selector_black);
+        ((ImageView)findViewById(R.id.backgroundGray)).setImageResource(R.drawable.background_selector_gray);
+        ((ImageView)findViewById(R.id.backgroundRed)).setImageResource(R.drawable.background_selector_red);
+        ((ImageView)findViewById(R.id.backgroundBrown)).setImageResource(R.drawable.background_selector_brown);
+        ((ImageView)findViewById(R.id.backgroundBlue)).setImageResource(R.drawable.background_selector_blue);
+        ((ImageView)findViewById(R.id.backgroundYellow)).setImageResource(R.drawable.background_selector_yellow);
+        ((ImageView)findViewById(R.id.backgroundOrange)).setImageResource(R.drawable.background_selector_orange);
+        ((ImageView)findViewById(R.id.backgroundPurple)).setImageResource(R.drawable.background_selector_purple);
+        ((ImageView)findViewById(R.id.backgroundGreen)).setImageResource(R.drawable.background_selector_green);
+        ((ImageView)findViewById(R.id.backgroundPink)).setImageResource(R.drawable.background_selector_pink);
+        ((ImageView)findViewById(R.id.backgroundTurquoise)).setImageResource(R.drawable.background_selector_turquoise);
     }
 
     public void onClickSettings(View view) {
 
-        if (findViewById(R.id.layoutGameSettings).getVisibility() != View.VISIBLE) {
+        if (findViewById(R.id.layoutGameSettings).getVisibility() != VISIBLE) {
 
             //if the settings are not showing, display it
             setScreen(Screen.Settings);
@@ -344,6 +434,53 @@ public class GameActivity extends BaseActivity implements Disposable {
 
             //if the settings are showing, go back to ready
             setScreen(Screen.Ready);
+        }
+    }
+
+    public void onClickChangeSound(View view) {
+
+        //flip the sound setting
+        SOUND_ENABLED = !SOUND_ENABLED;
+
+        //either stop the sound, or play the theme
+        if (SOUND_ENABLED) {
+            playTheme();
+        } else {
+            stopSound();
+        }
+
+        //update the ui
+        updateSoundUI();
+    }
+
+    public void onClickShowTimer(View view) {
+
+        //update the timer ui
+        updateTimerUI(findViewById(R.id.tableGameTimer).getVisibility() != VISIBLE ? VISIBLE : View.GONE);
+    }
+
+    private void updateSoundUI() {
+
+        //show sound enabled / disabled based on our global sound flag
+        ((ImageView)findViewById(R.id.buttonSound)).setImageResource(SOUND_ENABLED ? R.drawable.sound_on : R.drawable.sound_off);
+    }
+
+    private void updateTimerUI(final int visibility) {
+
+        //obtain our ui objects
+        TableLayout tmp = findViewById(R.id.tableGameTimer);
+        ImageView buttonTimer = findViewById(R.id.buttonTimer);
+
+        if (visibility == VISIBLE) {
+
+            //if showing, display it
+            tmp.setVisibility(VISIBLE);
+            buttonTimer.setImageResource(R.drawable.timer_on);
+        } else {
+
+            //if not showing, hide it
+            tmp.setVisibility(View.GONE);
+            buttonTimer.setImageResource(R.drawable.timer_off);
         }
     }
 }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,9 +45,6 @@ public class TutorialActivity extends BaseActivity {
     //temp value to check if we tried to scroll out of bounds
     private static int TMP_CURRENT_PAGE = 0;
 
-    //our list of pages for the pager
-    private List<TutorialPageFragment> fragments;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -61,9 +59,6 @@ public class TutorialActivity extends BaseActivity {
 
         //get our view pager
         customPager = findViewById(R.id.customPager);
-
-        //create new array list
-        fragments = new ArrayList<>();
 
         //create and assign our adapter
         getCustomPager().setAdapter(new TutorialPagerAdapter(getFragmentManager()));
@@ -114,31 +109,16 @@ public class TutorialActivity extends BaseActivity {
         //call parent
         super.onDestroy();
 
-        if (fragments != null) {
-
-            //make sure every fragment is removed
-            for (int i = 0; i < fragments.size(); i++) {
-
-                //remove any existing fragment from our fragment manager
-                if (fragments.get(i) != null)
-                    fragments.set(i, null);
-            }
-
-            fragments.clear();
-        }
+        if (customPager != null)
+            customPager.getAdapter().notifyDataSetChanged();
 
         customPager = null;
-        fragments = null;
         listPageContainer = null;
         listPageImages = null;
     }
 
     private ViewPager getCustomPager() {
         return this.customPager;
-    }
-
-    private List<TutorialPageFragment> getFragments() {
-        return this.fragments;
     }
 
     private void addPagerListener() {
@@ -254,31 +234,39 @@ public class TutorialActivity extends BaseActivity {
      */
     private class TutorialPagerAdapter extends FragmentStatePagerAdapter {
 
+        //our list of pages for the pager
+        private List<TutorialPageFragment> fragments;
+
         public TutorialPagerAdapter(FragmentManager fragmentManager) {
+
             super(fragmentManager);
 
-            //clear list if elements exist
-            if (!getFragments().isEmpty())
-                getFragments().clear();
+            this.fragments = new ArrayList<>();
         }
 
         @Override
         public Fragment getItem(int position) {
 
             //check to see if we already have the fragment
-            for (int i = 0; i < getFragments().size(); i++) {
-                if (getFragments().get(i).getPageNumber() == position)
-                    return getFragments().get(position);
+            for (int i = 0; i < fragments.size(); i++) {
+                if (fragments.get(i).getPageNumber() == position)
+                    return fragments.get(position);
             }
 
             //create it since the fragment does not exist
             TutorialPageFragment fragment = TutorialPageFragment.create(position);
 
             //add to array list
-            getFragments().add(fragment);
+            fragments.add(fragment);
 
             //return result
             return fragment;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            fragments.remove(position);
+            super.destroyItem(container, position, object);
         }
 
         @Override

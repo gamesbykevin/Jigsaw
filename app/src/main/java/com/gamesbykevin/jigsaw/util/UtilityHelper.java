@@ -1,6 +1,8 @@
 package com.gamesbykevin.jigsaw.util;
 
+import android.app.Activity;
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -14,7 +16,7 @@ public class UtilityHelper {
     /**
      * Are we debugging the application
      */
-    public static boolean DEBUG = false;
+    public static final boolean DEBUG = true;
 
     /**
      * Are we running unit tests
@@ -24,7 +26,7 @@ public class UtilityHelper {
     /**
      * Is this an amazon app?
      */
-    public static boolean AMAZON = false;
+    public static final boolean AMAZON = false;
 
     /**
      * App name for our framework
@@ -114,5 +116,55 @@ public class UtilityHelper {
 
         //show text
         Toast.makeText(context, message , Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Display the density of the phone
+     * @param activity Activity where we can get the display metrics
+     */
+    public static void displayDensity(final Activity activity) {
+
+        //if not debugging, don't continue
+        if (!DEBUG)
+            return;
+
+        //the description of our screen density
+        String desc = "Unknown";
+
+        //determine which density the phone has
+        switch (activity.getResources().getDisplayMetrics().densityDpi) {
+
+            case DisplayMetrics.DENSITY_LOW:
+                desc = "LDPI";
+                break;
+
+            case DisplayMetrics.DENSITY_MEDIUM:
+                desc = "MDPI";
+                break;
+
+            case DisplayMetrics.DENSITY_HIGH:
+                desc = "HDPI";
+                break;
+
+            case DisplayMetrics.DENSITY_XHIGH:
+                desc = "XHDPI";
+                break;
+
+            case DisplayMetrics.DENSITY_XXHIGH:
+                desc = "XXHDPI";
+                break;
+
+            case DisplayMetrics.DENSITY_XXXHIGH:
+                desc = "XXXHDPI";
+                break;
+
+            default:
+                desc = "Unknown";
+                break;
+                //throw new RuntimeException("Density not detected: " + activity.getResources().getDisplayMetrics().densityDpi);
+        }
+
+        //display the screen density
+        logEvent("Screen density: " + desc);
     }
 }

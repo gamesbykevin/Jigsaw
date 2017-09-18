@@ -4,6 +4,7 @@ import android.view.MotionEvent;
 
 import com.gamesbykevin.jigsaw.activity.GameActivity;
 import com.gamesbykevin.jigsaw.base.Entity;
+import com.gamesbykevin.jigsaw.game.GameHelper;
 
 import static com.gamesbykevin.jigsaw.activity.GameActivity.getGame;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLRenderer.ZOOM_RATIO_ADJUST;
@@ -86,6 +87,10 @@ public class OpenGLSurfaceViewHelper {
 
     protected static void onTouchEvent(OpenGLSurfaceView view, MotionEvent event) {
 
+        //don't continue if the screen is frozen
+        if (GameHelper.SCREEN_FROZEN)
+            return;
+
         final float x = event.getX();
         final float y = event.getY();
 
@@ -159,6 +164,10 @@ public class OpenGLSurfaceViewHelper {
                 //if there are 2 coordinates and we recorded 2 fingers
                 if (FINGERS == 2 && event.getPointerCount() == 2) {
 
+                    //don't continue if zoom is not enabled
+                    if (!ZOOM_ENABLED)
+                        return;
+
                     //flag that we are zooming
                     ZOOMING = true;
 
@@ -167,10 +176,6 @@ public class OpenGLSurfaceViewHelper {
 
                     //get the distance between the two points
                     double distance = Entity.getDistance(event.getX(0), event.getY(0), event.getX(1), event.getY(1));
-
-                    //don't continue if zoom is not enabled
-                    if (!ZOOM_ENABLED)
-                        return;
 
                     if (PINCH_DISTANCE == 0) {
 
