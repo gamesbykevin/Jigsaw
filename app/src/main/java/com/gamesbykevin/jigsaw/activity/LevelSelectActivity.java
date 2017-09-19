@@ -29,6 +29,11 @@ public class LevelSelectActivity extends BaseActivity {
         R.drawable.picture9, R.drawable.picture10,
     };
 
+    /**
+     * What position is the seek bar at?
+     */
+    protected static int SEEK_BAR_PROGRESS = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -42,7 +47,7 @@ public class LevelSelectActivity extends BaseActivity {
         final ListView listView = findViewById(R.id.myListView);
 
         //obtain the text view
-        final TextView myTextView = findViewById(R.id.myTextView);
+        final TextView textViewPieceCountDesc = findViewById(R.id.textViewPieceCountDesc);
 
         //obtain our seek bar
         final SeekBar seekBar = findViewById(R.id.mySeekBar);
@@ -56,12 +61,8 @@ public class LevelSelectActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                //the position will determine the size of the puzzle board
-                final int size = seekBar.getProgress() + 3;
-
-                //assign the size of our board
-                Board.BOARD_COLS = size;
-                Board.BOARD_ROWS = size;
+                //store the progress
+                SEEK_BAR_PROGRESS = seekBar.getProgress();
 
                 //if the user wants to use a custom image
                 if (position == 0) {
@@ -74,8 +75,8 @@ public class LevelSelectActivity extends BaseActivity {
                     //assign our image source
                     Board.IMAGE_SOURCE = BitmapFactory.decodeResource(getResources(), RES_IDS[position]);
 
-                    //start the game activity
-                    startActivity(new Intent(LevelSelectActivity.this, GameActivity.class));
+                    //start the activity
+                    startActivity(new Intent(LevelSelectActivity.this, ConfirmActivity.class));
                 }
             }
         });
@@ -89,7 +90,7 @@ public class LevelSelectActivity extends BaseActivity {
                 int count = (progress + 3) * (progress + 3);
 
                 //update the display text
-                myTextView.setText(count + " " + getString(R.string.count_description));
+                textViewPieceCountDesc.setText(count + " " + getString(R.string.count_description));
             }
 
             @Override
@@ -102,12 +103,6 @@ public class LevelSelectActivity extends BaseActivity {
                 //do we need to do anything here?
             }
         });
-
-        //reset progress to 0
-        seekBar.setProgress(0);
-
-        //default text for the puzzle cut
-        myTextView.setText("9 " + getString(R.string.count_description));
     }
 
     @Override
@@ -115,6 +110,12 @@ public class LevelSelectActivity extends BaseActivity {
 
         //call parent
         super.onResume();
+
+        //change value so onProgress changed actually fires
+        ((SeekBar)findViewById(R.id.mySeekBar)).setProgress((SEEK_BAR_PROGRESS == 0) ? 1 : 0);
+
+        //set progress to user selection
+        ((SeekBar)findViewById(R.id.mySeekBar)).setProgress(SEEK_BAR_PROGRESS);
     }
 
     @Override
@@ -122,6 +123,16 @@ public class LevelSelectActivity extends BaseActivity {
 
         //call parent
         super.onPause();
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        //if back pressed go to main activity
+        startActivity(new Intent(this, MainActivity.class));
+
+        //finish this activity
+        finish();
     }
 
     private class MyArrayAdapter extends ArrayAdapter<Integer> {

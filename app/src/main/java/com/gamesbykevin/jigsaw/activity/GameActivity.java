@@ -323,8 +323,11 @@ public class GameActivity extends BaseActivity implements Disposable {
                 //move step to do nothing
                 STEP = Step.Start;
 
-                //call parent
-                super.onBackPressed();
+                //go back to level select activity
+                startActivity(new Intent(this, LevelSelectActivity.class));
+
+                //finish the activity
+                finish();
 
                 //done with statement
                 break;

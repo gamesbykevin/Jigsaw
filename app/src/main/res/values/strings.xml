@@ -38,9 +38,11 @@
     <string name="google_play_auto_enabled">Google Play: On</string>
     <string name="google_play_auto_disabled">Google Play: Off</string>
 
-    <!-- text displayed on the picture select screen -->
+    <!-- text displayed -->
     <string name="level_select_text">Select Picture</string>
     <string name="count_description">Pieces</string>
+    <string name="confirm_text">Confirm</string>
+    <string name="continue_text">Continue</string>
 
     <string name="settings_background_text">Background Color</string>
 

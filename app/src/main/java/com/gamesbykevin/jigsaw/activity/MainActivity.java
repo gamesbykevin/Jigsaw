@@ -13,6 +13,8 @@ import com.gamesbykevin.jigsaw.R;
 import com.gamesbykevin.jigsaw.game.Game;
 import com.gamesbykevin.jigsaw.services.BaseGameActivity;
 
+import static com.gamesbykevin.jigsaw.board.BoardHelper.PUZZLE_TEXTURE;
+
 public class MainActivity extends BaseActivity {
 
     //did we prompt the user before exiting the app

@@ -4,6 +4,7 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.os.Parcelable;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -74,6 +75,9 @@ public class TutorialActivity extends BaseActivity {
 
         //default the first page as selected
         listPageImages[0].setImageResource(R.drawable.tab_indicator_selected);
+
+        //set the current page at the beginning
+        CURRENT_PAGE = 0;
     }
 
     @Override
@@ -109,9 +113,7 @@ public class TutorialActivity extends BaseActivity {
         //call parent
         super.onDestroy();
 
-        if (customPager != null)
-            customPager.getAdapter().notifyDataSetChanged();
-
+        //set null
         customPager = null;
         listPageContainer = null;
         listPageImages = null;
@@ -187,17 +189,17 @@ public class TutorialActivity extends BaseActivity {
         //the array size will match the number of pages we have
         listPageImages = new ImageView[PAGES];
 
+        //create our layout parameters
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        //provide space between each page icon
+        params.setMargins(PAGE_DOT_PADDING, 0, PAGE_DOT_PADDING, 0);
+
         //create our page dots
         for (int i = 0; i < listPageImages.length; i++) {
 
             //create new page dot image
             listPageImages[i] = new ImageView(this);
-
-            //create our layout parameters
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-            //provide space between each page icon
-            params.setMargins(PAGE_DOT_PADDING, 0, PAGE_DOT_PADDING, 0);
 
             //update with the specified layout
             listPageImages[i].setLayoutParams(params);
@@ -234,39 +236,15 @@ public class TutorialActivity extends BaseActivity {
      */
     private class TutorialPagerAdapter extends FragmentStatePagerAdapter {
 
-        //our list of pages for the pager
-        private List<TutorialPageFragment> fragments;
-
         public TutorialPagerAdapter(FragmentManager fragmentManager) {
 
+            //call parent
             super(fragmentManager);
-
-            this.fragments = new ArrayList<>();
         }
 
         @Override
         public Fragment getItem(int position) {
-
-            //check to see if we already have the fragment
-            for (int i = 0; i < fragments.size(); i++) {
-                if (fragments.get(i).getPageNumber() == position)
-                    return fragments.get(position);
-            }
-
-            //create it since the fragment does not exist
-            TutorialPageFragment fragment = TutorialPageFragment.create(position);
-
-            //add to array list
-            fragments.add(fragment);
-
-            //return result
-            return fragment;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            fragments.remove(position);
-            super.destroyItem(container, position, object);
+            return TutorialPageFragment.create(position);
         }
 
         @Override

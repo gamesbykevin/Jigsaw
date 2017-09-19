@@ -93,4 +93,9 @@ public class TutorialPageFragment extends Fragment {
     public int getPageNumber() {
         return pageNumber;
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
 }

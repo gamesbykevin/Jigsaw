@@ -74,7 +74,7 @@ public class OtherActivity extends BaseActivity {
                 Board.IMAGE_SOURCE = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
 
                 //start the new activity
-                startActivity(new Intent(OtherActivity.this, GameActivity.class));
+                startActivity(new Intent(OtherActivity.this, ConfirmActivity.class));
 
             } catch (Exception e) {
 

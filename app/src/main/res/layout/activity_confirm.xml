@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+android:gravity="center"
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context="com.gamesbykevin.jigsaw.activity.ConfirmActivity"
+style="@style/ActivityPage">
+
+    <!-- container for the menu background image -->
+    <LinearLayout style="@style/linearLayoutLevelSelectBackground">
+
+        <!-- add margins so everything appears within the menu background image-->
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            style="@style/linearLayoutLevelSelectContainer">
+
+            <!-- Title here-->
+            <TextView
+                android:id="@+id/titleText"
+                android:text="@string/confirm_text"
+                style="@style/textViewLevelSelectTitle" />
+
+            <!-- display our chosen image -->
+            <ImageView
+                android:id="@+id/previewImageView"
+                android:padding="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="200dp"
+                android:layout_height="200dp" />
+
+            <TextView android:id="@+id/textViewPieceCountDesc" style="@style/text_view_puzzle_piece_count_desc" />
+
+            <SeekBar android:id="@+id/mySeekBar" style="@style/seek_bar_puzzle_piece" />
+
+            <Button
+                style="@style/buttonMenu"
+                android:layout_margin="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/continue_text"
+                android:onClick="onClickConfirmPuzzle" />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

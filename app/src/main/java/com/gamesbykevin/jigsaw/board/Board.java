@@ -20,9 +20,13 @@ import static com.gamesbykevin.jigsaw.board.BoardHelper.orderGroup;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.orderPlaced;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.updateCoordinates;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.updateGroup;
+import static com.gamesbykevin.jigsaw.board.BoardHelper.updatePiece;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.updatePieces;
 import static com.gamesbykevin.jigsaw.board.Piece.CONNECTOR_RATIO;
+import static com.gamesbykevin.jigsaw.board.Piece.START_VELOCITY;
 import static com.gamesbykevin.jigsaw.game.Game.INITIAL_RENDER;
+import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.FPS;
+import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.FRAME_DURATION;
 
 /**
  * Created by Kevin on 9/4/2017.
@@ -68,6 +72,17 @@ public class Board implements ICommon {
     //are we done with our selection?
     private boolean complete = false;
 
+    //flag that we are starting the board
+    private boolean starting = true;
+
+    //how much time has lapsed
+    private long frames = 0;
+
+    /**
+     * How long can we view the puzzle before we start placing the pieces
+     */
+    private static final long VIEW_DELAY = (FPS * 1);
+
     /**
      * Default constructor
      */
@@ -82,6 +97,14 @@ public class Board implements ICommon {
         setCols(BOARD_COLS);
         setRows(BOARD_ROWS);
         reset();
+    }
+
+    public boolean isStarting() {
+        return this.starting;
+    }
+
+    public void setStarting(final boolean starting) {
+        this.starting = starting;
     }
 
     public boolean hasSelection() {
@@ -317,6 +340,84 @@ public class Board implements ICommon {
 
     @Override
     public void update() {
+
+        //if we are starting
+        if (isStarting()) {
+
+            //if we have not yet viewed the image long enough
+            if (frames < VIEW_DELAY) {
+
+                //keep track of time lapsed
+                frames++;
+
+                //don't continue until enough time has passed
+                return;
+            }
+
+            //how many pieces have we moved
+            int count = 0;
+
+            //how many pieces can we move at once
+            int max = 4;
+
+            for (int row = 0; row < getRows(); row++) {
+                for (int col = 0; col < getCols(); col++) {
+
+                    //don't continue
+                    if (count >= max)
+                        return;
+
+                    Piece piece = getPieces()[row][col];
+
+                    //if this piece is not at the start, move it
+                    if (!piece.hasStart()) {
+
+                        if (piece.getX() < piece.getStartX()) {
+                            piece.setX(piece.getX() + START_VELOCITY);
+
+                            if (piece.getX() >= piece.getStartX())
+                                piece.setX(piece.getStartX());
+                        } else if (piece.getX() > piece.getStartX()) {
+                            piece.setX(piece.getX() - START_VELOCITY);
+
+                            if (piece.getX() <= piece.getStartX())
+                                piece.setX(piece.getStartX());
+                        }
+
+                        if (piece.getY() < piece.getStartY()) {
+                            piece.setY(piece.getY() + START_VELOCITY);
+
+                            if (piece.getY() >= piece.getStartY())
+                                piece.setY(piece.getStartY());
+                        } else if (piece.getY() > piece.getStartY()) {
+                            piece.setY(piece.getY() - START_VELOCITY);
+
+                            if (piece.getY() <= piece.getStartY())
+                                piece.setY(piece.getStartY());
+                        }
+
+                        //update render coordinates
+                        updatePiece(this, piece);
+
+                        //keep track of how many pieces we moved
+                        count++;
+                    }
+                }
+            }
+
+            //if we moved a piece, don't continue yet
+            if (count != 0)
+                return;
+
+            //set the timer back to 0 since we are done
+            frames = 0;
+
+            //all pieces are at the beginning, we are done starting
+            setStarting(false);
+
+            //don't continue yet
+            return;
+        }
 
         //move the piece and others in the group
         if (hasUpdate() && getSelected() != null) {

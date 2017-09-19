@@ -144,8 +144,8 @@ public class Game implements IGame {
 
                         } else {
 
-                            //if we are playing the game, update the timer
-                            if (getActivity().getScreen() == Screen.Ready)
+                            //if we are playing the game and the pieces have been placed, update the timer
+                            if (getActivity().getScreen() == Screen.Ready && !getBoard().isStarting())
                                 getActivity().getTimer().update(getActivity());
                         }
                     }
@@ -176,17 +176,17 @@ public class Game implements IGame {
     }
 
     public void setSelected(final float x, final float y) {
-        if (getActivity().getScreen() == Screen.Ready)
+        if (getActivity().getScreen() == Screen.Ready && !getBoard().isStarting())
             getBoard().setSelected(x, y);
     }
 
     public void removeSelected() {
-        if (getActivity().getScreen() == Screen.Ready)
+        if (getActivity().getScreen() == Screen.Ready && !getBoard().isStarting())
             getBoard().removeSelected();
     }
 
     public boolean hasSelection() {
-        if (getActivity().getScreen() == Screen.Ready) {
+        if (getActivity().getScreen() == Screen.Ready && !getBoard().isStarting()) {
             return getBoard().hasSelection();
         } else {
             return false;
@@ -194,12 +194,12 @@ public class Game implements IGame {
     }
 
     public void setComplete(final boolean complete) {
-        if (getActivity().getScreen() == Screen.Ready)
+        if (getActivity().getScreen() == Screen.Ready && !getBoard().isStarting())
             getBoard().setComplete(complete);
     }
 
     public void updatePlace(final float x, final float y) {
-        if (getActivity().getScreen() == Screen.Ready)
+        if (getActivity().getScreen() == Screen.Ready && !getBoard().isStarting())
             getBoard().updatePlace(x, y);
     }
 

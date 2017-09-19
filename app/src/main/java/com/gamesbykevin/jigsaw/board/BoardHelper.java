@@ -231,8 +231,11 @@ public class BoardHelper {
                 final int index = getRandomObject().nextInt(coordinates.size());
 
                 //assign our new location
-                piece.setX(coordinates.get(index).x);
-                piece.setY(coordinates.get(index).y);
+                //piece.setX(coordinates.get(index).x);
+                //piece.setY(coordinates.get(index).y);
+                //set where the pieces will start
+                piece.setStartX((int)coordinates.get(index).x);
+                piece.setStartY((int)coordinates.get(index).y);
 
                 //remove location so we don't pick it again, as long as there are more options
                 if (coordinates.size() > 1)
@@ -486,7 +489,7 @@ public class BoardHelper {
      * @param board The board containing the render coordinates
      * @param piece Current desired puzzle piece we want to update
      */
-    private static void updatePiece(Board board, Piece piece) {
+    protected static void updatePiece(Board board, Piece piece) {
 
         updatePieceVertices(board, piece);
         updatePieceUvs(board, piece);
@@ -567,6 +570,7 @@ public class BoardHelper {
         //reset our flags
         board.setComplete(false);
         board.setSelection(false);
+        board.setStarting(true);
 
         //create new array if the size does not match
         if (board.getPieces().length != board.getRows() || board.getPieces()[0].length != board.getCols())
@@ -650,7 +654,7 @@ public class BoardHelper {
         }
 
         //cut the pieces
-        BoardHelper.cut(board);
+        cut(board);
 
         //update open gl coordinates
         updateCoordinates(board);

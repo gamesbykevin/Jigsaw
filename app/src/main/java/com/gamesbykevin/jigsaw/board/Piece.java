@@ -11,6 +11,9 @@ import android.graphics.Rect;
 
 import com.gamesbykevin.jigsaw.base.Entity;
 
+import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.HEIGHT;
+import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.WIDTH;
+
 /**
  * Created by Kevin on 9/4/2017.
  */
@@ -46,8 +49,16 @@ public class Piece extends Entity {
     //where do we place this piece to solve the board
     private int destinationX, destinationY;
 
+    //where does the piece start
+    private int startX, startY;
+
     //has this piece been placed
     private boolean placed = false;
+
+    /**
+     * How many pixels can we move until we get this piece to the start (x, y)
+     */
+    public static final int START_VELOCITY = (WIDTH > HEIGHT) ? (int)(WIDTH * .25f) : (int)(HEIGHT * .25f);
 
     public Piece(int col, int row) {
 
@@ -56,12 +67,32 @@ public class Piece extends Entity {
         super.setRow(row);
     }
 
+    public boolean hasStart() {
+        return ((int)getX() == getStartX() && (int)getY() == getStartY());
+    }
+
     public void setPlaced(final boolean placed) {
         this.placed = placed;
     }
 
     public boolean isPlaced() {
         return this.placed;
+    }
+
+    public void setStartX(final int startX) {
+        this.startX = startX;
+    }
+
+    public void setStartY(final int startY) {
+        this.startY = startY;
+    }
+
+    public int getStartX() {
+        return this.startX;
+    }
+
+    public int getStartY() {
+        return this.startY;
     }
 
     public void setDestinationX(final int destinationX) {

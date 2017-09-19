@@ -3,7 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
 
-        <!-- Customize your theme here. -->
+        <!-- Customize your theme here -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
@@ -110,5 +110,58 @@
         <item name="android:layout_alignParentBottom">true</item>
         <item name="android:layout_alignParentLeft">true</item>
     </style>
+
+    <style name="seek_bar_puzzle_piece">
+        <item name="android:max">13</item>
+        <item name="android:splitTrack">false</item>
+        <item name="android:progressDrawable">@drawable/custom_seekbar</item>
+        <item name="android:thumb">@drawable/custom_seekbar_thumb</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="text_view_puzzle_piece_count_desc">
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">3dp</item>
+        <item name="android:textColor">@color/colorBlack</item>
+    </style>
+
+    <style name="linearLayoutLevelSelectBackground">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/menu_vertical</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="linearLayoutLevelSelectContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_marginRight">65dp</item>
+        <item name="android:layout_marginLeft">65dp</item>
+    </style>
+
+    <style name="textViewLevelSelectTitle">
+        <item name="android:textSize">20sp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+
+
+
+    android:layout_margin="20dp"
+    android:text="@string/level_select_text"
+
+    android:text="@string/confirm_text"
+/>
+
 
 </resources>

@@ -36,7 +36,7 @@
             android:name=".activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".activity.OptionsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -51,7 +51,7 @@
             android:name=".activity.TutorialActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".activity.OtherActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -61,6 +61,12 @@
             android:name=".activity.LevelSelectActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".activity.ConfirmActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
     </application>
+
 </manifest>

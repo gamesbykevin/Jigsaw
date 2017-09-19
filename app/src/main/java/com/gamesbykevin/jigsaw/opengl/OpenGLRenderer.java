@@ -13,6 +13,7 @@ import org.w3c.dom.Text;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import static com.gamesbykevin.jigsaw.board.BoardHelper.PUZZLE_TEXTURE;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceViewHelper.OFFSET_ORIGINAL_X;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceViewHelper.OFFSET_ORIGINAL_Y;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceViewHelper.OFFSET_X;
@@ -120,6 +121,10 @@ public class OpenGLRenderer implements Renderer {
 
     public void onResume() {
         //re-load the textures if needed?
+
+        //if we already created our texture, flag generated true
+        if (PUZZLE_TEXTURE != null)
+            BoardHelper.PUZZLE_TEXTURE_GENERATED = true;
     }
 
     /**
@@ -275,7 +280,7 @@ public class OpenGLRenderer implements Renderer {
 
         //textures can only be loaded onDrawFrame and onSurfaceCreated
         if (Textures.TEXTURE_ID_IMAGE_SOURCE == 0 && BoardHelper.PUZZLE_TEXTURE_GENERATED)
-            Textures.TEXTURE_ID_IMAGE_SOURCE = Textures.loadTexture(BoardHelper.PUZZLE_TEXTURE, Textures.INDEX_TEXTURE_ID_IMAGE_SOURCE, false);
+            Textures.TEXTURE_ID_IMAGE_SOURCE = Textures.loadTexture(PUZZLE_TEXTURE, Textures.INDEX_TEXTURE_ID_IMAGE_SOURCE, false);
 
         //get the current time
         long time = System.currentTimeMillis();
