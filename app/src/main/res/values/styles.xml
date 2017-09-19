@@ -155,13 +155,4 @@
         <item name="android:gravity">center_horizontal</item>
     </style>
 
-
-
-    android:layout_margin="20dp"
-    android:text="@string/level_select_text"
-
-    android:text="@string/confirm_text"
-/>
-
-
 </resources>

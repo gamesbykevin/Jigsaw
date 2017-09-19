@@ -16,11 +16,11 @@
         android:layout_height="wrap_content">
 
         <TableRow>
-            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/clock1" android:src="@drawable/zero" />
-            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/clock2" android:src="@drawable/zero" />
-            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/colon" />
-            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/clock3" android:src="@drawable/zero" />
-            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/clock4" android:src="@drawable/zero" />
+            <ImageView android:id="@+id/clock1" android:src="@drawable/zero" />
+            <ImageView android:id="@+id/clock2" android:src="@drawable/zero" />
+            <ImageView android:src="@drawable/colon" />
+            <ImageView android:id="@+id/clock3" android:src="@drawable/zero" />
+            <ImageView android:id="@+id/clock4" android:src="@drawable/zero" />
         </TableRow>
 
     </TableLayout>
