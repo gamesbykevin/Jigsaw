@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.gamesbykevin.jigsaw.R;
@@ -39,6 +40,9 @@ public class ConfirmActivity extends Activity {
 
         //obtain the text view
         final TextView textViewPieceCountDesc = findViewById(R.id.textViewPieceCountDesc);
+
+        //the rotate setting description
+        final TextView textViewRotateDesc = findViewById(R.id.textViewRotateDesc);
 
         //obtain our seek bar
         final SeekBar seekBar = findViewById(R.id.mySeekBar);
@@ -79,15 +83,18 @@ public class ConfirmActivity extends Activity {
 
         //set progress to user selection
         ((SeekBar)findViewById(R.id.mySeekBar)).setProgress(SEEK_BAR_PROGRESS);
+
+        //restore switch setting
+        ((Switch)findViewById(R.id.switchRotate)).setChecked(Board.ROTATE);
     }
 
     public void onClickConfirmPuzzle(View view) {
 
-        //obtain the seek bar
-        SeekBar seekBar = findViewById(R.id.mySeekBar);
+        //update board rotate setting
+        Board.ROTATE = ((Switch)findViewById(R.id.switchRotate)).isChecked();
 
         //the position will determine the size of the puzzle board
-        final int size = seekBar.getProgress() + 3;
+        final int size = ((SeekBar)findViewById(R.id.mySeekBar)).getProgress() + 3;
 
         //assign the size of our board
         Board.BOARD_COLS = size;

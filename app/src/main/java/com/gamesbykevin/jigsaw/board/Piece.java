@@ -52,6 +52,9 @@ public class Piece extends Entity {
     //where does the piece start
     private int startX, startY;
 
+    //track the motion event coordinates
+    private float motionX, motionY;
+
     //has this piece been placed
     private boolean placed = false;
 
@@ -60,11 +63,55 @@ public class Piece extends Entity {
      */
     public static final int START_VELOCITY = (WIDTH > HEIGHT) ? (int)(WIDTH * .25f) : (int)(HEIGHT * .25f);
 
+    //maximum angle possible
+    private static final float ANGLE_MAX = 360f;
+
+    /**
+     * Length of a full rotation
+     */
+    public static final float ANGLE_INCREMENT = 90f;
+
+    /**
+     * The angle we can change per update
+     */
+    private static final float ANGLE_VELOCITY = (ANGLE_INCREMENT / 6);
+
+    //destination angle
+    private float destination = 0f;
+
     public Piece(int col, int row) {
 
         //set the location
         super.setCol(col);
         super.setRow(row);
+    }
+
+    public void setDestination(final float destination) {
+        this.destination = destination;
+
+        //if this isn't our current angle, we need to rotate
+        if (getAngle() != getDestination())
+            setRotate(true);
+    }
+
+    public float getDestination() {
+        return this.destination;
+    }
+
+    public void setMotionX(final float motionX) {
+        this.motionX = motionX;
+    }
+
+    public void setMotionY(final float motionY) {
+        this.motionY = motionY;
+    }
+
+    public float getMotionX() {
+        return this.motionX;
+    }
+
+    public float getMotionY() {
+        return this.motionY;
     }
 
     public boolean hasStart() {
@@ -125,6 +172,34 @@ public class Piece extends Entity {
 
     public int getIndex() {
         return this.index;
+    }
+
+    public void update() {
+
+        //if the current angle is not at the destination
+        if ((int)getAngle() != (int)getDestination()) {
+
+            //make sure we stay in bounds
+            if (getAngle() >= ANGLE_MAX)
+                setAngle(0);
+
+            //flag that we are rotating
+            setRotate(true);
+
+            //rotate to the next step
+            setAngle(getAngle() + ANGLE_VELOCITY);
+
+        } else {
+
+            //we are at the destination and am no longer rotating
+            setRotate(false);
+
+            //keep in range
+            if (getAngle() >= ANGLE_MAX) {
+                setAngle(0);
+                setDestination(0);
+            }
+        }
     }
 
     /**

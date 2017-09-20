@@ -176,7 +176,7 @@ public class Game implements IGame {
     }
 
     public void setSelected(final float x, final float y) {
-        if (getActivity().getScreen() == Screen.Ready && !getBoard().isStarting())
+        if (getActivity().getScreen() == Screen.Ready && !getBoard().isStarting() && getBoard().getSelected() == null)
             getBoard().setSelected(x, y);
     }
 
@@ -194,12 +194,12 @@ public class Game implements IGame {
     }
 
     public void setComplete(final boolean complete) {
-        if (getActivity().getScreen() == Screen.Ready && !getBoard().isStarting())
+        if (getActivity().getScreen() == Screen.Ready && !getBoard().isStarting() && getBoard().getSelected() != null)
             getBoard().setComplete(complete);
     }
 
     public void updatePlace(final float x, final float y) {
-        if (getActivity().getScreen() == Screen.Ready && !getBoard().isStarting())
+        if (getActivity().getScreen() == Screen.Ready && !getBoard().isStarting() && !getBoard().getSelected().hasRotate())
             getBoard().updatePlace(x, y);
     }
 

@@ -9,10 +9,12 @@ import com.gamesbykevin.jigsaw.game.GameHelper;
 import com.gamesbykevin.jigsaw.opengl.Textures;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 
+import static com.gamesbykevin.jigsaw.activity.GameActivity.getRandomObject;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.CALCULATE_INDICES;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.CALCULATE_UVS;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.CALCULATE_VERTICES;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.PUZZLE_TEXTURE_GENERATED;
+import static com.gamesbykevin.jigsaw.board.BoardHelper.getGroupCount;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.getIndexPiece;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.getSquare;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.isGameOver;
@@ -75,8 +77,16 @@ public class Board implements ICommon {
     //flag that we are starting the board
     private boolean starting = true;
 
+    //do we check if the piece should be rotating
+    private boolean checkRotate = false;
+
     //how much time has lapsed
     private long frames = 0;
+
+    /**
+     * Can we rotate the pieces?
+     */
+    public static boolean ROTATE = false;
 
     /**
      * How long can we view the puzzle before we start placing the pieces
@@ -121,6 +131,10 @@ public class Board implements ICommon {
 
     public void setComplete(final boolean complete) {
         this.complete = complete;
+
+        //if we are done and rotate is enabled, check if we should rotate the piece
+        if (hasComplete() && ROTATE)
+            checkRotate = true;
     }
 
     public void setDefaultWidth(final int defaultWidth) {
@@ -158,6 +172,10 @@ public class Board implements ICommon {
 
                 //if we are within the bounds
                 if (piece.contains(x, y, getDefaultWidth())) {
+
+                    //assign the motion coordinates
+                    piece.setMotionX(x - (piece.getWidth() / 2));
+                    piece.setMotionY(y - (piece.getHeight() / 2));
 
                     //assign our selected piece
                     setSelected(piece);
@@ -209,6 +227,14 @@ public class Board implements ICommon {
     }
 
     public void updatePlace(float x, float y) {
+
+        //we can't update anything if the selected piece is rotating
+        if (getSelected() != null && getSelected().hasRotate())
+            return;
+
+        //if we are trying to finish our move, don't update anything
+        if (hasComplete())
+            return;
 
         this.updateX = x;
         this.updateY = y;
@@ -396,6 +422,17 @@ public class Board implements ICommon {
                                 piece.setY(piece.getStartY());
                         }
 
+                        //if rotate is enabled, and we are at the start, pick a random rotation
+                        if (ROTATE && piece.hasStart()) {
+
+                            //pick random rotation angle
+                            float angle = (getRandomObject().nextInt(3) + 1) * Piece.ANGLE_INCREMENT;
+
+                            //update the piece to reflect
+                            piece.setAngle(angle);
+                            piece.setDestination(angle);
+                        }
+
                         //update render coordinates
                         updatePiece(this, piece);
 
@@ -442,37 +479,85 @@ public class Board implements ICommon {
             //do we want to stop our selection?
             if (hasComplete()) {
 
-                //check how far we are from our final destination
-                final double distance = Entity.getDistance(getSelected().getX(), getSelected().getY(), getSelected().getDestinationX(), getSelected().getDestinationY());
+                //if we have rotation continue to update
+                if (getSelected().hasRotate()) {
+                    getSelected().update();
 
-                //if we are close enough place the piece at its destination
-                if (distance <= getSelected().getWidth() * CONNECTOR_RATIO) {
+                    //if the rotate is done
+                    if (!getSelected().hasRotate()) {
 
-                    //place at the destination
-                    getSelected().setX(getSelected().getDestinationX());
-                    getSelected().setY(getSelected().getDestinationY());
+                        //update the render coordinates
+                        updatePieces(this, getSelected().getGroup());
 
-                    //flag placed true
-                    getSelected().setPlaced(true);
+                        //place the piece on the board accordingly
+                        BoardHelper.placeSelected(this);
 
-                    //update the group
-                    updateGroup(this, -1, getSelected());
+                        //remove the selected piece
+                        removeSelected();
+                    }
 
-                    //update the location as well
-                    updatePieces(this, getSelected().getGroup());
+                } else {
 
-                    //game over?
-                    GameHelper.GAME_OVER = isGameOver(this);
+                    //check how far we are from our final destination
+                    final double distance = Entity.getDistance(getSelected().getX(), getSelected().getY(), getSelected().getDestinationX(), getSelected().getDestinationY());
 
-                    //order the pieces placed so they won't appear over the other pieces
-                    BoardHelper.orderPlaced(this);
+                    //if the piece is the correct angle and we are close enough place the piece at its destination
+                    if (getSelected().getAngle() == 0 && distance <= getSelected().getWidth() * CONNECTOR_RATIO) {
+
+                        //place at the destination
+                        getSelected().setX(getSelected().getDestinationX());
+                        getSelected().setY(getSelected().getDestinationY());
+
+                        //flag placed true
+                        getSelected().setPlaced(true);
+
+                        //update the group
+                        updateGroup(this, -1, getSelected());
+
+                        //update the location as well
+                        updatePieces(this, getSelected().getGroup());
+
+                        //game over?
+                        GameHelper.GAME_OVER = isGameOver(this);
+
+                        //order the pieces placed so they won't appear over the other pieces
+                        BoardHelper.orderPlaced(this);
+
+                        //place the piece on the board accordingly
+                        BoardHelper.placeSelected(this);
+
+                        //remove the selected piece
+                        removeSelected();
+
+                    } else {
+
+                        //do we check to rotate the piece?
+                        if (checkRotate) {
+
+                            //flag false
+                            checkRotate = false;
+
+                            //we will only rotate if the selected piece is by itself
+                            if (getGroupCount(this, getSelected()) == 1) {
+
+                                //see how far we are from our origin
+                                final double tmp = getSelected().getDistance(getSelected().getMotionX(), getSelected().getMotionY());
+
+                                //if we are close enough to the start motion coordinates, start rotating
+                                if (tmp < getSelected().getWidth() / 4)
+                                    getSelected().setDestination(getSelected().getAngle() + Piece.ANGLE_INCREMENT);
+                            }
+
+                        } else {
+
+                            //place the piece on the board accordingly
+                            BoardHelper.placeSelected(this);
+
+                            //remove the selected piece
+                            removeSelected();
+                        }
+                    }
                 }
-
-                //place the piece on the board accordingly
-                BoardHelper.placeSelected(this);
-
-                //remove the selected piece
-                removeSelected();
             }
         }
     }

@@ -6,15 +6,18 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 
 import com.gamesbykevin.jigsaw.R;
 import com.gamesbykevin.jigsaw.board.Board;
-import com.gamesbykevin.jigsaw.board.BoardHelper;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+
 import static com.gamesbykevin.jigsaw.board.BoardHelper.PUZZLE_TEXTURE;
+import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.HEIGHT;
+import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.WIDTH;
 
 public class OtherActivity extends BaseActivity {
 
@@ -71,7 +74,49 @@ public class OtherActivity extends BaseActivity {
             try {
 
                 //load the image
-                Board.IMAGE_SOURCE = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                Bitmap tmp = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+
+                float imgSrcHeight = tmp.getHeight();
+                float imgSrcWidth = tmp.getWidth();
+
+                //if too large, resize the image
+                if (imgSrcHeight > HEIGHT || imgSrcWidth > WIDTH) {
+
+                    //get the size ratio
+                    final float ratio =  imgSrcHeight / imgSrcWidth;
+
+                    //new image dimensions
+                    int imageWidth;
+                    int imageHeight;
+
+                    if (ratio >= 1) {
+
+                        imageWidth = (int)(HEIGHT * (imgSrcWidth / imgSrcHeight));
+                        imageHeight = HEIGHT;
+
+                    } else {
+
+                        imageWidth = HEIGHT;
+                        imageHeight = (int)(HEIGHT * (imgSrcHeight / imgSrcWidth));
+
+                    }
+
+                    //resize the image
+                    tmp = Bitmap.createScaledBitmap(tmp, imageWidth, imageHeight, false);
+                }
+
+                //output stream
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+                //compress the file so it won't cause a performance issue
+                tmp.compress(Bitmap.CompressFormat.PNG, 25, out);
+
+                //convert the compressed output stream to a bitmap
+                Board.IMAGE_SOURCE = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
+
+                //clean up resources
+                tmp.recycle();
+                tmp = null;
 
                 //start the new activity
                 startActivity(new Intent(OtherActivity.this, ConfirmActivity.class));

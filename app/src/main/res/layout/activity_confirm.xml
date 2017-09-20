@@ -32,8 +32,12 @@ style="@style/ActivityPage">
                 android:layout_height="200dp" />
 
             <TextView android:id="@+id/textViewPieceCountDesc" style="@style/text_view_puzzle_piece_count_desc" />
-
             <SeekBar android:id="@+id/mySeekBar" style="@style/seek_bar_puzzle_piece" />
+
+            <Switch android:id="@+id/switchRotate" android:text="@string/rotate_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            <TextView android:id="@+id/textViewRotateDesc" style="@style/text_view_puzzle_piece_count_desc" />
 
             <Button
                 style="@style/buttonMenu"

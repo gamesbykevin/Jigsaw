@@ -230,9 +230,6 @@ public class BoardHelper {
                 //pick a random location from our coordinate list
                 final int index = getRandomObject().nextInt(coordinates.size());
 
-                //assign our new location
-                //piece.setX(coordinates.get(index).x);
-                //piece.setY(coordinates.get(index).y);
                 //set where the pieces will start
                 piece.setStartX((int)coordinates.get(index).x);
                 piece.setStartY((int)coordinates.get(index).y);
@@ -495,6 +492,33 @@ public class BoardHelper {
         updatePieceUvs(board, piece);
     }
 
+    protected static int getGroupCount(Board board, Piece piece) {
+
+        //keep track of how many match
+        int count = 0;
+
+        for (int col = 0; col < board.getCols(); col++) {
+            for (int row = 0; row < board.getRows(); row++) {
+
+                try {
+
+                    //get the current piece
+                    Piece tmp = board.getPieces()[row][col];
+
+                    //if the group matches keep track of the count
+                    if (tmp.getGroup() == piece.getGroup())
+                        count++;
+
+                } catch (Exception e) {
+                    UtilityHelper.handleException(e);
+                }
+            }
+        }
+
+        //return our result
+        return count;
+    }
+
     protected static void updateGroup(Board board, final int oldGroupId, final Piece piece) {
 
         boolean flag = false;
@@ -713,7 +737,7 @@ public class BoardHelper {
                     north = board.getPieces()[(int) piece.getRow() - 1][(int) piece.getCol()];
 
                 //if the piece exists and not already part of the same group, check if we can connect
-                if (!flag && east != null && piece.getGroup() != east.getGroup()) {
+                if (!flag && east != null && piece.getGroup() != east.getGroup() && piece.getAngle() == 0 && east.getAngle() == 0) {
 
                     //make sure the pieces are close enough
                     int minX = (int) (piece.getX() + width);
@@ -735,7 +759,7 @@ public class BoardHelper {
                 }
 
                 //if the piece exists and not already part of the same group, check if we can connect
-                if (!flag && west != null && piece.getGroup() != west.getGroup()) {
+                if (!flag && west != null && piece.getGroup() != west.getGroup() && piece.getAngle() == 0 && west.getAngle() == 0) {
 
                     //make sure the pieces are close enough
                     int minX = (int) (piece.getX() - width - connectorW - connectorW);
@@ -757,7 +781,7 @@ public class BoardHelper {
                 }
 
                 //if the piece exists and not already part of the same group, check if we can connect
-                if (!flag && south != null && piece.getGroup() != south.getGroup()) {
+                if (!flag && south != null && piece.getGroup() != south.getGroup() && piece.getAngle() == 0 && south.getAngle() == 0) {
 
                     //make sure the pieces are close enough
                     int minX = (int) (piece.getX() - connectorW);
@@ -779,7 +803,7 @@ public class BoardHelper {
                 }
 
                 //if the piece exists and not already part of the same group, check if we can connect
-                if (!flag && north != null && piece.getGroup() != north.getGroup()) {
+                if (!flag && north != null && piece.getGroup() != north.getGroup() && piece.getAngle() == 0 && north.getAngle() == 0) {
 
                     //make sure the pieces are close enough
                     int minX = (int) (piece.getX() - connectorW);

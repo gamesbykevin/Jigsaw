@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.gamesbykevin.jigsaw.R;
@@ -49,8 +50,14 @@ public class LevelSelectActivity extends BaseActivity {
         //obtain the text view
         final TextView textViewPieceCountDesc = findViewById(R.id.textViewPieceCountDesc);
 
+        //the rotate setting description
+        final TextView textViewRotateDesc = findViewById(R.id.textViewRotateDesc);
+
         //obtain our seek bar
         final SeekBar seekBar = findViewById(R.id.mySeekBar);
+
+        //toggle for rotate
+        final Switch switchRotate = findViewById(R.id.switchRotate);
 
         //set the adapter to build the list view
         listView.setAdapter(new MyArrayAdapter(this, RES_IDS));
@@ -61,23 +68,26 @@ public class LevelSelectActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                //store the progress
-                SEEK_BAR_PROGRESS = seekBar.getProgress();
+            //store the progress
+            SEEK_BAR_PROGRESS = seekBar.getProgress();
 
-                //if the user wants to use a custom image
-                if (position == 0) {
+            //update board rotate setting
+            Board.ROTATE = (switchRotate.isChecked());
 
-                    //start the other activity which will let us choose the image
-                    startActivity(new Intent(LevelSelectActivity.this, OtherActivity.class));
+            //if the user wants to use a custom image
+            if (position == 0) {
 
-                } else {
+                //start the other activity which will let us choose the image
+                startActivity(new Intent(LevelSelectActivity.this, OtherActivity.class));
 
-                    //assign our image source
-                    Board.IMAGE_SOURCE = BitmapFactory.decodeResource(getResources(), RES_IDS[position]);
+            } else {
 
-                    //start the activity
-                    startActivity(new Intent(LevelSelectActivity.this, ConfirmActivity.class));
-                }
+                //assign our image source
+                Board.IMAGE_SOURCE = BitmapFactory.decodeResource(getResources(), RES_IDS[position]);
+
+                //start the activity
+                startActivity(new Intent(LevelSelectActivity.this, ConfirmActivity.class));
+            }
             }
         });
 
@@ -116,6 +126,9 @@ public class LevelSelectActivity extends BaseActivity {
 
         //set progress to user selection
         ((SeekBar)findViewById(R.id.mySeekBar)).setProgress(SEEK_BAR_PROGRESS);
+
+        //restore switch setting
+        ((Switch)findViewById(R.id.switchRotate)).setChecked(Board.ROTATE);
     }
 
     @Override
