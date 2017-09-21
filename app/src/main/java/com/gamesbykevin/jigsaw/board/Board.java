@@ -14,12 +14,11 @@ import static com.gamesbykevin.jigsaw.board.BoardHelper.CALCULATE_INDICES;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.CALCULATE_UVS;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.CALCULATE_VERTICES;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.PUZZLE_TEXTURE_GENERATED;
-import static com.gamesbykevin.jigsaw.board.BoardHelper.getGroupCount;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.getIndexPiece;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.getSquare;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.isGameOver;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.orderGroup;
-import static com.gamesbykevin.jigsaw.board.BoardHelper.orderPlaced;
+import static com.gamesbykevin.jigsaw.board.BoardHelper.rotateGroup;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.updateCoordinates;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.updateGroup;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.updatePiece;
@@ -28,7 +27,6 @@ import static com.gamesbykevin.jigsaw.board.Piece.CONNECTOR_RATIO;
 import static com.gamesbykevin.jigsaw.board.Piece.START_VELOCITY;
 import static com.gamesbykevin.jigsaw.game.Game.INITIAL_RENDER;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.FPS;
-import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.FRAME_DURATION;
 
 /**
  * Created by Kevin on 9/4/2017.
@@ -537,15 +535,15 @@ public class Board implements ICommon {
                             //flag false
                             checkRotate = false;
 
-                            //we will only rotate if the selected piece is by itself
-                            if (getGroupCount(this, getSelected()) == 1) {
+                            //see how far we are from our origin
+                            final double tmp = getSelected().getDistance(getSelected().getMotionX(), getSelected().getMotionY());
 
-                                //see how far we are from our origin
-                                final double tmp = getSelected().getDistance(getSelected().getMotionX(), getSelected().getMotionY());
+                            //if we are close enough to the start motion coordinates, start rotating
+                            if (tmp < getSelected().getWidth() / 4) {
+                                getSelected().setDestination(getSelected().getAngle() + Piece.ANGLE_INCREMENT);
 
-                                //if we are close enough to the start motion coordinates, start rotating
-                                if (tmp < getSelected().getWidth() / 4)
-                                    getSelected().setDestination(getSelected().getAngle() + Piece.ANGLE_INCREMENT);
+                                //rotate any other connected pieces in the group
+                                rotateGroup(this, getSelected());
                             }
 
                         } else {

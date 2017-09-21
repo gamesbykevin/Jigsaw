@@ -64,7 +64,7 @@ public class Piece extends Entity {
     public static final int START_VELOCITY = (WIDTH > HEIGHT) ? (int)(WIDTH * .25f) : (int)(HEIGHT * .25f);
 
     //maximum angle possible
-    private static final float ANGLE_MAX = 360f;
+    public static final float ANGLE_MAX = 360f;
 
     /**
      * Length of a full rotation
@@ -404,5 +404,82 @@ public class Piece extends Entity {
 
         //if close enough, contains is true
         return (getDistance(x, y, mx, my) <= w);
+    }
+
+    public void updateOffset(Board board, Piece piece) {
+
+        //update the (x, y) coordinates based on the offset
+        setX(getOffsetX(board, piece));
+        setY(getOffsetY(board, piece));
+    }
+
+    public int getOffsetX(Board board, Piece piece) {
+
+        //get the difference
+        int colDiff = (int)(piece.getCol() - getCol());
+        int rowDiff = (int)(piece.getRow() - getRow());
+
+        //how do we offset
+        int rotateCol = colDiff;
+        int rotateRow = rowDiff;
+
+        //keep track of the number of rotations
+        int tmpAngle = 0;
+
+        //rotate to match the current piece rotation
+        while (tmpAngle != (int)getAngle()) {
+
+            //store the current separately
+            int offsetCol = rotateCol;
+            int offsetRow = rotateRow;
+
+            //rotate the offset difference counter clockwise
+            rotateCol = -offsetRow;
+            rotateRow = offsetCol;
+
+            //rotate
+            tmpAngle += Piece.ANGLE_INCREMENT;
+
+            //this shouldn't happen
+            if (tmpAngle >= Piece.ANGLE_MAX)
+                tmpAngle = 0;
+        }
+
+        return (int)(piece.getX() - (rotateCol * board.getDefaultWidth()));
+    }
+
+    public int getOffsetY(Board board, Piece piece) {
+
+        //get the difference
+        int colDiff = (int)(piece.getCol() - getCol());
+        int rowDiff = (int)(piece.getRow() - getRow());
+
+        //how do we offset
+        int rotateCol = colDiff;
+        int rotateRow = rowDiff;
+
+        //keep track of the number of rotations
+        int tmpAngle = 0;
+
+        //rotate to match the current piece rotation
+        while (tmpAngle != (int)getAngle()) {
+
+            //store the current separately
+            int offsetCol = rotateCol;
+            int offsetRow = rotateRow;
+
+            //rotate the offset difference counter clockwise
+            rotateCol = -offsetRow;
+            rotateRow = offsetCol;
+
+            //rotate
+            tmpAngle += Piece.ANGLE_INCREMENT;
+
+            //this shouldn't happen
+            if (tmpAngle >= Piece.ANGLE_MAX)
+                tmpAngle = 0;
+        }
+
+        return (int)(piece.getY() - (rotateRow * board.getDefaultHeight()));
     }
 }

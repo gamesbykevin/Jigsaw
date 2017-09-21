@@ -492,10 +492,7 @@ public class BoardHelper {
         updatePieceUvs(board, piece);
     }
 
-    protected static int getGroupCount(Board board, Piece piece) {
-
-        //keep track of how many match
-        int count = 0;
+    protected static void rotateGroup(Board board, Piece piece) {
 
         for (int col = 0; col < board.getCols(); col++) {
             for (int row = 0; row < board.getRows(); row++) {
@@ -505,18 +502,32 @@ public class BoardHelper {
                     //get the current piece
                     Piece tmp = board.getPieces()[row][col];
 
-                    //if the group matches keep track of the count
-                    if (tmp.getGroup() == piece.getGroup())
-                        count++;
+                    //if not part of the group, don't rotate
+                    if (tmp.getGroup() != piece.getGroup())
+                        continue;
+
+                    //don't alter the base piece yet
+                    if (tmp.getCol() == piece.getCol() && tmp.getRow() == piece.getRow())
+                        continue;
+
+                    //update the rotation 90 degrees
+                    tmp.setAngle(tmp.getAngle() + Piece.ANGLE_INCREMENT);
+
+                    //keep in range
+                    if (tmp.getAngle() >= Piece.ANGLE_MAX)
+                        tmp.setAngle(0f);
+
+                    //update the destination angle to match immediately
+                    tmp.setDestination(tmp.getAngle());
+
+                    //update the current tmp piece coordinates based on the rotation compared to the puzzle piece
+                    tmp.updateOffset(board, piece);
 
                 } catch (Exception e) {
                     UtilityHelper.handleException(e);
                 }
             }
         }
-
-        //return our result
-        return count;
     }
 
     protected static void updateGroup(Board board, final int oldGroupId, final Piece piece) {
@@ -551,10 +562,6 @@ public class BoardHelper {
                 return;
         }
 
-        //get the size of the connectors
-        final int connectorW = (int)(board.getDefaultWidth() * CONNECTOR_RATIO);
-        final int connectorH = (int)(board.getDefaultHeight() * CONNECTOR_RATIO);
-
         for (int col = 0; col < board.getCols(); col++) {
             for (int row = 0; row < board.getRows(); row++) {
 
@@ -571,13 +578,8 @@ public class BoardHelper {
                     if (tmp.getCol() == piece.getCol() && tmp.getRow() == piece.getRow())
                         continue;
 
-                    //offset from the current piece
-                    float offsetX = (float)(col - piece.getCol()) * (tmp.getWidth() - connectorW - connectorW - TEXTURE_PADDING);
-                    float offsetY = (float)(row - piece.getRow()) * (tmp.getHeight() - connectorH - connectorH - TEXTURE_PADDING);
-
-                    //update the position to be relative
-                    tmp.setX(piece.getX() + offsetX);
-                    tmp.setY(piece.getY() + offsetY);
+                    //make the tmp relative to the piece
+                    tmp.updateOffset(board, piece);
 
                     //update if the piece is placed
                     tmp.setPlaced(piece.isPlaced());
@@ -736,99 +738,47 @@ public class BoardHelper {
                 if (piece.getRow() > 0)
                     north = board.getPieces()[(int) piece.getRow() - 1][(int) piece.getCol()];
 
-                //if the piece exists and not already part of the same group, check if we can connect
-                if (!flag && east != null && piece.getGroup() != east.getGroup() && piece.getAngle() == 0 && east.getAngle() == 0) {
-
-                    //make sure the pieces are close enough
-                    int minX = (int) (piece.getX() + width);
-                    int maxX = (int) (piece.getX() + width + connectorW + connectorW);
-                    int minY = (int) (piece.getY() - connectorH);
-                    int maxY = (int) (piece.getY() + connectorH);
-
-                    //now make sure the piece is on the correct side
-                    if (east.getX() > minX && east.getX() < maxX) {
-                        if (east.getY() > minY && east.getY() < maxY) {
-
-                            //make group match as well as all pieces currently connected to the current piece
-                            updateGroup(board, east.getGroup(), piece);
-
-                            //flag change made
-                            flag = true;
-                        }
-                    }
-                }
-
-                //if the piece exists and not already part of the same group, check if we can connect
-                if (!flag && west != null && piece.getGroup() != west.getGroup() && piece.getAngle() == 0 && west.getAngle() == 0) {
-
-                    //make sure the pieces are close enough
-                    int minX = (int) (piece.getX() - width - connectorW - connectorW);
-                    int maxX = (int) (piece.getX() - width);
-                    int minY = (int) (piece.getY() - connectorH);
-                    int maxY = (int) (piece.getY() + connectorH);
-
-                    //now make sure the piece is on the correct side
-                    if (west.getX() > minX && west.getX() < maxX) {
-                        if (west.getY() > minY && west.getY() < maxY) {
-
-                            //make group match as well as all pieces currently connected to the current piece
-                            updateGroup(board, west.getGroup(), piece);
-
-                            //flag change made
-                            flag = true;
-                        }
-                    }
-                }
-
-                //if the piece exists and not already part of the same group, check if we can connect
-                if (!flag && south != null && piece.getGroup() != south.getGroup() && piece.getAngle() == 0 && south.getAngle() == 0) {
-
-                    //make sure the pieces are close enough
-                    int minX = (int) (piece.getX() - connectorW);
-                    int maxX = (int) (piece.getX() + connectorW);
-                    int minY = (int) (piece.getY() + height);
-                    int maxY = (int) (piece.getY() + height + connectorH + connectorH);
-
-                    //now make sure the piece is on the correct side
-                    if (south.getX() > minX && south.getX() < maxX) {
-                        if (south.getY() > minY && south.getY() < maxY) {
-
-                            //make group match as well as all pieces currently connected to the current piece
-                            updateGroup(board, south.getGroup(), piece);
-
-                            //flag change made
-                            flag = true;
-                        }
-                    }
-                }
-
-                //if the piece exists and not already part of the same group, check if we can connect
-                if (!flag && north != null && piece.getGroup() != north.getGroup() && piece.getAngle() == 0 && north.getAngle() == 0) {
-
-                    //make sure the pieces are close enough
-                    int minX = (int) (piece.getX() - connectorW);
-                    int maxX = (int) (piece.getX() + connectorW);
-                    int minY = (int) (piece.getY() - height - connectorH - connectorH);
-                    int maxY = (int) (piece.getY() - height);
-
-                    //now make sure the piece is on the correct side
-                    if (north.getX() > minX && north.getX() < maxX) {
-                        if (north.getY() > minY && north.getY() < maxY) {
-
-                            //make group match as well as all pieces currently connected to the current piece
-                            updateGroup(board, north.getGroup(), piece);
-
-                            //flag change made
-                            flag = true;
-                        }
-                    }
-                }
+                //we can only connect once, but try to connect in any way
+                if (!flag)
+                    flag = connectPiece(east, piece, board);
+                if (!flag)
+                    flag = connectPiece(west, piece, board);
+                if (!flag)
+                    flag = connectPiece(south, piece, board);
+                if (!flag)
+                    flag = connectPiece(north, piece, board);
             }
         }
 
         //only update if changes were made
         if (flag)
             updatePieces(board, board.getSelected().getGroup());
+    }
+
+    private static boolean connectPiece(Piece current, Piece selected, Board board) {
+
+        //if the piece exists and not already part of the same group, check if we can connect
+        if (current != null && selected.getGroup() != current.getGroup() && current.getAngle() == selected.getAngle()) {
+
+            //figure out the offset coordinates
+            int offsetX = current.getOffsetX(board, selected);
+            int offsetY = current.getOffsetY(board, selected);
+
+            //check the distance
+            double distance = current.getDistance(offsetX, offsetY);
+
+            //if the piece is close enough to the correct location, let's update
+            if (distance < current.getWidth() / 4) {
+
+                //make group match as well as all pieces currently connected to the current piece
+                updateGroup(board, current.getGroup(), selected);
+
+                //return true
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected static boolean isGameOver(final Board board) {
