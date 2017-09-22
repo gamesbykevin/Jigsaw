@@ -14,7 +14,7 @@
         <!-- add margins so everything appears within the menu background image-->
         <LinearLayout
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="0dp"
             style="@style/linearLayoutLevelSelectContainer">
 
             <!-- Title here-->
@@ -50,9 +50,7 @@
             <TextView android:id="@+id/textViewPieceCountDesc" style="@style/text_view_puzzle_piece_count_desc" />
             <SeekBar android:id="@+id/mySeekBar" style="@style/seek_bar_puzzle_piece" />
 
-            <Switch android:id="@+id/switchRotate" android:text="@string/rotate_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+            <Switch android:id="@+id/switchRotate" android:text="@string/rotate_text" style="@style/switchRotate" />
             <TextView android:id="@+id/textViewRotateDesc" style="@style/text_view_puzzle_piece_count_desc" />
 
         </LinearLayout>

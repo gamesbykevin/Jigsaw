@@ -68,55 +68,16 @@ public class OtherActivity extends BaseActivity {
         //if everything is ok
         if (resultCode == Activity.RESULT_OK) {
 
-            //get the location of the image
-            Uri selectedImage = data.getData();
-
             try {
 
-                //load the image
-                Bitmap tmp = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                //get the location of the image
+                Uri selectedImage = data.getData();
 
-                float imgSrcHeight = tmp.getHeight();
-                float imgSrcWidth = tmp.getWidth();
+                //store the image location
+                Board.IMAGE_LOCATION = selectedImage.toString();
 
-                //if too large, resize the image
-                if (imgSrcHeight > HEIGHT || imgSrcWidth > WIDTH) {
-
-                    //get the size ratio
-                    final float ratio =  imgSrcHeight / imgSrcWidth;
-
-                    //new image dimensions
-                    int imageWidth;
-                    int imageHeight;
-
-                    if (ratio >= 1) {
-
-                        imageWidth = (int)(HEIGHT * (imgSrcWidth / imgSrcHeight));
-                        imageHeight = HEIGHT;
-
-                    } else {
-
-                        imageWidth = HEIGHT;
-                        imageHeight = (int)(HEIGHT * (imgSrcHeight / imgSrcWidth));
-
-                    }
-
-                    //resize the image
-                    tmp = Bitmap.createScaledBitmap(tmp, imageWidth, imageHeight, false);
-                }
-
-                //output stream
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-                //compress the file so it won't cause a performance issue
-                tmp.compress(Bitmap.CompressFormat.PNG, 25, out);
-
-                //convert the compressed output stream to a bitmap
-                Board.IMAGE_SOURCE = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
-
-                //clean up resources
-                tmp.recycle();
-                tmp = null;
+                //retrieve the bitmap from the uri location
+                Board.IMAGE_SOURCE = getBitmapImage(this, selectedImage);
 
                 //start the new activity
                 startActivity(new Intent(OtherActivity.this, ConfirmActivity.class));
@@ -130,12 +91,65 @@ public class OtherActivity extends BaseActivity {
             }
 
         } else {
-            //any issue we go back to the previous page
+
+            //any issue we can go back to the previous page
             super.onBackPressed();
         }
 
         //close this activity
         finish();
+    }
+
+    public static Bitmap getBitmapImage(Activity activity, String location) throws Exception {
+        return getBitmapImage(activity, Uri.parse(location));
+    }
+
+    public static Bitmap getBitmapImage(Activity activity, Uri selectedImage) throws Exception {
+
+        //load the image
+        Bitmap tmp = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), selectedImage);
+
+        float imgSrcHeight = tmp.getHeight();
+        float imgSrcWidth = tmp.getWidth();
+
+        //if too large, resize the image
+        if (imgSrcHeight > HEIGHT || imgSrcWidth > WIDTH) {
+
+            //get the size ratio
+            final float ratio = imgSrcHeight / imgSrcWidth;
+
+            //new image dimensions
+            int imageWidth;
+            int imageHeight;
+
+            if (ratio >= 1) {
+
+                imageWidth = (int) (HEIGHT * (imgSrcWidth / imgSrcHeight));
+                imageHeight = HEIGHT;
+
+            } else {
+
+                imageWidth = HEIGHT;
+                imageHeight = (int) (HEIGHT * (imgSrcHeight / imgSrcWidth));
+
+            }
+
+            //resize the image
+            tmp = Bitmap.createScaledBitmap(tmp, imageWidth, imageHeight, false);
+        }
+
+        //output stream
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        //compress the file so it won't cause a performance issue and write to output stream
+        tmp.compress(Bitmap.CompressFormat.PNG, 25, out);
+
+        //clean up resources
+        tmp.recycle();
+        tmp = null;
+
+        //return our result
+        return BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
     }
 
     @Override

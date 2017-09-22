@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.PointF;
 
 import com.gamesbykevin.jigsaw.R;
+import com.gamesbykevin.jigsaw.activity.BaseActivity;
 import com.gamesbykevin.jigsaw.opengl.Square;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 
@@ -14,6 +15,7 @@ import java.util.List;
 
 import static com.gamesbykevin.jigsaw.activity.GameActivity.getGame;
 import static com.gamesbykevin.jigsaw.activity.GameActivity.getRandomObject;
+import static com.gamesbykevin.jigsaw.activity.LevelSelectActivity.RESUME_SAVED;
 import static com.gamesbykevin.jigsaw.board.Piece.CONNECTOR_RATIO;
 import static com.gamesbykevin.jigsaw.board.Piece.TEXTURE_PADDING;
 import static com.gamesbykevin.jigsaw.game.GameHelper.getEntityPlaceBorder;
@@ -70,9 +72,6 @@ public class BoardHelper {
             PUZZLE_TEXTURE.recycle();
             PUZZLE_TEXTURE = null;
         }
-
-        //temporary store all our created bitmaps
-        Bitmap[][] tmpImages = new Bitmap[board.getRows()][board.getCols()];
 
         //the desired size of the image
         int imageWidth;
@@ -157,6 +156,9 @@ public class BoardHelper {
         getEntityPlaceBorder().setHeight(board.getRows() * h);
         getSquarePlaceBorder().setupVertices(getEntityPlaceBorder().getVertices());
 
+        //temporary store all our created bitmaps
+        Bitmap[][] tmpImages = new Bitmap[board.getRows()][board.getCols()];
+
         //now that all pieces are created, create the connectors
         for (int col = 0; col < board.getCols(); col++) {
             for (int row = 0; row < board.getRows(); row++) {
@@ -171,78 +173,85 @@ public class BoardHelper {
                 //cut our puzzle piece out of the re-sized map
                 tmpImages[row][col] = piece.cutPuzzlePiece(resizedBitmap, x, y, w, h, north, south, west, east);
 
-                //assign the coordinates
-                piece.setX(startX + (col * w));
-                piece.setY(startY + (row * h));
+                //if we aren't resuming a saved puzzle
+                if (!RESUME_SAVED) {
 
-                //assign the destination coordinates
-                piece.setDestinationX((int)piece.getX());
-                piece.setDestinationY((int)piece.getY());
+                    //assign the coordinates
+                    piece.setX(startX + (col * w));
+                    piece.setY(startY + (row * h));
 
-                //set the size of the piece
-                piece.setWidth(tmpImages[row][col].getWidth());
-                piece.setHeight(tmpImages[row][col].getHeight());
+                    //assign the destination coordinates
+                    piece.setDestinationX((int) piece.getX());
+                    piece.setDestinationY((int) piece.getY());
 
-                //calculate the texture coordinates
-                float tmpCol = (float)col * (1f / (float)board.getCols());
-                float tmpRow = (float)row * (1f / (float)board.getRows());
-                float tmpW = (1f / (float)board.getCols());
-                float tmpH = (1f / (float)board.getRows());
+                    //set the size of the piece
+                    piece.setWidth(tmpImages[row][col].getWidth());
+                    piece.setHeight(tmpImages[row][col].getHeight());
 
-                //make sure the texture coordinates are mapped
-                piece.setTextureCoordinates(tmpCol, tmpRow, tmpW, tmpH);
+                    //calculate the texture coordinates
+                    float tmpCol = (float) col * (1f / (float) board.getCols());
+                    float tmpRow = (float) row * (1f / (float) board.getRows());
+                    float tmpW = (1f / (float) board.getCols());
+                    float tmpH = (1f / (float) board.getRows());
+
+                    //make sure the texture coordinates are mapped
+                    piece.setTextureCoordinates(tmpCol, tmpRow, tmpW, tmpH);
+                }
             }
+        }
+
+        //if we aren't resuming a saved puzzle
+        if (!RESUME_SAVED) {
+            //create a list of possible coordinates to place the puzzle pieces
+            List<PointF> coordinates = new ArrayList<>();
+
+            final int tmpW = tmpImages[0][0].getWidth() / 3;
+            final int tmpH = tmpImages[0][0].getHeight() / 3;
+
+            //locate all our possible locations to place the puzzle pieces
+            for (int x = -connectorW; x < WIDTH - connectorW - connectorW - tmpW; x += tmpW) {
+                for (int y = -connectorH; y < HEIGHT - connectorH - connectorH - tmpH; y += tmpH) {
+
+                    //don't use the coordinates that cover the placement border
+                    if (x >= getEntityPlaceBorder().getX() && x <= getEntityPlaceBorder().getX() + getEntityPlaceBorder().getWidth() &&
+                            y >= getEntityPlaceBorder().getY() && y <= getEntityPlaceBorder().getY() + getEntityPlaceBorder().getHeight())
+                        continue;
+
+                    //add this location to our list
+                    coordinates.add(new PointF(x, y));
+                }
+            }
+
+            for (int col = 0; col < board.getCols(); col++) {
+                for (int row = 0; row < board.getRows(); row++) {
+
+                    //get the current piece
+                    Piece piece = board.getPieces()[row][col];
+
+                    //pick a random location from our coordinate list
+                    final int index = getRandomObject().nextInt(coordinates.size());
+
+                    //set where the pieces will start
+                    piece.setStartX((int) coordinates.get(index).x);
+                    piece.setStartY((int) coordinates.get(index).y);
+
+                    //remove location so we don't pick it again, as long as there are more options
+                    if (coordinates.size() > 1)
+                        coordinates.remove(index);
+                }
+            }
+
+            //remove list
+            coordinates.clear();
+            coordinates = null;
         }
 
         //create our single texture containing all puzzle pieces
         Bitmap texture = Bitmap.createBitmap(
-            tmpImages[0][0].getWidth() * board.getCols(),
-            tmpImages[0][0].getHeight()* board.getRows(),
-            Bitmap.Config.ARGB_8888
+                tmpImages[0][0].getWidth() * board.getCols(),
+                tmpImages[0][0].getHeight()* board.getRows(),
+                Bitmap.Config.ARGB_8888
         );
-
-        //create a list of possible coordinates to place the puzzle pieces
-        List<PointF> coordinates = new ArrayList<>();
-
-        final int tmpW = tmpImages[0][0].getWidth() / 3;
-        final int tmpH = tmpImages[0][0].getHeight() / 3;
-
-        //locate all our possible locations to place the puzzle pieces
-        for (int x = -connectorW; x < WIDTH - connectorW - connectorW - tmpW; x += tmpW) {
-            for (int y = -connectorH; y < HEIGHT - connectorH - connectorH - tmpH; y += tmpH) {
-
-                //don't use the coordinates that cover the placement border
-                if (x >= getEntityPlaceBorder().getX() && x <= getEntityPlaceBorder().getX() + getEntityPlaceBorder().getWidth() &&
-                    y >= getEntityPlaceBorder().getY() && y <= getEntityPlaceBorder().getY() + getEntityPlaceBorder().getHeight())
-                    continue;
-
-                //add this location to our list
-                coordinates.add(new PointF(x, y));
-            }
-        }
-
-        for (int col = 0; col < board.getCols(); col++) {
-            for (int row = 0; row < board.getRows(); row++) {
-
-                //get the current piece
-                Piece piece = board.getPieces()[row][col];
-
-                //pick a random location from our coordinate list
-                final int index = getRandomObject().nextInt(coordinates.size());
-
-                //set where the pieces will start
-                piece.setStartX((int)coordinates.get(index).x);
-                piece.setStartY((int)coordinates.get(index).y);
-
-                //remove location so we don't pick it again, as long as there are more options
-                if (coordinates.size() > 1)
-                    coordinates.remove(index);
-            }
-        }
-
-        //remove list
-        coordinates.clear();
-        coordinates = null;
 
         //convert bitmap to mutable object that we will convert to texture
         PUZZLE_TEXTURE = texture.copy(Bitmap.Config.ARGB_8888, true);
@@ -593,90 +602,101 @@ public class BoardHelper {
 
     protected static void reset(final Board board) {
 
-        //reset our flags
-        board.setComplete(false);
-        board.setSelection(false);
-        board.setStarting(true);
+        //if we are creating a new puzzle
+        if (!RESUME_SAVED) {
 
-        //create new array if the size does not match
-        if (board.getPieces().length != board.getRows() || board.getPieces()[0].length != board.getCols())
-            board.setPieces(new Piece[board.getRows()][board.getCols()]);
+            //reset our flags
+            board.setComplete(false);
+            board.setSelection(false);
+            board.setStarting(true);
 
-        int index = 0;
+            //create new array if the size does not match
+            if (board.getPieces().length != board.getRows() || board.getPieces()[0].length != board.getCols())
+                board.setPieces(new Piece[board.getRows()][board.getCols()]);
 
-        for (int col = 0; col < board.getCols(); col++) {
-            for (int row = 0; row < board.getRows(); row++) {
+            int index = 0;
 
-                //create the piece and make sure location is correct
-                if (board.getPieces()[row][col] == null) {
-                    board.getPieces()[row][col] = new Piece(col, row);
-                } else {
-                    board.getPieces()[row][col].setCol(col);
-                    board.getPieces()[row][col].setRow(row);
-                }
+            for (int col = 0; col < board.getCols(); col++) {
+                for (int row = 0; row < board.getRows(); row++) {
 
-                //flag placed false
-                board.getPieces()[row][col].setPlaced(false);
+                    //create the piece and make sure location is correct
+                    if (board.getPieces()[row][col] == null) {
+                        board.getPieces()[row][col] = new Piece(col, row);
+                    } else {
+                        board.getPieces()[row][col].setCol(col);
+                        board.getPieces()[row][col].setRow(row);
+                    }
 
-                //each image will belong to their own group until they are combined
-                board.getPieces()[row][col].setGroup(index);
+                    //flag placed false
+                    board.getPieces()[row][col].setPlaced(false);
 
-                //keep track of index so we can map the open gl coordinates
-                board.getPieces()[row][col].setIndex(index);
+                    //each image will belong to their own group until they are combined
+                    board.getPieces()[row][col].setGroup(index);
 
-                //keep track of index
-                index++;
-            }
-        }
+                    //keep track of index so we can map the open gl coordinates
+                    board.getPieces()[row][col].setIndex(index);
 
-        //now that all pieces are created, create the connectors
-        for (int col = 0; col < board.getCols(); col++) {
-            for (int row = 0; row < board.getRows(); row++) {
-
-                //get the current piece
-                Piece piece = board.getPieces()[row][col];
-
-                //our neighbor piece
-                Piece neighbor;
-
-                //certain sides won't have any connectors depending on the puzzle position
-                if (row == 0)
-                    piece.setNorth(Piece.Connector.None);
-                if (row == board.getRows() - 1)
-                    piece.setSouth(Piece.Connector.None);
-                if (col == 0)
-                    piece.setWest(Piece.Connector.None);
-                if (col == board.getCols() - 1)
-                    piece.setEast(Piece.Connector.None);
-
-                //if we aren't on the end set the connector with our neighbor
-                if (col < board.getCols() - 1) {
-
-                    //make random decision
-                    boolean result = getRandomObject().nextBoolean();
-
-                    //east neighbor
-                    neighbor = board.getPieces()[row][col + 1];
-
-                    //make sure we can connect to our neighbor
-                    piece.setEast(result ? Piece.Connector.Male : Piece.Connector.Female);
-                    neighbor.setWest(result ? Piece.Connector.Female : Piece.Connector.Male);
-                }
-
-                //if we aren't on the end set the connector with our neighbor
-                if (row < board.getRows() - 1) {
-
-                    //make random decision
-                    boolean result = getRandomObject().nextBoolean();
-
-                    //south neighbor
-                    neighbor = board.getPieces()[row + 1][col];
-
-                    //make sure we can connect to our neighbor
-                    piece.setSouth(result ? Piece.Connector.Male : Piece.Connector.Female);
-                    neighbor.setNorth(result ? Piece.Connector.Female : Piece.Connector.Male);
+                    //keep track of index
+                    index++;
                 }
             }
+
+            //now that all pieces are created, create the connectors
+            for (int col = 0; col < board.getCols(); col++) {
+                for (int row = 0; row < board.getRows(); row++) {
+
+                    //get the current piece
+                    Piece piece = board.getPieces()[row][col];
+
+                    //our neighbor piece
+                    Piece neighbor;
+
+                    //certain sides won't have any connectors depending on the puzzle position
+                    if (row == 0)
+                        piece.setNorth(Piece.Connector.None);
+                    if (row == board.getRows() - 1)
+                        piece.setSouth(Piece.Connector.None);
+                    if (col == 0)
+                        piece.setWest(Piece.Connector.None);
+                    if (col == board.getCols() - 1)
+                        piece.setEast(Piece.Connector.None);
+
+                    //if we aren't on the end set the connector with our neighbor
+                    if (col < board.getCols() - 1) {
+
+                        //make random decision
+                        boolean result = getRandomObject().nextBoolean();
+
+                        //east neighbor
+                        neighbor = board.getPieces()[row][col + 1];
+
+                        //make sure we can connect to our neighbor
+                        piece.setEast(result ? Piece.Connector.Male : Piece.Connector.Female);
+                        neighbor.setWest(result ? Piece.Connector.Female : Piece.Connector.Male);
+                    }
+
+                    //if we aren't on the end set the connector with our neighbor
+                    if (row < board.getRows() - 1) {
+
+                        //make random decision
+                        boolean result = getRandomObject().nextBoolean();
+
+                        //south neighbor
+                        neighbor = board.getPieces()[row + 1][col];
+
+                        //make sure we can connect to our neighbor
+                        piece.setSouth(result ? Piece.Connector.Male : Piece.Connector.Female);
+                        neighbor.setNorth(result ? Piece.Connector.Female : Piece.Connector.Male);
+                    }
+                }
+            }
+
+        } else {
+
+            //reset our flags
+            board.setComplete(false);
+            board.setSelection(false);
+            board.setStarting(false);
         }
 
         //cut the pieces

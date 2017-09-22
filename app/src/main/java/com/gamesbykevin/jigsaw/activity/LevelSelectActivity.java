@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,18 +18,52 @@ import android.widget.TextView;
 
 import com.gamesbykevin.jigsaw.R;
 import com.gamesbykevin.jigsaw.board.Board;
+import com.gamesbykevin.jigsaw.board.Piece;
+
+import static android.view.View.GONE;
+import static com.gamesbykevin.jigsaw.activity.GameActivity.getRandomObject;
 
 public class LevelSelectActivity extends BaseActivity {
 
     /**
      * Our list of images to choose from
      */
-    private final Integer[] RES_IDS = {
-        R.drawable.picture0, R.drawable.picture1, R.drawable.picture2,
-        R.drawable.picture3, R.drawable.picture4, R.drawable.picture5,
-        R.drawable.picture6, R.drawable.picture7, R.drawable.picture8,
-        R.drawable.picture9, R.drawable.picture10,
-    };
+    private enum ImageOption {
+
+        ResumeSaved(R.drawable.picture0, R.string.save_image_resume),
+        CustomImage(R.drawable.picture0, R.string.choose_image),
+        Image1(R.drawable.picture1, R.string.custom_image_desc_1),
+        Image2(R.drawable.picture2, R.string.custom_image_desc_1),
+        Image3(R.drawable.picture3, R.string.custom_image_desc_1),
+        Image4(R.drawable.picture4, R.string.custom_image_desc_1),
+        Image5(R.drawable.picture5, R.string.custom_image_desc_1),
+        Image6(R.drawable.picture6, R.string.custom_image_desc_1),
+        Image7(R.drawable.picture7, R.string.custom_image_desc_1),
+        Image8(R.drawable.picture8, R.string.custom_image_desc_1),
+        Image9(R.drawable.picture9, R.string.custom_image_desc_1),
+        Image10(R.drawable.picture10, R.string.custom_image_desc_1);
+
+        private int resIdImage;
+        private int resIdDesc;
+
+        private ImageOption(final int resIdImage, final int resIdDesc) {
+            this.resIdImage = resIdImage;
+            this.resIdDesc = resIdDesc;
+        }
+
+        protected int getResIdDesc() {
+            return this.resIdDesc;
+        }
+
+        protected int getResIdImage() {
+            return this.resIdImage;
+        }
+    }
+
+    /**
+     * Do we resume a saved puzzle
+     */
+    public static boolean RESUME_SAVED = false;
 
     /**
      * What position is the seek bar at?
@@ -60,7 +95,7 @@ public class LevelSelectActivity extends BaseActivity {
         final Switch switchRotate = findViewById(R.id.switchRotate);
 
         //set the adapter to build the list view
-        listView.setAdapter(new MyArrayAdapter(this, RES_IDS));
+        listView.setAdapter(new MyArrayAdapter(this, ImageOption.values()));
 
         //assign our on click listener so we know what was selected
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -68,26 +103,90 @@ public class LevelSelectActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-            //store the progress
-            SEEK_BAR_PROGRESS = seekBar.getProgress();
+                //store the progress
+                SEEK_BAR_PROGRESS = seekBar.getProgress();
 
-            //update board rotate setting
-            Board.ROTATE = (switchRotate.isChecked());
+                //update board rotate setting
+                Board.ROTATE = (switchRotate.isChecked());
 
-            //if the user wants to use a custom image
-            if (position == 0) {
+                if (position == 0) {
 
-                //start the other activity which will let us choose the image
-                startActivity(new Intent(LevelSelectActivity.this, OtherActivity.class));
+                    //if first selection check if the user has a saved puzzle
+                    if (hasSavedPuzzle()) {
 
-            } else {
+                        //flag that we want to resume our saved puzzle
+                        RESUME_SAVED = true;
 
-                //assign our image source
-                Board.IMAGE_SOURCE = BitmapFactory.decodeResource(getResources(), RES_IDS[position]);
+                        //get the location of the image
+                        String bitmapLocation = (String)getObjectValue(R.string.saved_puzzle_custom_image_key, String.class);
 
-                //start the activity
-                startActivity(new Intent(LevelSelectActivity.this, ConfirmActivity.class));
-            }
+                        //check if local location, or in .apk
+                        if (TextUtils.isDigitsOnly(bitmapLocation)) {
+
+                            //if only numeric then the image is part of our enum array
+                            Board.IMAGE_SOURCE = BitmapFactory.decodeResource(getResources(), ImageOption.values()[Integer.parseInt(bitmapLocation)].getResIdImage());
+
+                        } else {
+
+                            try {
+
+                                //see if we can get the image from the user's storage
+                                Board.IMAGE_SOURCE = OtherActivity.getBitmapImage(getParent(), bitmapLocation);
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+
+                                //since there was an issue, pick a random existing image
+                                int index = getRandomObject().nextInt(ImageOption.values().length - 2) + 2;
+
+                                //if there was an issue finding the image, use a default
+                                Board.IMAGE_SOURCE = BitmapFactory.decodeResource(getResources(), ImageOption.values()[index].getResIdImage());
+                            }
+                        }
+
+                        //assign rotate value
+                        Board.ROTATE = getBooleanValue(R.string.saved_puzzle_rotate_key);
+
+                        //go straight to the game
+                        startActivity(new Intent(LevelSelectActivity.this, GameActivity.class));
+
+                    } else {
+
+                        //start the other activity which will let us choose the image
+                        startActivity(new Intent(LevelSelectActivity.this, OtherActivity.class));
+                    }
+
+                } else if (position == 1) {
+
+                    if (hasSavedPuzzle()) {
+
+                        //start the other activity which will let us choose the image
+                        startActivity(new Intent(LevelSelectActivity.this, OtherActivity.class));
+
+                    } else {
+
+                        //store the image location
+                        Board.IMAGE_LOCATION = position + "";
+
+                        //assign our image source
+                        Board.IMAGE_SOURCE = BitmapFactory.decodeResource(getResources(), ImageOption.values()[position].getResIdImage());
+
+                        //start the activity
+                        startActivity(new Intent(LevelSelectActivity.this, ConfirmActivity.class));
+
+                    }
+
+                } else {
+
+                    //store the image location
+                    Board.IMAGE_LOCATION = position + "";
+
+                    //assign our image source
+                    Board.IMAGE_SOURCE = BitmapFactory.decodeResource(getResources(), ImageOption.values()[position].getResIdImage());
+
+                    //start the activity
+                    startActivity(new Intent(LevelSelectActivity.this, ConfirmActivity.class));
+                }
             }
         });
 
@@ -129,6 +228,9 @@ public class LevelSelectActivity extends BaseActivity {
 
         //restore switch setting
         ((Switch)findViewById(R.id.switchRotate)).setChecked(Board.ROTATE);
+
+        //flag false for now
+        RESUME_SAVED = false;
     }
 
     @Override
@@ -148,12 +250,16 @@ public class LevelSelectActivity extends BaseActivity {
         finish();
     }
 
-    private class MyArrayAdapter extends ArrayAdapter<Integer> {
+    private boolean hasSavedPuzzle() {
+        return (super.getObjectValue(R.string.saved_puzzle_custom_image_key, String.class) != null);
+    }
+
+    private class MyArrayAdapter extends ArrayAdapter<ImageOption> {
 
         private final Context context;
-        private final Integer[] values;
+        private final ImageOption[] values;
 
-        public MyArrayAdapter(Context context, Integer[] values) {
+        public MyArrayAdapter(Context context, ImageOption[] values) {
             super(context, R.layout.list_level, values);
 
             this.context = context;
@@ -162,19 +268,32 @@ public class LevelSelectActivity extends BaseActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             //obtain our view for the current position
             View tmpView = inflater.inflate(R.layout.list_level, parent, false);
 
-            //get the image view container for this item
-            ImageView imageView = tmpView.findViewById(R.id.myImageView);
-
-            //obtain the image resource id based on the current position
-            int resId = values[position];
+            //get our ui containers
+            ImageView myImageView = tmpView.findViewById(R.id.myImageView);
+            TextView myTextView = tmpView.findViewById(R.id.myImageText);
 
             //set our image accordingly
-            imageView.setImageResource(resId);
+            myImageView.setImageResource(values[position].getResIdImage());
+
+            //update image text
+            myTextView.setText(values[position].getResIdDesc());
+
+            //if the first position
+            if (position == 0) {
+
+                //if we don't have a saved puzzle, hide this
+                if (!hasSavedPuzzle()) {
+                    myImageView.setVisibility(GONE);
+                    myTextView.setVisibility(GONE);
+                    tmpView.setVisibility(GONE);
+                }
+            }
 
             //return the view
             return tmpView;

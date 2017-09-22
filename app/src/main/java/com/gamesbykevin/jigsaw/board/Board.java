@@ -87,6 +87,11 @@ public class Board implements ICommon {
     public static boolean ROTATE = false;
 
     /**
+     * Which image did we select
+     */
+    public static String IMAGE_LOCATION = "";
+
+    /**
      * How long can we view the puzzle before we start placing the pieces
      */
     private static final long VIEW_DELAY = (FPS * 1);
@@ -104,7 +109,6 @@ public class Board implements ICommon {
 
         setCols(BOARD_COLS);
         setRows(BOARD_ROWS);
-        reset();
     }
 
     public boolean isStarting() {

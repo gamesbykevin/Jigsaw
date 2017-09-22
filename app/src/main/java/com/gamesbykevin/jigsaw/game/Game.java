@@ -50,7 +50,7 @@ public class Game implements IGame {
         this.board = board;
     }
 
-    protected Board getBoard() {
+    public Board getBoard() {
         return this.board;
     }
 

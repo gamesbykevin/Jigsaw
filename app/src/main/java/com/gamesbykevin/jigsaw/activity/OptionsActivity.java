@@ -56,13 +56,6 @@ public class OptionsActivity extends BaseActivity {
             if (AMAZON && button.buttonId == R.id.toggleButtonGoogleLogin)
                 tmp.setChecked(false);
         }
-
-        /*
-        //populate shape options
-        this.buttonShape = (MultiStateToggleButton)findViewById(R.id.ToggleButtonShape);
-        this.buttonShape.setOptions(Board.Shape.values());
-        this.buttonShape.setHeader(getString(R.string.text_header_shape));
-        */
     }
 
     @Override
@@ -182,6 +175,5 @@ public class OptionsActivity extends BaseActivity {
 
         //update the login setting
         BaseGameActivity.BYPASS_LOGIN = (!button.isChecked());
-
     }
 }

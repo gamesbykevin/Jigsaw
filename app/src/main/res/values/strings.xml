@@ -4,10 +4,14 @@
     <string name="app_name" translatable="false">Jigsaw</string>
 
     <!-- keys for shared preferences -->
-    <string name="game_stats_file_key" translatable="false">com.gamesbykevin.jigsaw.GAME_STATS_FILE_KEY</string>
-    <string name="open_gl_zoom_file_key" translatable="false">com.gamesbykevin.jigsaw.OPEN_GL_ZOOM_FILE_KEY</string>
-    <string name="timer_file_key" translatable="false">com.gamesbykevin.jigsaw.TIMER_FILE_KEY</string>
-    <string name="google_play_auto_login_file_key" translatable="false">com.gamesbykevin.jigsaw.GOOGLE_PLAY_AUTO_LOGIN_FILE_KEY</string>
+    <string translatable="false" name="game_stats_file_key">com.gamesbykevin.jigsaw.GAME_STATS_FILE_KEY</string>
+    <string translatable="false" name="open_gl_zoom_file_key">com.gamesbykevin.jigsaw.OPEN_GL_ZOOM_FILE_KEY</string>
+    <string translatable="false" name="timer_file_key">com.gamesbykevin.jigsaw.TIMER_FILE_KEY</string>
+    <string translatable="false" name="google_play_auto_login_file_key">com.gamesbykevin.jigsaw.GOOGLE_PLAY_AUTO_LOGIN_FILE_KEY</string>
+    <string translatable="false" name="saved_puzzle_key">com.gamesbykevin.jigsaw.SAVED_PUZZLE</string>
+    <string translatable="false" name="saved_puzzle_custom_image_key">com.gamesbykevin.jigsaw.SAVED_PUZZLE_CUSTOM_IMAGE</string>
+    <string translatable="false" name="saved_puzzle_rotate_key">com.gamesbykevin.jigsaw.SAVED_PUZZLE_ROTATE</string>
+    <string translatable="false" name="saved_puzzle_timer_key">com.gamesbykevin.jigsaw.SAVED_PUZZLE_TIMER</string>
 
     <!-- button text -->
     <string name="button_text_next">Continue</string>
@@ -43,7 +47,9 @@
     <string name="confirm_text">Confirm</string>
     <string name="continue_text">Continue</string>
     <string name="rotate_text">Rotate</string>
-
+    <string name="choose_image">Select Image</string>
+    <string name="save_image_resume">Resume</string>
+    <string name="custom_image_desc_1">Custom Desc</string>
 
     <string name="settings_background_text">Background Color</string>
 

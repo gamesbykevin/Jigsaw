@@ -31,6 +31,11 @@ public class GameTimer implements Disposable {
     private ImageView time1, time2, time3, time4;
 
     /**
+     * Character to separate the timer
+     */
+    private static final String TIMER_SEPARATOR = ",";
+
+    /**
      * Default constructor
      */
     public GameTimer(GameActivity activity) {
@@ -200,5 +205,22 @@ public class GameTimer implements Disposable {
                 imageView.setImageBitmap(images[index]);
             }
         });
+    }
+
+    public String getTime() {
+        return clock1 + TIMER_SEPARATOR + clock2 + TIMER_SEPARATOR + clock3 + TIMER_SEPARATOR + clock4 + TIMER_SEPARATOR + lapsed;
+    }
+
+    public void restoreTime(String time) {
+
+        //split the values up by the delimiter
+        String[] values = time.split(TIMER_SEPARATOR);
+
+        //get and parse each value
+        clock1 = Integer.parseInt(values[0]);
+        clock2 = Integer.parseInt(values[1]);
+        clock3 = Integer.parseInt(values[2]);
+        clock4 = Integer.parseInt(values[3]);
+        lapsed = Long.parseLong(values[4]);
     }
 }

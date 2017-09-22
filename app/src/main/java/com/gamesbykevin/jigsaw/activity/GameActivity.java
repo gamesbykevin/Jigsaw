@@ -1,6 +1,7 @@
 package com.gamesbykevin.jigsaw.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 
 import com.gamesbykevin.androidframeworkv2.base.Disposable;
+import com.gamesbykevin.jigsaw.board.Board;
 import com.gamesbykevin.jigsaw.game.GameHelper;
 import com.gamesbykevin.jigsaw.opengl.OpenGLRenderer;
 import com.gamesbykevin.jigsaw.opengl.Textures;
@@ -27,6 +29,8 @@ import java.util.Timer;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.gamesbykevin.jigsaw.activity.LevelSelectActivity.RESUME_SAVED;
+import static com.gamesbykevin.jigsaw.board.Board.IMAGE_LOCATION;
 import static com.gamesbykevin.jigsaw.game.Game.STEP;
 import static com.gamesbykevin.jigsaw.util.UtilityHelper.DEBUG;
 
@@ -95,6 +99,10 @@ public class GameActivity extends BaseActivity implements Disposable {
 
         //update the ui for the sound setting
         updateSoundUI();
+
+        //if we are resuming a saved game, restore that timer
+        if (RESUME_SAVED)
+            getTimer().restoreTime((String)getObjectValue(R.string.saved_puzzle_timer_key, String.class));
     }
 
     public static Game getGame() {
@@ -312,10 +320,14 @@ public class GameActivity extends BaseActivity implements Disposable {
         switch (getScreen()) {
 
             case Settings:
+
                 setScreen(Screen.Ready);
                 break;
 
             default:
+
+                //save the puzzle
+                savePuzzle();
 
                 //show loading screen while we reset
                 setScreen(Screen.Loading);
@@ -486,4 +498,26 @@ public class GameActivity extends BaseActivity implements Disposable {
             buttonTimer.setImageResource(R.drawable.timer_off);
         }
     }
+
+    public void savePuzzle() {
+
+        //get the editor so we can change the shared preferences
+        SharedPreferences.Editor editor = getSharedPreferences().edit();
+
+        //convert array to json string when saving in shared preferences
+        editor.putString(getString(R.string.saved_puzzle_key), GSON.toJson(getGame().getBoard().getPieces()));
+
+        //store the rotation setting in the shared preferences
+        editor.putBoolean(getString(R.string.saved_puzzle_rotate_key), Board.ROTATE);
+
+        //store the selected image in shared preferences as well
+        editor.putString(getString(R.string.saved_puzzle_custom_image_key), Board.IMAGE_LOCATION);
+
+        //store the current timer
+        editor.putString(getString(R.string.saved_puzzle_timer_key), getTimer().getTime());
+
+        //save changes
+        editor.commit();
+    }
+
 }

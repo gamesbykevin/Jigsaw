@@ -13,8 +13,8 @@ style="@style/ActivityPage">
 
         <!-- add margins so everything appears within the menu background image-->
         <LinearLayout
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="0dp"
             style="@style/linearLayoutLevelSelectContainer">
 
             <!-- Title here-->
@@ -26,7 +26,7 @@ style="@style/ActivityPage">
             <!-- display our chosen image -->
             <ImageView
                 android:id="@+id/previewImageView"
-                android:padding="30dp"
+                android:paddingTop="40dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_width="200dp"
                 android:layout_height="200dp" />
@@ -34,14 +34,12 @@ style="@style/ActivityPage">
             <TextView android:id="@+id/textViewPieceCountDesc" style="@style/text_view_puzzle_piece_count_desc" />
             <SeekBar android:id="@+id/mySeekBar" style="@style/seek_bar_puzzle_piece" />
 
-            <Switch android:id="@+id/switchRotate" android:text="@string/rotate_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+            <Switch android:id="@+id/switchRotate" android:text="@string/rotate_text" style="@style/switchRotate" />
             <TextView android:id="@+id/textViewRotateDesc" style="@style/text_view_puzzle_piece_count_desc" />
 
             <Button
                 style="@style/buttonMenu"
-                android:layout_margin="5dp"
+                android:layout_marginBottom="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/continue_text"

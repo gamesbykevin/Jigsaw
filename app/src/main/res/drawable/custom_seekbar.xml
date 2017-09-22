@@ -1,37 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <!-- background -->
     <item>
-        <shape android:shape="rectangle" >
-            <corners android:radius="5dp"/>
-
-            <gradient
-                android:angle="180"
-                android:endColor="#6c6e6a"
-                android:startColor="#61635f" />
+        <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="line">
+            <stroke android:width="3dp" android:color="@color/transparent35"/>
+            <corners android:radius="3dp" />
         </shape>
     </item>
-    <item>
-        <clip>
-            <shape android:shape="rectangle" >
-                <corners android:radius="5dp" />
 
-                <gradient
-                    android:angle="180"
-                    android:endColor="#990800"
-                    android:startColor="#d14900" />
-            </shape>
-        </clip>
-    </item>
+    <!-- progress -->
     <item>
-        <clip>
-            <shape android:shape="rectangle" >
-                <corners android:radius="5dp" />
 
-                <gradient
-                    android:angle="180"
-                    android:endColor="#990800"
-                    android:startColor="#d14900" />
+        <!-- clip to only display progress -->
+        <clip>
+            <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="line">
+                <stroke android:width="3dp" android:color="@color/colorRed"/>
+                <corners android:radius="3dp" />
             </shape>
         </clip>
     </item>

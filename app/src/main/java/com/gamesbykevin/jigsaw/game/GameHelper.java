@@ -6,9 +6,11 @@ import android.opengl.GLES20;
 import com.gamesbykevin.androidframeworkv2.base.Entity;
 import com.gamesbykevin.jigsaw.R;
 import com.gamesbykevin.jigsaw.board.Board;
+import com.gamesbykevin.jigsaw.board.Piece;
 import com.gamesbykevin.jigsaw.opengl.Square;
 
 import static com.gamesbykevin.jigsaw.activity.GameActivity.getGame;
+import static com.gamesbykevin.jigsaw.activity.LevelSelectActivity.RESUME_SAVED;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLRenderer.RESET_ZOOM;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.FPS;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.HEIGHT;
@@ -119,12 +121,28 @@ public final class GameHelper {
         //reset zoom
         RESET_ZOOM = true;
 
-        //assign the image for the puzzle we need to cut
+        //assign default image for the puzzle we need to cut
         if (Board.IMAGE_SOURCE == null)
             Board.IMAGE_SOURCE = BitmapFactory.decodeResource(game.getActivity().getResources(), R.drawable.picture1);
 
         //create new board
         game.setBoard(new Board());
+
+        //if we are resuming a saved puzzle, get it from the saved preferences
+        if (RESUME_SAVED) {
+
+            //get the puzzle pieces from shared preferences
+            Piece[][] pieces = (Piece[][])game.getActivity().getObjectValue(R.string.saved_puzzle_key, Piece[][].class);
+
+            //assign board size
+            Board.BOARD_COLS = pieces[0].length;
+            Board.BOARD_ROWS = pieces.length;
+
+            game.getBoard().setPieces(pieces);
+        }
+
+        //now we can reset
+        game.getBoard().reset();
 
         //keep track of how many games are played
         //game.getActivity().trackEvent(R.string.event_games_played);
