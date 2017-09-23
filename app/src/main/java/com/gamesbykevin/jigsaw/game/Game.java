@@ -111,6 +111,9 @@ public class Game implements IGame {
                 //if the game is over, move to the next step
                 if (GAME_OVER) {
 
+                    //remove the saved game since it was beaten
+                    getActivity().clearSave();
+
                     //unlock any achievements we achieved
                     //AchievementHelper.completedGame(activity, getBoard());
 

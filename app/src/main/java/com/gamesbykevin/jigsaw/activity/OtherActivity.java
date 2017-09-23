@@ -1,6 +1,8 @@
 package com.gamesbykevin.jigsaw.activity;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +16,10 @@ import com.gamesbykevin.jigsaw.util.UtilityHelper;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import static com.gamesbykevin.jigsaw.board.BoardHelper.PUZZLE_TEXTURE;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.HEIGHT;
@@ -25,6 +31,11 @@ public class OtherActivity extends BaseActivity {
      * After we initialize how long should we delay
      */
     public static final long DEFAULT_DELAY = 350L;
+
+    /**
+     * The name of our image file to resume the puzzle
+     */
+    private static final String RESUME_IMAGE_FILE_NAME = "resume.jpg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,11 +84,11 @@ public class OtherActivity extends BaseActivity {
                 //get the location of the image
                 Uri selectedImage = data.getData();
 
-                //store the image location
-                Board.IMAGE_LOCATION = selectedImage.toString();
-
                 //retrieve the bitmap from the uri location
                 Board.IMAGE_SOURCE = getBitmapImage(this, selectedImage);
+
+                //store the bitmap image locally
+                Board.IMAGE_LOCATION = saveToInternalStorage(Board.IMAGE_SOURCE);
 
                 //start the new activity
                 startActivity(new Intent(OtherActivity.this, ConfirmActivity.class));
@@ -100,11 +111,56 @@ public class OtherActivity extends BaseActivity {
         finish();
     }
 
-    public static Bitmap getBitmapImage(Activity activity, String location) throws Exception {
-        return getBitmapImage(activity, Uri.parse(location));
+    private String saveToInternalStorage(Bitmap bitmapImage){
+
+        //get our context wrapper
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+
+        //make this location accessible to the app and private
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+
+        //location of our file
+        File myPath = new File(directory, RESUME_IMAGE_FILE_NAME);
+
+        FileOutputStream fos = null;
+
+        try {
+
+            //write to output file stream
+            fos = new FileOutputStream(myPath);
+
+            //use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+
+        } catch (Exception e) {
+
+            //print stack trace
+            e.printStackTrace();
+
+        } finally {
+
+            //clean up resources
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //return the path to our local directory where the file lies
+        return directory.getAbsolutePath();
     }
 
-    public static Bitmap getBitmapImage(Activity activity, Uri selectedImage) throws Exception {
+    public static Bitmap getBitmapImage(BaseActivity activity, String location) throws Exception {
+
+        //the location of our file
+        File file = new File(location, RESUME_IMAGE_FILE_NAME);
+
+        //decode our file stream and return our bitmap
+        return BitmapFactory.decodeStream(new FileInputStream(file));
+    }
+
+    private Bitmap getBitmapImage(BaseActivity activity, Uri selectedImage) throws Exception {
 
         //load the image
         Bitmap tmp = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), selectedImage);

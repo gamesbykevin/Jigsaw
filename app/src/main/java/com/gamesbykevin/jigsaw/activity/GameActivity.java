@@ -499,6 +499,9 @@ public class GameActivity extends BaseActivity implements Disposable {
         }
     }
 
+    /**
+     * Save the puzzle for future play
+     */
     public void savePuzzle() {
 
         //get the editor so we can change the shared preferences
@@ -511,13 +514,27 @@ public class GameActivity extends BaseActivity implements Disposable {
         editor.putBoolean(getString(R.string.saved_puzzle_rotate_key), Board.ROTATE);
 
         //store the selected image in shared preferences as well
-        editor.putString(getString(R.string.saved_puzzle_custom_image_key), Board.IMAGE_LOCATION);
+        editor.putString(getString(R.string.saved_puzzle_custom_image_key), GSON.toJson(Board.IMAGE_LOCATION));
 
         //store the current timer
-        editor.putString(getString(R.string.saved_puzzle_timer_key), getTimer().getTime());
+        editor.putString(getString(R.string.saved_puzzle_timer_key), GSON.toJson(getTimer().getTime()));
 
         //save changes
         editor.commit();
     }
 
+    public void clearSave() {
+
+        //get the editor so we can change the shared preferences
+        SharedPreferences.Editor editor = getSharedPreferences().edit();
+
+        //remove all saved puzzle information
+        editor.remove(getString(R.string.saved_puzzle_key));
+        editor.remove(getString(R.string.saved_puzzle_rotate_key));
+        editor.remove(getString(R.string.saved_puzzle_timer_key));
+        editor.remove(getString(R.string.saved_puzzle_custom_image_key));
+
+        //save changes
+        editor.commit();
+    }
 }

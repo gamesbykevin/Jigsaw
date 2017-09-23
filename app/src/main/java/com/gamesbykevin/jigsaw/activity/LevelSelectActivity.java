@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.gamesbykevin.jigsaw.R;
 import com.gamesbykevin.jigsaw.board.Board;
-import com.gamesbykevin.jigsaw.board.Piece;
 
 import static android.view.View.GONE;
 import static com.gamesbykevin.jigsaw.activity.GameActivity.getRandomObject;
@@ -70,11 +69,15 @@ public class LevelSelectActivity extends BaseActivity {
      */
     protected static int SEEK_BAR_PROGRESS = 0;
 
+    private LevelSelectActivity levelSelectActivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         //call parent
         super.onCreate(savedInstanceState);
+
+        levelSelectActivity = this;
 
         //inflate the xml content
         setContentView(R.layout.activity_level_select);
@@ -118,7 +121,7 @@ public class LevelSelectActivity extends BaseActivity {
                         RESUME_SAVED = true;
 
                         //get the location of the image
-                        String bitmapLocation = (String)getObjectValue(R.string.saved_puzzle_custom_image_key, String.class);
+                        String bitmapLocation = Board.IMAGE_LOCATION;
 
                         //check if local location, or in .apk
                         if (TextUtils.isDigitsOnly(bitmapLocation)) {
@@ -131,9 +134,10 @@ public class LevelSelectActivity extends BaseActivity {
                             try {
 
                                 //see if we can get the image from the user's storage
-                                Board.IMAGE_SOURCE = OtherActivity.getBitmapImage(getParent(), bitmapLocation);
+                                Board.IMAGE_SOURCE = OtherActivity.getBitmapImage(levelSelectActivity, bitmapLocation);
 
                             } catch (Exception e) {
+
                                 e.printStackTrace();
 
                                 //since there was an issue, pick a random existing image
@@ -251,7 +255,7 @@ public class LevelSelectActivity extends BaseActivity {
     }
 
     private boolean hasSavedPuzzle() {
-        return (super.getObjectValue(R.string.saved_puzzle_custom_image_key, String.class) != null);
+        return ((String)super.getObjectValue(R.string.saved_puzzle_custom_image_key, String.class) != null);
     }
 
     private class MyArrayAdapter extends ArrayAdapter<ImageOption> {
@@ -289,9 +293,46 @@ public class LevelSelectActivity extends BaseActivity {
 
                 //if we don't have a saved puzzle, hide this
                 if (!hasSavedPuzzle()) {
+
                     myImageView.setVisibility(GONE);
                     myTextView.setVisibility(GONE);
                     tmpView.setVisibility(GONE);
+
+                } else {
+
+                    //get the location of the image
+                    String bitmapLocation = (String) getObjectValue(R.string.saved_puzzle_custom_image_key, String.class);
+
+                    if (bitmapLocation != null) {
+
+                        //check if local location, or in .apk
+                        if (TextUtils.isDigitsOnly(bitmapLocation)) {
+
+                            //update the image like so
+                            myImageView.setImageResource(ImageOption.values()[Integer.parseInt(bitmapLocation)].getResIdImage());
+
+                        } else {
+
+                            try {
+
+                                //update from user storage
+                                myImageView.setImageBitmap(OtherActivity.getBitmapImage(levelSelectActivity, bitmapLocation));
+
+                            } catch (Exception e) {
+
+                                e.printStackTrace();
+
+                                //since there was an issue, pick a random existing image to use in our puzzle
+                                int index = getRandomObject().nextInt(ImageOption.values().length - 2) + 2;
+
+                                //store the new location since the custom image is unavailable
+                                Board.IMAGE_LOCATION = index + "";
+
+                                //update the image like so
+                                myImageView.setImageResource(ImageOption.values()[index].getResIdImage());
+                            }
+                        }
+                    }
                 }
             }
 
