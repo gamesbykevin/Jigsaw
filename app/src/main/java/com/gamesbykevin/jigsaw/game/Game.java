@@ -8,6 +8,7 @@ import com.gamesbykevin.jigsaw.board.Board;
 import static com.gamesbykevin.jigsaw.game.GameHelper.FRAMES;
 import static com.gamesbykevin.jigsaw.game.GameHelper.GAME_OVER;
 import static com.gamesbykevin.jigsaw.game.GameHelper.GAME_OVER_DELAY_FRAMES;
+import static com.gamesbykevin.jigsaw.game.GameHelper.SAVE_EXIT;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLRenderer.LOADED;
 
 /**
@@ -111,7 +112,7 @@ public class Game implements IGame {
                 //if the game is over, move to the next step
                 if (GAME_OVER) {
 
-                    //remove the saved game since it was beaten
+                    //remove the saved game since it has been beaten
                     getActivity().clearSave();
 
                     //unlock any achievements we achieved
@@ -133,6 +134,15 @@ public class Game implements IGame {
                     activity.vibrate();
 
                 } else {
+
+                    //if saving and exiting do this here
+                    if (SAVE_EXIT) {
+                        SAVE_EXIT = false;
+                        STEP = Step.Start;
+                        getActivity().savePuzzle();
+                        getActivity().exit();
+                        return;
+                    }
 
                     //update the board
                     getBoard().update();

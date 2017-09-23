@@ -44,6 +44,9 @@ public final class GameHelper {
     //keep track of elapsed frames
     public static int FRAMES = 0;
 
+    //do we save the puzzle and exit after?
+    public static boolean SAVE_EXIT = false;
+
     private static Entity getEntityBackground() {
 
         //only need to setup once
@@ -140,7 +143,7 @@ public final class GameHelper {
 
             //assign the puzzle pieces
             game.getBoard().setPieces(pieces);
-            
+
         } else {
 
             //if not resuming, just create a new board

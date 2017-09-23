@@ -112,7 +112,7 @@
     </style>
 
     <style name="seek_bar_puzzle_piece">
-        <item name="android:max">13</item>
+        <item name="android:max">22</item>
         <item name="android:splitTrack">false</item>
         <item name="android:progressDrawable">@drawable/custom_seekbar</item>
         <item name="android:thumb">@drawable/custom_seekbar_thumb</item>

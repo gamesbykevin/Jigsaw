@@ -481,18 +481,18 @@ public class GameActivity extends BaseActivity implements Disposable {
 
     public void onClickConfirm(View view) {
 
-        //save the puzzle
-        savePuzzle();
+        //display loading screen
+        setScreen(Screen.Loading);
 
-        //exit activity
-        exit();
+        //flag save
+        GameHelper.SAVE_EXIT = true;
     }
 
     public void onClickExit(View view) {
         exit();
     }
 
-    private void exit() {
+    public void exit() {
 
         //create our intent to go to the level select page
         Intent intent = new Intent(GameActivity.this, LevelSelectActivity.class);
