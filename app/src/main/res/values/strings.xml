@@ -20,7 +20,6 @@
     <string name="button_text_menu">Menu</string>
     <string name="button_text_start">Start</string>
     <string name="button_text_options">Options</string>
-    <string name="button_text_in_game_options">Game Options</string>
     <string name="button_text_tutorial">Tutorial</string>
     <string name="button_text_play">Play</string>
     <string name="button_text_leaderboard">Leaderboard</string>
@@ -30,6 +29,7 @@
     <string name="exit_prompt">Press again to exit</string>
 
     <!-- text on options page -->
+    <string name="text_in_game_options">Game Options</string>
     <string name="vibrate_on">Vibrate: On</string>
     <string name="vibrate_off">Vibrate: Off</string>
     <string name="sound_on">Sound: On</string>
@@ -40,6 +40,13 @@
     <string name="timer_off">Timer: Off</string>
     <string name="google_play_auto_enabled">Google Play: On</string>
     <string name="google_play_auto_disabled">Google Play: Off</string>
+
+    <!-- text on prompt save page -->
+    <string name="text_prompt_title">Save</string>
+    <string name="textViewPrompt">Save progress before exit?</string>
+    <string name="textViewPromptExtra">This will overwrite existing save.</string>
+    <string name="confirm_save">Yes</string>
+    <string name="confirm_exit">No</string>
 
     <!-- text displayed -->
     <string name="level_select_text">Select Picture</string>

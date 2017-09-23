@@ -28,11 +28,6 @@ import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.WIDTH;
 public class OtherActivity extends BaseActivity {
 
     /**
-     * After we initialize how long should we delay
-     */
-    public static final long DEFAULT_DELAY = 350L;
-
-    /**
      * The name of our image file to resume the puzzle
      */
     private static final String RESUME_IMAGE_FILE_NAME = "resume.jpg";
@@ -85,9 +80,9 @@ public class OtherActivity extends BaseActivity {
                 Uri selectedImage = data.getData();
 
                 //retrieve the bitmap from the uri location
-                Board.IMAGE_SOURCE = getBitmapImage(this, selectedImage);
+                Board.IMAGE_SOURCE = getBitmapImage(selectedImage);
 
-                //store the bitmap image locally
+                //store the bitmap image locally so we can resume if they save
                 Board.IMAGE_LOCATION = saveToInternalStorage(Board.IMAGE_SOURCE);
 
                 //start the new activity
@@ -134,8 +129,8 @@ public class OtherActivity extends BaseActivity {
 
         } catch (Exception e) {
 
-            //print stack trace
-            e.printStackTrace();
+            //handle exception
+            UtilityHelper.handleException(e);
 
         } finally {
 
@@ -151,7 +146,7 @@ public class OtherActivity extends BaseActivity {
         return directory.getAbsolutePath();
     }
 
-    public static Bitmap getBitmapImage(BaseActivity activity, String location) throws Exception {
+    public static Bitmap getBitmapImage(String location) throws Exception {
 
         //the location of our file
         File file = new File(location, RESUME_IMAGE_FILE_NAME);
@@ -160,10 +155,10 @@ public class OtherActivity extends BaseActivity {
         return BitmapFactory.decodeStream(new FileInputStream(file));
     }
 
-    private Bitmap getBitmapImage(BaseActivity activity, Uri selectedImage) throws Exception {
+    private Bitmap getBitmapImage(Uri selectedImage) throws Exception {
 
         //load the image
-        Bitmap tmp = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), selectedImage);
+        Bitmap tmp = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
 
         float imgSrcHeight = tmp.getHeight();
         float imgSrcWidth = tmp.getWidth();

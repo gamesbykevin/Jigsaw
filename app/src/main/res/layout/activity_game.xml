@@ -18,6 +18,9 @@
     <!-- in game settings -->
     <include layout="@layout/layout_game_settings" android:id="@+id/layoutGameSettings" />
 
+    <!-- prompt user save -->
+    <include layout="@layout/layout_game_prompt" android:id="@+id/layoutGamePrompt" />
+
     <!-- Game over layout(s) -->
     <include layout="@layout/layout_game_over_default" android:id="@+id/layoutGameOver" />
 

@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.gamesbykevin.jigsaw.R;
 import com.gamesbykevin.jigsaw.board.Board;
+import com.gamesbykevin.jigsaw.util.UtilityHelper;
 
 import static android.view.View.GONE;
 import static com.gamesbykevin.jigsaw.activity.GameActivity.getRandomObject;
@@ -69,15 +70,11 @@ public class LevelSelectActivity extends BaseActivity {
      */
     protected static int SEEK_BAR_PROGRESS = 0;
 
-    private LevelSelectActivity levelSelectActivity;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         //call parent
         super.onCreate(savedInstanceState);
-
-        levelSelectActivity = this;
 
         //inflate the xml content
         setContentView(R.layout.activity_level_select);
@@ -115,16 +112,16 @@ public class LevelSelectActivity extends BaseActivity {
                 if (position == 0) {
 
                     //if first selection check if the user has a saved puzzle
-                    if (hasSavedPuzzle()) {
+                    if (hasSavedGame()) {
 
                         //flag that we want to resume our saved puzzle
                         RESUME_SAVED = true;
 
                         //get the location of the image
-                        String bitmapLocation = Board.IMAGE_LOCATION;
+                        String bitmapLocation = (String)getObjectValue(R.string.saved_puzzle_custom_image_key, String.class);;
 
                         //check if local location, or in .apk
-                        if (TextUtils.isDigitsOnly(bitmapLocation)) {
+                        if (bitmapLocation != null && bitmapLocation.length() > 0 && TextUtils.isDigitsOnly(bitmapLocation)) {
 
                             //if only numeric then the image is part of our enum array
                             Board.IMAGE_SOURCE = BitmapFactory.decodeResource(getResources(), ImageOption.values()[Integer.parseInt(bitmapLocation)].getResIdImage());
@@ -134,11 +131,12 @@ public class LevelSelectActivity extends BaseActivity {
                             try {
 
                                 //see if we can get the image from the user's storage
-                                Board.IMAGE_SOURCE = OtherActivity.getBitmapImage(levelSelectActivity, bitmapLocation);
+                                Board.IMAGE_SOURCE = OtherActivity.getBitmapImage(bitmapLocation);
 
                             } catch (Exception e) {
 
-                                e.printStackTrace();
+                                //handle exception
+                                UtilityHelper.handleException(e);
 
                                 //since there was an issue, pick a random existing image
                                 int index = getRandomObject().nextInt(ImageOption.values().length - 2) + 2;
@@ -162,23 +160,8 @@ public class LevelSelectActivity extends BaseActivity {
 
                 } else if (position == 1) {
 
-                    if (hasSavedPuzzle()) {
-
-                        //start the other activity which will let us choose the image
-                        startActivity(new Intent(LevelSelectActivity.this, OtherActivity.class));
-
-                    } else {
-
-                        //store the image location
-                        Board.IMAGE_LOCATION = position + "";
-
-                        //assign our image source
-                        Board.IMAGE_SOURCE = BitmapFactory.decodeResource(getResources(), ImageOption.values()[position].getResIdImage());
-
-                        //start the activity
-                        startActivity(new Intent(LevelSelectActivity.this, ConfirmActivity.class));
-
-                    }
+                    //start the other activity which will let us choose the image
+                    startActivity(new Intent(LevelSelectActivity.this, OtherActivity.class));
 
                 } else {
 
@@ -254,10 +237,6 @@ public class LevelSelectActivity extends BaseActivity {
         finish();
     }
 
-    private boolean hasSavedPuzzle() {
-        return ((String)super.getObjectValue(R.string.saved_puzzle_custom_image_key, String.class) != null);
-    }
-
     private class MyArrayAdapter extends ArrayAdapter<ImageOption> {
 
         private final Context context;
@@ -292,7 +271,7 @@ public class LevelSelectActivity extends BaseActivity {
             if (position == 0) {
 
                 //if we don't have a saved puzzle, hide this
-                if (!hasSavedPuzzle()) {
+                if (!hasSavedGame()) {
 
                     myImageView.setVisibility(GONE);
                     myTextView.setVisibility(GONE);
@@ -301,7 +280,7 @@ public class LevelSelectActivity extends BaseActivity {
                 } else {
 
                     //get the location of the image
-                    String bitmapLocation = (String) getObjectValue(R.string.saved_puzzle_custom_image_key, String.class);
+                    String bitmapLocation = (String)getObjectValue(R.string.saved_puzzle_custom_image_key, String.class);
 
                     if (bitmapLocation != null) {
 
@@ -316,11 +295,12 @@ public class LevelSelectActivity extends BaseActivity {
                             try {
 
                                 //update from user storage
-                                myImageView.setImageBitmap(OtherActivity.getBitmapImage(levelSelectActivity, bitmapLocation));
+                                myImageView.setImageBitmap(OtherActivity.getBitmapImage(bitmapLocation));
 
                             } catch (Exception e) {
 
-                                e.printStackTrace();
+                                //handle exception
+                                UtilityHelper.handleException(e);
 
                                 //since there was an issue, pick a random existing image to use in our puzzle
                                 int index = getRandomObject().nextInt(ImageOption.values().length - 2) + 2;

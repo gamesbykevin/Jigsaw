@@ -2,6 +2,7 @@ package com.gamesbykevin.jigsaw.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.View;
@@ -63,7 +64,8 @@ public class GameActivity extends BaseActivity implements Disposable {
         Loading,
         Ready,
         GameOver,
-        Settings
+        Settings,
+        Prompt
     }
 
     //current screen we are on
@@ -93,6 +95,7 @@ public class GameActivity extends BaseActivity implements Disposable {
         this.layouts.add((ViewGroup)findViewById(R.id.layoutLoadingScreen));
         this.layouts.add((ViewGroup)findViewById(R.id.layoutGameControls));
         this.layouts.add((ViewGroup)findViewById(R.id.layoutGameSettings));
+        this.layouts.add((ViewGroup)findViewById(R.id.layoutGamePrompt));
 
         //update the timer appropriately
         updateTimerUI(getBooleanValue(R.string.timer_file_key) ? VISIBLE : GONE);
@@ -291,6 +294,11 @@ public class GameActivity extends BaseActivity implements Disposable {
                 setLayoutVisibility((ViewGroup)findViewById(R.id.layoutGameOver), true);
                 break;
 
+            //show the save prompt
+            case Prompt:
+                setLayoutVisibility((ViewGroup)findViewById(R.id.layoutGamePrompt), true);
+                break;
+
             //don't re-enable anything
             case Ready:
 
@@ -319,15 +327,34 @@ public class GameActivity extends BaseActivity implements Disposable {
         //we will do different things depening which screen we are on
         switch (getScreen()) {
 
+            //if viewing the game settings and back pressed, go back to game
             case Settings:
-
                 setScreen(Screen.Ready);
                 break;
 
-            default:
+            //if playing the game and back pressed, prompt user to save
+            case Ready:
 
-                //save the puzzle
-                savePuzzle();
+                //if the game is still starting, do nothing
+                if (getGame().getBoard().isStarting())
+                    return;
+
+                //do we show overwrite text
+                findViewById(R.id.textViewPromptExtra).setVisibility(hasSavedGame() ? VISIBLE : View.INVISIBLE);
+
+                //display prompt window
+                setScreen(Screen.Prompt);
+                break;
+
+            //if the user is being prompted, don't allow back pressed
+            case Prompt:
+                return;
+
+            //if the loading screen is displayed, don't allow the user to go back
+            case Loading:
+                return;
+
+            default:
 
                 //show loading screen while we reset
                 setScreen(Screen.Loading);
@@ -450,6 +477,31 @@ public class GameActivity extends BaseActivity implements Disposable {
             //if the settings are showing, go back to ready
             setScreen(Screen.Ready);
         }
+    }
+
+    public void onClickConfirm(View view) {
+
+        //save the puzzle
+        savePuzzle();
+
+        //exit activity
+        exit();
+    }
+
+    public void onClickExit(View view) {
+        exit();
+    }
+
+    private void exit() {
+
+        //create our intent to go to the level select page
+        Intent intent = new Intent(GameActivity.this, LevelSelectActivity.class);
+
+        //start the activity
+        startActivity(intent);
+
+        //remove this activity from the back stack
+        finish();
     }
 
     public void onClickChangeSound(View view) {

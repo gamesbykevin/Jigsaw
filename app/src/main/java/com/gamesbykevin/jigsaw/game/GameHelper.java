@@ -125,9 +125,6 @@ public final class GameHelper {
         if (Board.IMAGE_SOURCE == null)
             Board.IMAGE_SOURCE = BitmapFactory.decodeResource(game.getActivity().getResources(), R.drawable.picture1);
 
-        //create new board
-        game.setBoard(new Board());
-
         //if we are resuming a saved puzzle, get it from the saved preferences
         if (RESUME_SAVED) {
 
@@ -138,7 +135,16 @@ public final class GameHelper {
             Board.BOARD_COLS = pieces[0].length;
             Board.BOARD_ROWS = pieces.length;
 
+            //create new board
+            game.setBoard(new Board());
+
+            //assign the puzzle pieces
             game.getBoard().setPieces(pieces);
+            
+        } else {
+
+            //if not resuming, just create a new board
+            game.setBoard(new Board());
         }
 
         //now we can reset
