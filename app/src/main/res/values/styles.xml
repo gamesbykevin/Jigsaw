@@ -112,7 +112,8 @@
     </style>
 
     <style name="seek_bar_puzzle_piece">
-        <item name="android:max">22</item>
+        <item name="android:max">13</item>
+        <item name="android:padding">3dp</item>
         <item name="android:splitTrack">false</item>
         <item name="android:progressDrawable">@drawable/custom_seekbar</item>
         <item name="android:thumb">@drawable/custom_seekbar_thumb</item>
@@ -125,7 +126,7 @@
         <item name="android:gravity">center_horizontal</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">3dp</item>
+        <item name="android:padding">5dp</item>
         <item name="android:textColor">@color/colorBlack</item>
     </style>
 
@@ -139,11 +140,9 @@
     </style>
 
     <style name="linearLayoutLevelSelectContainer">
-        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_width">200dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:orientation">vertical</item>
-        <item name="android:layout_marginRight">65dp</item>
-        <item name="android:layout_marginLeft">65dp</item>
     </style>
 
     <style name="textViewLevelSelectTitle">
@@ -156,6 +155,7 @@
     </style>
 
     <style name="switchRotate">
+        <item name="android:switchPadding">5dp</item>
         <item name="android:thumb">@drawable/custom_seekbar_thumb</item>
         <item name="android:layout_marginLeft">15dp</item>
         <item name="android:layout_width">wrap_content</item>
@@ -171,5 +171,36 @@
         <item name="android:colorForeground">@color/colorGray</item>
 
     </style>
+
+    <style name="game_button">
+        <item name="android:padding">3dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+
+    <style name="button_leaderboard">
+        <item name="android:onClick">onClickLeaderboard</item>
+        <item name="android:src">@drawable/leaderboard_on</item>
+        <item name="android:padding">3dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="button_achievement">
+        <item name="android:onClick">onClickAchievements</item>
+        <item name="android:src">@drawable/achievements_on</item>
+        <item name="android:padding">3dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+
+    </style>
+
+    <!--
+    <ImageView
+        style="@style/game_button"
+    -->
+
+
 
 </resources>

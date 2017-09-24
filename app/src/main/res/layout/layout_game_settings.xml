@@ -59,36 +59,22 @@
 
                 <TableRow>
                     <ImageView
+                        style="@style/game_button"
                         android:onClick="onClickChangeSound"
-                        android:padding="5dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:src="@drawable/sound_on"
                         android:id="@+id/buttonSound" />
 
-                    <ImageView
-                        android:padding="5dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/leaderboard_on"
-                        android:id="@+id/buttonLeaderboard" />
+                    <ImageView android:id="@+id/buttonLeaderboard" style="@style/button_leaderboard" />
                 </TableRow>
 
                 <TableRow>
                     <ImageView
+                        style="@style/game_button"
                         android:onClick="onClickShowTimer"
-                        android:padding="5dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:src="@drawable/timer_on"
                         android:id="@+id/buttonTimer" />
 
-                    <ImageView
-                        android:padding="5dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/achievements_on"
-                        android:id="@+id/buttonAchievements" />
+                    <ImageView android:id="@+id/buttonAchievement" style="@style/button_achievement" />
                 </TableRow>
             </TableLayout>
         </TableRow>

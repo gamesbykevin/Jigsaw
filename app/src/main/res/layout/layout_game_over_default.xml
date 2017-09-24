@@ -1,34 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="invisible"
     style="@style/GameOverPage">
 
-    <!-- Need to show Game Over text etc... -->
-    <include layout="@layout/layout_logo" />
+    <RelativeLayout
+        android:gravity="center"
+        android:background="@drawable/menu_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TableLayout style="@style/tableMenu">
-        <TableRow style="@style/rowMenu">
-            <Button style="@style/buttonMenu" android:text="@string/button_text_next" android:onClick="onClickNext" />
-        </TableRow>
-        <!--
-        <TableRow style="@style/rowMenu">
-            <Button style="@style/buttonMenu" android:text="@string/button_text_achievements" android:onClick="onClickAchievements" />
-        </TableRow>
-        <TableRow style="@style/rowMenu">
-            <Button style="@style/buttonMenu" android:text="@string/button_text_rate" android:onClick="onClickRate" />
-        </TableRow>
-        <TableRow style="@style/rowMenu">
-            <Button style="@style/buttonMenu" android:text="@string/button_text_menu" android:onClick="onClickMenu" />
-        </TableRow>
-        <TableRow style="@style/rowMenu">
-            <Button style="@style/buttonMenu" android:text="@string/button_text_more" android:onClick="onClickMore" />
-        </TableRow>
-        -->
-    </TableLayout>
+        <TextView android:layout_marginTop="15dp" style="@style/textViewLevelSelectTitle" android:text="@string/game_over_text" />
 
-    <include layout="@layout/layout_social_icons" />
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="false"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="40dp"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-</LinearLayout>
+            <TableRow android:layout_gravity="center">
+
+                <ImageView
+                    android:id="@+id/buttonNext"
+                    style="@style/game_button"
+                    android:onClick="onClickNext"
+                    android:src="@drawable/next"/>
+
+                <ImageView
+                    android:id="@+id/buttonRate"
+                    style="@style/game_button"
+                    android:onClick="onClickRate"
+                    android:src="@drawable/rate"/>
+
+                <ImageView
+                    android:id="@+id/buttonHome"
+                    style="@style/game_button"
+                    android:onClick="onClickHome"
+                    android:src="@drawable/home"/>
+
+            </TableRow>
+
+            <TableRow android:layout_gravity="center">
+
+                <ImageView
+                    android:id="@+id/buttonAchievement"
+                    style="@style/button_achievement"/>
+
+                <ImageView
+                    android:id="@+id/buttonLeaderboard"
+                    style="@style/button_leaderboard"/>
+
+            </TableRow>
+
+        </TableLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

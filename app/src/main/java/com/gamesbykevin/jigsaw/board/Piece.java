@@ -79,11 +79,22 @@ public class Piece extends Entity {
     //destination angle
     private float destination = 0f;
 
+    //the section id this piece belonged to
+    private long sectionId;
+
     public Piece(int col, int row) {
 
         //set the location
         super.setCol(col);
         super.setRow(row);
+    }
+
+    public void setSectionId(final long sectionId) {
+        this.sectionId = sectionId;
+    }
+
+    public long getSectionId() {
+        return this.sectionId;
     }
 
     public void setDestination(final float destination) {
@@ -397,6 +408,16 @@ public class Piece extends Entity {
     }
 
     public boolean contains(final float x, final float y, final float w) {
+
+        //make sure in range
+        if (x < getX())
+            return false;
+        if (x > getX() + getWidth())
+            return false;
+        if (y < getY())
+            return false;
+        if (y > getY() + getHeight())
+            return false;
 
         //get the center
         final float mx = getX() + (getWidth() / 2);

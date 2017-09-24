@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -492,13 +493,27 @@ public class GameActivity extends BaseActivity implements Disposable {
         exit();
     }
 
-    public void exit() {
+    public void onClickNext(View view) {
+        exit();
+    }
 
-        //create our intent to go to the level select page
-        Intent intent = new Intent(GameActivity.this, LevelSelectActivity.class);
+    public void onClickLeaderboard(View view) {
+
+    }
+
+    public void onClickHome(View view) {
 
         //start the activity
-        startActivity(intent);
+        startActivity(new Intent(GameActivity.this, MainActivity.class));
+
+        //remove this activity from the back stack
+        finish();
+    }
+
+    public void exit() {
+
+        //start the activity
+        startActivity(new Intent(GameActivity.this, LevelSelectActivity.class));
 
         //remove this activity from the back stack
         finish();
@@ -556,23 +571,42 @@ public class GameActivity extends BaseActivity implements Disposable {
      */
     public void savePuzzle() {
 
-        //get the editor so we can change the shared preferences
-        SharedPreferences.Editor editor = getSharedPreferences().edit();
+        try {
 
-        //convert array to json string when saving in shared preferences
-        editor.putString(getString(R.string.saved_puzzle_key), GSON.toJson(getGame().getBoard().getPieces()));
+            //if the location is not a number, then the location is a path to a file and we need to move/save
+            if (!TextUtils.isDigitsOnly(Board.IMAGE_LOCATION)) {
 
-        //store the rotation setting in the shared preferences
-        editor.putBoolean(getString(R.string.saved_puzzle_rotate_key), Board.ROTATE);
+                //rename our temp file
+                OtherActivity.saveToInternalStorage(
+                    this,
+                    OtherActivity.getBitmapImage(Board.IMAGE_LOCATION, OtherActivity.RESUME_IMAGE_TMP_FILE_NAME),
+                    OtherActivity.RESUME_IMAGE_FILE_NAME
+                );
+            }
 
-        //store the selected image in shared preferences as well
-        editor.putString(getString(R.string.saved_puzzle_custom_image_key), GSON.toJson(Board.IMAGE_LOCATION));
+            //get the editor so we can change the shared preferences
+            SharedPreferences.Editor editor = getSharedPreferences().edit();
 
-        //store the current timer
-        editor.putString(getString(R.string.saved_puzzle_timer_key), GSON.toJson(getTimer().getTime()));
+            //convert array to json string when saving in shared preferences
+            editor.putString(getString(R.string.saved_puzzle_key), GSON.toJson(getGame().getBoard().getPieces()));
 
-        //save changes
-        editor.commit();
+            //store the rotation setting in the shared preferences
+            editor.putBoolean(getString(R.string.saved_puzzle_rotate_key), Board.ROTATE);
+
+            //store the selected image in shared preferences as well
+            editor.putString(getString(R.string.saved_puzzle_custom_image_key), GSON.toJson(Board.IMAGE_LOCATION));
+
+            //store the current timer
+            editor.putString(getString(R.string.saved_puzzle_timer_key), GSON.toJson(getTimer().getTime()));
+
+            //save changes
+            editor.commit();
+
+        } catch (Exception e) {
+
+            UtilityHelper.handleException(e);
+
+        }
     }
 
     public void clearSave() {

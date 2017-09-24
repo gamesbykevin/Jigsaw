@@ -30,7 +30,12 @@ public class OtherActivity extends BaseActivity {
     /**
      * The name of our image file to resume the puzzle
      */
-    private static final String RESUME_IMAGE_FILE_NAME = "resume.jpg";
+    public static final String RESUME_IMAGE_FILE_NAME = "resume.jpg";
+
+    /**
+     * The temp file to save in case we do save a custom puzzle
+     */
+    public static final String RESUME_IMAGE_TMP_FILE_NAME = "resume_tmp.jpg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +88,7 @@ public class OtherActivity extends BaseActivity {
                 Board.IMAGE_SOURCE = getBitmapImage(selectedImage);
 
                 //store the bitmap image locally so we can resume if they save
-                Board.IMAGE_LOCATION = saveToInternalStorage(Board.IMAGE_SOURCE);
+                Board.IMAGE_LOCATION = saveToInternalStorage(this, Board.IMAGE_SOURCE, RESUME_IMAGE_TMP_FILE_NAME);
 
                 //start the new activity
                 startActivity(new Intent(OtherActivity.this, ConfirmActivity.class));
@@ -106,23 +111,33 @@ public class OtherActivity extends BaseActivity {
         finish();
     }
 
-    private String saveToInternalStorage(Bitmap bitmapImage){
+    public static String saveToInternalStorage(Context context, Bitmap bitmapImage, String file_name){
 
         //get our context wrapper
-        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        ContextWrapper cw = new ContextWrapper(context);
 
         //make this location accessible to the app and private
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
 
+        //get file object to check if it exists
+        File tmp = new File(directory, file_name);
+
+        //if file already exists, delete it
+        if (tmp.exists())
+            tmp.delete();
+
+        //set null
+        tmp = null;
+
         //location of our file
-        File myPath = new File(directory, RESUME_IMAGE_FILE_NAME);
+        File myPath = new File(directory, file_name);
 
         FileOutputStream fos = null;
 
         try {
 
             //write to output file stream
-            fos = new FileOutputStream(myPath);
+            fos = new FileOutputStream(myPath, false);
 
             //use the compress method on the BitMap object to write image to the OutputStream
             bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
@@ -146,10 +161,10 @@ public class OtherActivity extends BaseActivity {
         return directory.getAbsolutePath();
     }
 
-    public static Bitmap getBitmapImage(String location) throws Exception {
+    public static Bitmap getBitmapImage(String location, String file_name) throws Exception {
 
         //the location of our file
-        File file = new File(location, RESUME_IMAGE_FILE_NAME);
+        File file = new File(location, file_name);
 
         //decode our file stream and return our bitmap
         return BitmapFactory.decodeStream(new FileInputStream(file));

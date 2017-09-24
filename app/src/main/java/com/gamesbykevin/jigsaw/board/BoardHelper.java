@@ -8,6 +8,7 @@ import android.graphics.PointF;
 import com.gamesbykevin.jigsaw.R;
 import com.gamesbykevin.jigsaw.activity.BaseActivity;
 import com.gamesbykevin.jigsaw.opengl.Square;
+import com.gamesbykevin.jigsaw.opengl.Textures;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 
 import java.util.ArrayList;
@@ -62,6 +63,10 @@ public class BoardHelper {
 
     protected static void cut(final Board board) {
 
+        //reset values, so once we are done, they are loaded into open gl
+        Textures.TEXTURE_ID_IMAGE_SOURCE = 0;
+        BoardHelper.PUZZLE_TEXTURE_GENERATED = false;
+
         //bitmap mask to cut the pieces
         Bitmap east = BitmapFactory.decodeResource(getGame().getActivity().getResources(), R.drawable.cut_traditional_east);
         Bitmap west = BitmapFactory.decodeResource(getGame().getActivity().getResources(), R.drawable.cut_traditional_west);
@@ -113,6 +118,13 @@ public class BoardHelper {
             imageWidth++;
         if (imageHeight % 2 != 0)
             imageHeight++;
+
+        //keep the size the same so our math works
+        if (imageWidth > imageHeight) {
+            imageHeight = imageWidth;
+        } else if (imageHeight > imageWidth) {
+            imageWidth = imageHeight;
+        }
 
         //dimensions need to be a multiple of x
         while (imageWidth % 16 != 0) {

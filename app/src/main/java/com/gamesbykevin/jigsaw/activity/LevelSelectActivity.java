@@ -131,7 +131,7 @@ public class LevelSelectActivity extends BaseActivity {
                             try {
 
                                 //see if we can get the image from the user's storage
-                                Board.IMAGE_SOURCE = OtherActivity.getBitmapImage(bitmapLocation);
+                                Board.IMAGE_SOURCE = OtherActivity.getBitmapImage(bitmapLocation, OtherActivity.RESUME_IMAGE_FILE_NAME);
 
                             } catch (Exception e) {
 
@@ -218,6 +218,11 @@ public class LevelSelectActivity extends BaseActivity {
 
         //flag false for now
         RESUME_SAVED = false;
+
+        if (Board.IMAGE_SOURCE != null) {
+            Board.IMAGE_SOURCE.recycle();
+            Board.IMAGE_SOURCE = null;
+        }
     }
 
     @Override
@@ -295,7 +300,7 @@ public class LevelSelectActivity extends BaseActivity {
                             try {
 
                                 //update from user storage
-                                myImageView.setImageBitmap(OtherActivity.getBitmapImage(bitmapLocation));
+                                myImageView.setImageBitmap(OtherActivity.getBitmapImage(bitmapLocation, OtherActivity.RESUME_IMAGE_FILE_NAME));
 
                             } catch (Exception e) {
 

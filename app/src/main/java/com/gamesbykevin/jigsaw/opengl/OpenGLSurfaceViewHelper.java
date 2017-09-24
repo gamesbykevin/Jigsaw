@@ -46,12 +46,12 @@ public class OpenGLSurfaceViewHelper {
     /**
      * The minimum distance required to be considered a valid pinch
      */
-    private static final float PINCH_THRESHOLD = 10;
+    private static final float PINCH_THRESHOLD = 5;
 
     /**
      * The minimum pixel distance required to be considered a valid drag
      */
-    private static final float DRAG_THRESHOLD = 15;
+    private static final float DRAG_THRESHOLD = 5;
 
     //where are we moving our finger
     private static float motionMoveX = 0.0f, motionMoveY = 0.0f;

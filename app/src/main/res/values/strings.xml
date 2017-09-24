@@ -54,9 +54,10 @@
     <string name="confirm_text">Confirm</string>
     <string name="continue_text">Continue</string>
     <string name="rotate_text">Rotate</string>
-    <string name="choose_image">Select Image</string>
+    <string name="choose_image">Select</string>
     <string name="save_image_resume">Resume</string>
-    <string name="custom_image_desc_1">Custom Desc</string>
+    <string name="custom_image_desc_1"></string>
+    <string name="game_over_text">Game Over</string>
 
     <string name="settings_background_text">Background Color</string>
 

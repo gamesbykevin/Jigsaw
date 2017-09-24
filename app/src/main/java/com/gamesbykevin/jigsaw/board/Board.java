@@ -27,6 +27,8 @@ import static com.gamesbykevin.jigsaw.board.Piece.CONNECTOR_RATIO;
 import static com.gamesbykevin.jigsaw.board.Piece.START_VELOCITY;
 import static com.gamesbykevin.jigsaw.game.Game.INITIAL_RENDER;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.FPS;
+import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.HEIGHT;
+import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.WIDTH;
 
 /**
  * Created by Kevin on 9/4/2017.
@@ -65,6 +67,12 @@ public class Board implements ICommon {
 
     //the coordinates to update
     private float updateX, updateY;
+
+    //do we check if we selected a piece
+    private boolean check = false;
+
+    //the coordinates to check
+    private float checkX, checkY;
 
     //have we selected a piece?
     private boolean selection = false;
@@ -156,53 +164,9 @@ public class Board implements ICommon {
     }
 
     public void setSelected(final float x, final float y) {
-
-        if (getPieces() == null)
-            return;
-
-        //start checking the last index
-        int index = (getCols() * getRows()) - 1;
-
-        //keep going back till we find the piece
-        while (index >= 0) {
-
-            //get the piece at the index
-            Piece piece = getIndexPiece(this, index);
-
-            //we can only select a piece that is not placed
-            if (!piece.isPlaced()) {
-
-                //if we are within the bounds
-                if (piece.contains(x, y, getDefaultWidth())) {
-
-                    //assign the motion coordinates
-                    piece.setMotionX(x - (piece.getWidth() / 2));
-                    piece.setMotionY(y - (piece.getHeight() / 2));
-
-                    //assign our selected piece
-                    setSelected(piece);
-
-                    //flag that we have a selection
-                    setSelection(true);
-                    setComplete(false);
-
-                    //order the group to be on top
-                    orderGroup(this);
-
-                    //update the coordinates
-                    updateCoordinates(this);
-
-                    //no need to continue
-                    return;
-                }
-            }
-
-            //check the next index
-            index--;
-        }
-
-        //we couldn't find anything
-        removeSelected();
+        this.check = true;
+        this.checkX = x;
+        this.checkY = y;
     }
 
     public void removeSelected() {
@@ -543,7 +507,7 @@ public class Board implements ICommon {
                             final double tmp = getSelected().getDistance(getSelected().getMotionX(), getSelected().getMotionY());
 
                             //if we are close enough to the start motion coordinates, start rotating
-                            if (tmp < getSelected().getWidth() / 4) {
+                            if (tmp < getSelected().getWidth() / 2) {
                                 getSelected().setDestination(getSelected().getAngle() + Piece.ANGLE_INCREMENT);
 
                                 //rotate any other connected pieces in the group
@@ -561,6 +525,67 @@ public class Board implements ICommon {
                     }
                 }
             }
+
+        } else if (check) {
+
+            //check if we selected any puzzle piece
+            if (getPieces() == null)
+                return;
+
+            //look for the best piece
+            int index = -1;
+            Piece result = null;
+
+            for (int col = 0; col < getCols(); col++) {
+                for (int row = 0; row < getRows(); row++) {
+
+                    //get the current piece
+                    Piece tmp = getPieces()[row][col];
+
+                    //skip if it's placed already
+                    if (tmp.isPlaced())
+                        continue;
+
+                    //we want the highest visible piece
+                    if (tmp.getIndex() < index)
+                        continue;
+
+                    //if the piece is in range it is the best piece (so far)
+                    if (tmp.contains(checkX, checkY, getDefaultWidth())) {
+                        index = tmp.getIndex();
+                        result = tmp;
+                    }
+                }
+            }
+
+            //if we found a piece
+            if (result != null) {
+
+                //assign the motion coordinates
+                result.setMotionX(checkX - (result.getWidth() / 2));
+                result.setMotionY(checkY - (result.getHeight() / 2));
+
+                //assign our selected piece
+                setSelected(result);
+
+                //flag that we have a selection
+                setSelection(true);
+                setComplete(false);
+
+                //order the group to be on top
+                orderGroup(this);
+
+                //update the coordinates
+                updateCoordinates(this);
+
+            } else {
+
+                //we couldn't find anything
+                removeSelected();
+            }
+
+            //we are done checking
+            check = false;
         }
     }
 

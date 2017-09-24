@@ -4,8 +4,8 @@
     <!-- background -->
     <item>
         <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="line">
-            <stroke android:width="3dp" android:color="@color/transparent35"/>
-            <corners android:radius="3dp" />
+            <stroke android:width="7dp" android:color="@color/transparent35"/>
+            <corners android:radius="7dp" />
         </shape>
     </item>
 
@@ -15,8 +15,8 @@
         <!-- clip to only display progress -->
         <clip>
             <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="line">
-                <stroke android:width="3dp" android:color="@color/colorRed"/>
-                <corners android:radius="3dp" />
+                <stroke android:width="7dp" android:color="@color/colorRed"/>
+                <corners android:radius="7dp" />
             </shape>
         </clip>
     </item>

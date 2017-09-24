@@ -20,29 +20,17 @@ public class ConfirmActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        //if the bitmap exists, recycle it
-        if (PUZZLE_TEXTURE != null) {
-            PUZZLE_TEXTURE.recycle();
-            PUZZLE_TEXTURE = null;
-        }
-
         //call parent
         super.onCreate(savedInstanceState);
 
         //set content view
         setContentView(R.layout.activity_confirm);
 
-        //obtain our preview to display to the user
-        final ImageView previewImageView = findViewById(R.id.previewImageView);
-
         //update with the image source displayed to the user
-        previewImageView.setImageBitmap(Board.IMAGE_SOURCE);
+        ((ImageView)findViewById(R.id.previewImageView)).setImageBitmap(Board.IMAGE_SOURCE);
 
         //obtain the text view
         final TextView textViewPieceCountDesc = findViewById(R.id.textViewPieceCountDesc);
-
-        //the rotate setting description
-        final TextView textViewRotateDesc = findViewById(R.id.textViewRotateDesc);
 
         //obtain our seek bar
         final SeekBar seekBar = findViewById(R.id.mySeekBar);
