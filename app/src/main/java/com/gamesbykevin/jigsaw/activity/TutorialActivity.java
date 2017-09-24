@@ -33,7 +33,7 @@ public class TutorialActivity extends BaseActivity {
     /**
      * The total number of pages
      */
-    public static final int PAGES = 3;
+    public static final int PAGES = 9;
 
     /**
      * Spacing between each pager dot

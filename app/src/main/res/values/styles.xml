@@ -35,13 +35,16 @@
     </style>
 
     <style name="TutorialText">
-        <item name="android:paddingTop">5dp</item>
-        <item name="android:paddingBottom">5dp</item>
-        <item name="android:textSize">12pt</item>
+        <item name="android:background">@color/transparent50</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:textSize">20sp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:gravity">center_horizontal</item>
-        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:gravity">start</item>
         <item name="android:layout_weight">1</item>
         <item name="android:textColor">@color/colorWhite</item>
     </style>

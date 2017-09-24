@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -23,7 +24,9 @@ import com.gamesbykevin.jigsaw.R;
 import com.gamesbykevin.jigsaw.game.Game;
 import com.gamesbykevin.jigsaw.game.Game.Step;
 import com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -622,5 +625,55 @@ public class GameActivity extends BaseActivity implements Disposable {
 
         //save changes
         editor.commit();
+    }
+
+    public void savePuzzleIndex() {
+
+        //make sure level location is a number
+        if (Board.IMAGE_LOCATION == null)
+            return;
+        if (Board.IMAGE_LOCATION.length() < 1)
+            return;
+        if (!TextUtils.isDigitsOnly(Board.IMAGE_LOCATION))
+            return;
+
+        //get the current level index
+        final int index = Integer.parseInt(Board.IMAGE_LOCATION);
+
+        //get the level completed index array from the shared preferences
+        ArrayList<Integer> indexes = (ArrayList<Integer>)getObjectValue(R.string.completed_puzzle_index_key, new TypeToken<ArrayList<Integer>>(){}.getType());
+
+        //create new if not existing
+        if (indexes == null)
+            indexes = new ArrayList<>();
+
+        //flag iff a change was made
+        boolean exists = false;
+
+        //check if we already have completed the level
+        for (int i = 0; i < indexes.size(); i++) {
+
+            //if we found match, flag true and exit loop
+            if (indexes.get(i) == index) {
+                exists = true;
+                break;
+            }
+        }
+
+        //if the index doesn't exist, we need to update the shared preferences
+        if (!exists) {
+
+            //add index to the list
+            indexes.add(index);
+
+            //get the editor so we can change the shared preferences
+            SharedPreferences.Editor editor = getSharedPreferences().edit();
+
+            //convert array to json string when saving in shared preferences
+            editor.putString(getString(R.string.completed_puzzle_index_key), GSON.toJson(indexes));
+
+            //make changes final
+            editor.commit();
+        }
     }
 }

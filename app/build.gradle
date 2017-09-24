@@ -38,6 +38,9 @@ android {
         ignoreWarnings false
     }
 
+    aaptOptions {
+        cruncherEnabled = false
+    }
 }
 
 dependencies {

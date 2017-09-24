@@ -12,6 +12,7 @@
     <string translatable="false" name="saved_puzzle_custom_image_key">com.gamesbykevin.jigsaw.SAVED_PUZZLE_CUSTOM_IMAGE</string>
     <string translatable="false" name="saved_puzzle_rotate_key">com.gamesbykevin.jigsaw.SAVED_PUZZLE_ROTATE</string>
     <string translatable="false" name="saved_puzzle_timer_key">com.gamesbykevin.jigsaw.SAVED_PUZZLE_TIMER</string>
+    <string translatable="false" name="completed_puzzle_index_key">com.gamesbykevin.jigsaw.COMPLETED_PUZZLE_INDEX</string>
 
     <!-- button text -->
     <string name="button_text_next">Continue</string>
@@ -62,7 +63,15 @@
     <string name="settings_background_text">Background Color</string>
 
     <!-- text to display in  the tutorial -->
-    <string name="tutorial_instructions_1">Tutorial Part 1\nTo solve you have to connect all the pipes together</string>
+    <string name="tutorial_instructions_1">Tutorial Part 1 of 9\nSelect your image from the list</string>
+    <string name="tutorial_instructions_2">Tutorial Part 2 of 9\nConfirm your puzzle settings</string>
+    <string name="tutorial_instructions_3">Tutorial Part 3 of 9\nYou will view the completed puzzle for a moment</string>
+    <string name="tutorial_instructions_4">Tutorial Part 4 of 9\nThen it will be scrambled</string>
+    <string name="tutorial_instructions_5">Tutorial Part 5 of 9\nIf rotate is enabled, tap the puzzle piece to rotate</string>
+    <string name="tutorial_instructions_6">Tutorial Part 6 of 9\nYou can zoom out to view the entire board</string>
+    <string name="tutorial_instructions_7">Tutorial Part 7 of 9\nYou can zoom in as well</string>
+    <string name="tutorial_instructions_8">Tutorial Part 8 of 9\nAccess the in game settings to change the color</string>
+    <string name="tutorial_instructions_9">Tutorial Part 9 of 9\nWhen you complete the puzzle you have more options</string>
 
     <!-- ui messages for google play services -->
     <string name="sign_in_other_error">There was an issue with sign-in, please try again later.</string>

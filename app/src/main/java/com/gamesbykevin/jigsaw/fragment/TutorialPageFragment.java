@@ -61,13 +61,52 @@ public class TutorialPageFragment extends Fragment {
 
         switch (getPageNumber()) {
 
-            default:
-                resIdImage = R.drawable.instructions1;
+            case 0:
+                resIdImage = R.drawable.tutorial1;
                 resIdText = R.string.tutorial_instructions_1;
                 break;
 
-            //default:
-            //    throw new RuntimeException("Page # not defined: " + getPageNumber());
+            case 1:
+                resIdImage = R.drawable.tutorial2;
+                resIdText = R.string.tutorial_instructions_2;
+                break;
+
+            case 2:
+                resIdImage = R.drawable.tutorial3;
+                resIdText = R.string.tutorial_instructions_3;
+                break;
+            case 3:
+                resIdImage = R.drawable.tutorial4;
+                resIdText = R.string.tutorial_instructions_4;
+                break;
+
+            case 4:
+                resIdImage = R.drawable.tutorial5;
+                resIdText = R.string.tutorial_instructions_5;
+                break;
+
+            case 5:
+                resIdImage = R.drawable.tutorial6;
+                resIdText = R.string.tutorial_instructions_6;
+                break;
+
+            case 6:
+                resIdImage = R.drawable.tutorial7;
+                resIdText = R.string.tutorial_instructions_7;
+                break;
+
+            case 7:
+                resIdImage = R.drawable.tutorial8;
+                resIdText = R.string.tutorial_instructions_8;
+                break;
+
+            case 8:
+                resIdImage = R.drawable.tutorial9;
+                resIdText = R.string.tutorial_instructions_9;
+                break;
+
+            default:
+                throw new RuntimeException("Page # not defined: " + getPageNumber());
         }
 
         //update bitmap accordingly

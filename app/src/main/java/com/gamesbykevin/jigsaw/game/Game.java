@@ -115,6 +115,9 @@ public class Game implements IGame {
                     //remove the saved game since it has been beaten
                     getActivity().clearSave();
 
+                    //save completed puzzle index
+                    getActivity().savePuzzleIndex();
+
                     //unlock any achievements we achieved
                     //AchievementHelper.completedGame(activity, getBoard());
 
