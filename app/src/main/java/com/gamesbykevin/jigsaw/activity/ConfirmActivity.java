@@ -11,11 +11,12 @@ import android.widget.TextView;
 
 import com.gamesbykevin.jigsaw.R;
 import com.gamesbykevin.jigsaw.board.Board;
+import com.gamesbykevin.jigsaw.services.BaseGameActivity;
 
 import static com.gamesbykevin.jigsaw.activity.LevelSelectActivity.SEEK_BAR_PROGRESS;
 import static com.gamesbykevin.jigsaw.board.BoardHelper.PUZZLE_TEXTURE;
 
-public class ConfirmActivity extends Activity {
+public class ConfirmActivity extends BaseGameActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

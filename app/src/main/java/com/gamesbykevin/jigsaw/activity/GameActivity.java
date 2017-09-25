@@ -18,6 +18,8 @@ import com.gamesbykevin.jigsaw.board.Board;
 import com.gamesbykevin.jigsaw.game.GameHelper;
 import com.gamesbykevin.jigsaw.opengl.OpenGLRenderer;
 import com.gamesbykevin.jigsaw.opengl.Textures;
+import com.gamesbykevin.jigsaw.services.BaseGameActivity;
+import com.gamesbykevin.jigsaw.services.LeaderboardHelper;
 import com.gamesbykevin.jigsaw.util.GameTimer;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 import com.gamesbykevin.jigsaw.R;
@@ -37,9 +39,10 @@ import static android.view.View.VISIBLE;
 import static com.gamesbykevin.jigsaw.activity.LevelSelectActivity.RESUME_SAVED;
 import static com.gamesbykevin.jigsaw.board.Board.IMAGE_LOCATION;
 import static com.gamesbykevin.jigsaw.game.Game.STEP;
+import static com.gamesbykevin.jigsaw.game.GameHelper.GAME_OVER;
 import static com.gamesbykevin.jigsaw.util.UtilityHelper.DEBUG;
 
-public class GameActivity extends BaseActivity implements Disposable {
+public class GameActivity extends BaseGameActivity implements Disposable {
 
     //our open GL surface view
     private GLSurfaceView glSurfaceView;
@@ -502,7 +505,9 @@ public class GameActivity extends BaseActivity implements Disposable {
 
     public void onClickLeaderboard(View view) {
 
+        displayLeaderboardUI(getString(LeaderboardHelper.getResId(getGame().getBoard())));
     }
+
 
     public void onClickHome(View view) {
 
@@ -536,6 +541,22 @@ public class GameActivity extends BaseActivity implements Disposable {
 
         //update the ui
         updateSoundUI();
+    }
+
+    public void onClickTweet(View view) {
+
+        //this should never happen
+        if (!GAME_OVER || getGame() == null || getGame().getBoard() == null)
+            return;
+
+        //create our tweet message
+        String message = "I completed a " + (getGame().getBoard().getCols() * getGame().getBoard().getRows()) + " piece jigsaw puzzle in " + this.timer.getTimeDesc() + " @gamesbykevin";
+
+        //put the message in a url
+        String tweetUrl = "https://twitter.com/intent/tweet?text=" + message;
+
+        //start the activity
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(tweetUrl)));
     }
 
     public void onClickShowTimer(View view) {
@@ -647,33 +668,24 @@ public class GameActivity extends BaseActivity implements Disposable {
         if (indexes == null)
             indexes = new ArrayList<>();
 
-        //flag iff a change was made
-        boolean exists = false;
-
         //check if we already have completed the level
         for (int i = 0; i < indexes.size(); i++) {
 
-            //if we found match, flag true and exit loop
-            if (indexes.get(i) == index) {
-                exists = true;
-                break;
-            }
+            //if we found match, no need to save
+            if (indexes.get(i) == index)
+                return;
         }
 
-        //if the index doesn't exist, we need to update the shared preferences
-        if (!exists) {
+        //add index to the list
+        indexes.add(index);
 
-            //add index to the list
-            indexes.add(index);
+        //get the editor so we can change the shared preferences
+        SharedPreferences.Editor editor = getSharedPreferences().edit();
 
-            //get the editor so we can change the shared preferences
-            SharedPreferences.Editor editor = getSharedPreferences().edit();
+        //convert array to json string when saving in shared preferences
+        editor.putString(getString(R.string.completed_puzzle_index_key), GSON.toJson(indexes));
 
-            //convert array to json string when saving in shared preferences
-            editor.putString(getString(R.string.completed_puzzle_index_key), GSON.toJson(indexes));
-
-            //make changes final
-            editor.commit();
-        }
+        //make changes final
+        editor.commit();
     }
 }

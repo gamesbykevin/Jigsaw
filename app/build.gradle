@@ -4,7 +4,6 @@ android {
 
     compileSdkVersion 26
     buildToolsVersion "26.0.0"
-
     defaultConfig {
         applicationId "com.gamesbykevin.jigsaw"
         minSdkVersion 19
@@ -13,19 +12,16 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-
     buildTypes {
         release {
             minifyEnabled false
-            shrinkResources true
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     productFlavors {
         //anything here?
     }
-
     lintOptions {
 
         // If set to true, turns off analysis progress reporting by lint.
@@ -37,23 +33,16 @@ android {
         // if true, only report errors.
         ignoreWarnings false
     }
-
     aaptOptions {
         cruncherEnabled = false
     }
 }
 
 dependencies {
-
     compile fileTree(include: ['*.jar'], dir: 'libs')
-
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
-    //compile 'com.google.android.gms:play-services:11.0.4'
-    //compile 'com.google.firebase:firebase-core:11.0.4'
-
     compile project(':androidframeworkv2-debug')
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.google.android.gms:play-services-games:11.0.4'

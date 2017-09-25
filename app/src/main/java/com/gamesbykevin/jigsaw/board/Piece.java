@@ -436,6 +436,9 @@ public class Piece extends Entity {
 
     public int getOffsetX(Board board, Piece piece) {
 
+        if (piece.isPlaced())
+            return getDestinationX();
+
         //get the difference
         int colDiff = (int)(piece.getCol() - getCol());
         int rowDiff = (int)(piece.getRow() - getRow());
@@ -470,6 +473,9 @@ public class Piece extends Entity {
     }
 
     public int getOffsetY(Board board, Piece piece) {
+
+        if (piece.isPlaced())
+            return getDestinationY();
 
         //get the difference
         int colDiff = (int)(piece.getCol() - getCol());

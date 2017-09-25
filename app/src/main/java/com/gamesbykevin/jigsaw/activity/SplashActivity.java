@@ -6,6 +6,8 @@ import android.os.Handler;
 
 import com.gamesbykevin.jigsaw.R;
 
+import static com.gamesbykevin.jigsaw.services.BaseGameActivity.BYPASS_LOGIN;
+
 public class SplashActivity extends BaseActivity {
 
     /**
@@ -21,6 +23,10 @@ public class SplashActivity extends BaseActivity {
 
         //assign our layout
         setContentView(R.layout.activity_splash);
+
+        //if auto login is set to false, then bypass login will be set to true
+        if (!getBooleanValue(R.string.google_play_auto_login_file_key))
+            BYPASS_LOGIN = true;
     }
 
     @Override

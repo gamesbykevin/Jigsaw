@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 import com.gamesbykevin.jigsaw.R;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -21,12 +22,12 @@ import static com.gamesbykevin.jigsaw.util.UtilityHelper.displayDensity;
 public abstract class BaseActivity extends com.gamesbykevin.androidframeworkv2.activity.BaseActivity {
 
     //our social media urls etc....
-    private static final String URL_YOUTUBE = "https://youtube.com/gamesbykevin";
-    private static final String URL_FACEBOOK = "https://facebook.com/gamesbykevin";
-    private static final String URL_TWITTER = "https://twitter.com/gamesbykevin";
-    private static final String URL_INSTAGRAM = "https://www.instagram.com/gamesbykevin";
-    private static final String URL_WEBSITE = "http://gamesbykevin.com";
-    private static final String URL_RATE = "https://play.google.com/store/apps/details?id=com.gamesbykevin.jigsaw";
+    protected static final String URL_YOUTUBE = "https://youtube.com/gamesbykevin";
+    protected static final String URL_FACEBOOK = "https://facebook.com/gamesbykevin";
+    protected static final String URL_TWITTER = "https://twitter.com/gamesbykevin";
+    protected static final String URL_INSTAGRAM = "https://www.instagram.com/gamesbykevin";
+    protected static final String URL_WEBSITE = "http://gamesbykevin.com";
+    protected static final String URL_RATE = "https://play.google.com/store/apps/details?id=com.gamesbykevin.jigsaw";
 
     //collection of music
     private static SparseArray<MediaPlayer> SOUND;
@@ -36,11 +37,17 @@ public abstract class BaseActivity extends com.gamesbykevin.androidframeworkv2.a
      */
     public static boolean SOUND_ENABLED = true;
 
+    //our firebase analytics object
+    private FirebaseAnalytics firebaseAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         //call parent
         super.onCreate(savedInstanceState);
+
+        //get our fire base instance
+        this.firebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         //if null
         if (SOUND == null) {
@@ -62,6 +69,10 @@ public abstract class BaseActivity extends com.gamesbykevin.androidframeworkv2.a
 
         //display the screen density of the phone
         displayDensity(this);
+    }
+
+    public FirebaseAnalytics getFirebaseAnalytics() {
+        return this.firebaseAnalytics;
     }
 
     /**

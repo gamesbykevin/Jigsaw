@@ -223,4 +223,8 @@ public class GameTimer implements Disposable {
         clock4 = Integer.parseInt(values[3]);
         lapsed = Long.parseLong(values[4]);
     }
+
+    public String getTimeDesc() {
+        return clock1 + "" + clock2 + ":" + clock3 + "" + clock4;
+    }
 }

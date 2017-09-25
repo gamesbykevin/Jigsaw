@@ -4,6 +4,9 @@ import android.view.MotionEvent;
 import com.gamesbykevin.jigsaw.activity.GameActivity;
 import com.gamesbykevin.jigsaw.activity.GameActivity.Screen;
 import com.gamesbykevin.jigsaw.board.Board;
+import com.gamesbykevin.jigsaw.services.AchievementHelper;
+import com.gamesbykevin.jigsaw.services.AnalyticsHelper;
+import com.gamesbykevin.jigsaw.services.LeaderboardHelper;
 
 import static com.gamesbykevin.jigsaw.game.GameHelper.FRAMES;
 import static com.gamesbykevin.jigsaw.game.GameHelper.GAME_OVER;
@@ -77,6 +80,9 @@ public class Game implements IGame {
 
         //reset game components
         GameHelper.reset(this);
+
+        //track game started in analytics
+        AnalyticsHelper.trackPuzzleStarted(getActivity(), this);
     }
 
     @Override
@@ -118,14 +124,14 @@ public class Game implements IGame {
                     //save completed puzzle index
                     getActivity().savePuzzleIndex();
 
+                    //track game completed in analytics
+                    AnalyticsHelper.trackPuzzleCompleted(getActivity(), this);
+
                     //unlock any achievements we achieved
-                    //AchievementHelper.completedGame(activity, getBoard());
+                    AchievementHelper.completedGame(getActivity(), this);
 
                     //update the leader board as well (in milliseconds)
-                    //LeaderboardHelper.updateLeaderboard(activity, getBoard(), activity.getSeconds() * 1000);
-
-                    //keep track of how many games are completed
-                    //activity.trackEvent(R.string.event_games_completed);
+                    LeaderboardHelper.updateLeaderboard(getActivity(), this);
 
                     //reset frames count
                     FRAMES = 0;

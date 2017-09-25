@@ -513,6 +513,30 @@ public class BoardHelper {
         updatePieceUvs(board, piece);
     }
 
+    protected static void checkDestination(Board board) {
+
+        for (int col = 0; col < board.getCols(); col++) {
+            for (int row = 0; row < board.getRows(); row++) {
+
+                try {
+
+                    //get the current piece
+                    Piece tmp = board.getPieces()[row][col];
+
+                    if (!tmp.isPlaced())
+                        continue;
+
+                    //make sure piece is at the destination
+                    tmp.setX(tmp.getDestinationX());
+                    tmp.setY(tmp.getDestinationY());
+
+                } catch (Exception e) {
+                    UtilityHelper.handleException(e);
+                }
+            }
+        }
+    }
+
     protected static void rotateGroup(Board board, Piece piece) {
 
         for (int col = 0; col < board.getCols(); col++) {
@@ -599,11 +623,12 @@ public class BoardHelper {
                     if (tmp.getCol() == piece.getCol() && tmp.getRow() == piece.getRow())
                         continue;
 
+                    //update if the piece is placed
+                    if (piece.isPlaced())
+                        tmp.setPlaced(true);
+
                     //make the tmp relative to the piece
                     tmp.updateOffset(board, piece);
-
-                    //update if the piece is placed
-                    tmp.setPlaced(piece.isPlaced());
 
                 } catch (Exception e) {
                     UtilityHelper.handleException(e);

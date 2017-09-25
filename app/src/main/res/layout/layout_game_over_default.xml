@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView android:layout_marginTop="15dp" style="@style/textViewLevelSelectTitle" android:text="@string/game_over_text" />
+        <TextView android:layout_marginTop="10dp" style="@style/textViewLevelSelectTitle" android:text="@string/game_over_text" />
 
         <TableLayout
             android:layout_width="wrap_content"
@@ -55,6 +55,12 @@
                     android:id="@+id/buttonLeaderboard"
                     style="@style/button_leaderboard"/>
 
+
+                <ImageView
+                    android:id="@+id/buttonTweet"
+                    style="@style/game_button"
+                    android:onClick="onClickTweet"
+                    android:src="@drawable/twitter" />
             </TableRow>
 
         </TableLayout>

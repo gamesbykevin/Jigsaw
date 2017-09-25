@@ -9,6 +9,7 @@ import com.gamesbykevin.jigsaw.util.UtilityHelper;
 import com.gamesbykevin.jigsaw.activity.BaseActivity;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 
 import static com.gamesbykevin.jigsaw.util.UtilityHelper.DEBUG;
 
@@ -158,27 +159,6 @@ public abstract class BaseGameActivity extends BaseActivity implements GameHelpe
         }
     }
 
-    public void trackEvent(final int resId) {
-        trackEvent(resId, 1);
-    }
-
-    public void trackEvent(final int resId, final int incrementValue) {
-        try {
-            String eventId = getString(resId);
-
-            if (DEBUG)
-                UtilityHelper.logEvent("Tracking event: " + eventId + ", " + incrementValue);
-
-            Games.Events.increment(getApiClient(), eventId, incrementValue);
-
-            if (DEBUG)
-                UtilityHelper.logEvent("Done Tracking event: " + eventId + ", " + incrementValue);
-
-        } catch (Exception e) {
-            UtilityHelper.handleException(e);
-        }
-    }
-
     public void updateLeaderboard(final int resId, final long score) {
 
         try {
@@ -285,11 +265,11 @@ public abstract class BaseGameActivity extends BaseActivity implements GameHelpe
             if (DEBUG)
                 UtilityHelper.logEvent("Logging in google play");
 
-            //if not connected, re-attempt google play login
-            beginUserInitiatedSignIn();
-
             //flag that we want to open the achievements
             ACCESS_ACHIEVEMENT = true;
+
+            //if not connected, re-attempt google play login
+            beginUserInitiatedSignIn();
         }
     }
 
@@ -300,18 +280,35 @@ public abstract class BaseGameActivity extends BaseActivity implements GameHelpe
             if (DEBUG)
                 UtilityHelper.logEvent("Displaying leaderboard ui " + leaderboardId);
 
-            startActivityForResult(Games.Leaderboards.getLeaderboardIntent(getApiClient(), leaderboardId), 1);
+            if (leaderboardId == null || leaderboardId.length() < 1) {
+                startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(getApiClient()), 1);
+            } else {
+                //startActivityForResult(Games.Leaderboards.getLeaderboardIntent(getApiClient(), leaderboardId), 1);
+                //startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(getApiClient()), 1);
+
+
+                Intent intent = Games.Leaderboards.getLeaderboardIntent(getApiClient(),
+                        leaderboardId, LeaderboardVariant.TIME_SPAN_ALL_TIME,
+                        LeaderboardVariant.COLLECTION_PUBLIC);
+
+                // REQUEST_LEADERBOARD is an arbitrary constant to check for in onActivityResult
+                startActivityForResult(intent, 1);
+            }
+
 
         } else {
 
             if (DEBUG)
                 UtilityHelper.logEvent("Logging in google play");
 
-            //if not connected, re-attempt google play login
-            beginUserInitiatedSignIn();
+            //assign the leader board, so if we login we know where to go
+            LEADERBOARD_ID = leaderboardId;
 
             //flag that we want to open the achievements
             ACCESS_LEADERBOARD = true;
+
+            //if not connected, re-attempt google play login
+            beginUserInitiatedSignIn();
         }
     }
 
@@ -331,7 +328,7 @@ public abstract class BaseGameActivity extends BaseActivity implements GameHelpe
 
         } else if (ACCESS_LEADERBOARD) {
 
-            //if we just logged in trying to access leaderboard display it
+            //if we just logged in trying to access leader board display it
             displayLeaderboardUI(LEADERBOARD_ID);
 
             ACCESS_LEADERBOARD = false;

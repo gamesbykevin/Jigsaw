@@ -39,8 +39,8 @@
     <string name="zoom_off">Zoom: Off</string>
     <string name="timer_on">Timer: On</string>
     <string name="timer_off">Timer: Off</string>
-    <string name="google_play_auto_enabled">Google Play: On</string>
-    <string name="google_play_auto_disabled">Google Play: Off</string>
+    <string name="google_play_auto_enabled">Google Play Auto: On</string>
+    <string name="google_play_auto_disabled">Google Play Auto: Off</string>
 
     <!-- text on prompt save page -->
     <string name="text_prompt_title">Save</string>

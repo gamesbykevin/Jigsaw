@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.gamesbykevin.jigsaw.R;
 import com.gamesbykevin.jigsaw.board.Board;
+import com.gamesbykevin.jigsaw.services.BaseGameActivity;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 import com.google.gson.reflect.TypeToken;
 
@@ -28,7 +29,7 @@ import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.gamesbykevin.jigsaw.activity.GameActivity.getRandomObject;
 
-public class LevelSelectActivity extends BaseActivity {
+public class LevelSelectActivity extends BaseGameActivity {
 
     /**
      * Our list of images to choose from

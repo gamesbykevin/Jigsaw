@@ -15,7 +15,7 @@ import com.gamesbykevin.jigsaw.services.BaseGameActivity;
 
 import static com.gamesbykevin.jigsaw.board.BoardHelper.PUZZLE_TEXTURE;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseGameActivity {
 
     //did we prompt the user before exiting the app
     private boolean promptExit = false;
@@ -83,16 +83,16 @@ public class MainActivity extends BaseActivity {
             if (promptExit) {
 
                 //no need to bypass login in the future
-                //BYPASS_LOGIN = false;
+                BYPASS_LOGIN = false;
+
+                //sign out of google play services
+                super.signOut();
 
                 //finish activity
                 super.finish();
 
                 //close all activities
                 ActivityCompat.finishAffinity(this);
-
-                //sign out of google play services
-                //super.signOut();
 
             } else {
 

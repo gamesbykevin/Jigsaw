@@ -483,6 +483,9 @@ public class Board implements ICommon {
                         //update the location as well
                         updatePieces(this, getSelected().getGroup());
 
+                        //make sure all destination pieces are at their destination
+                        BoardHelper.checkDestination(this);
+
                         //game over?
                         GameHelper.GAME_OVER = isGameOver(this);
 

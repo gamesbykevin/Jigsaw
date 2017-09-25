@@ -12,6 +12,7 @@ import android.provider.MediaStore;
 
 import com.gamesbykevin.jigsaw.R;
 import com.gamesbykevin.jigsaw.board.Board;
+import com.gamesbykevin.jigsaw.services.BaseGameActivity;
 import com.gamesbykevin.jigsaw.util.UtilityHelper;
 
 import java.io.ByteArrayInputStream;
@@ -25,7 +26,7 @@ import static com.gamesbykevin.jigsaw.board.BoardHelper.PUZZLE_TEXTURE;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.HEIGHT;
 import static com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView.WIDTH;
 
-public class OtherActivity extends BaseActivity {
+public class OtherActivity extends BaseGameActivity {
 
     /**
      * The name of our image file to resume the puzzle

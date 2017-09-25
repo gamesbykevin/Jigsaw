@@ -8,6 +8,118 @@
     <!-- package_name -->
     <string name="package_name" translatable="false">com.gamesbykevin.jigsaw</string>
 
+    <!-- app_id -->
+    <string name="app_id" translatable="false">245051392189</string>
 
+    <!-- achievement Completed a puzzle -->
+    <string name="achievement_completed_a_puzzle" translatable="false">CgkIvYHO8ZAHEAIQHA</string>
+
+    <!-- achievement Complete 50 Puzzles -->
+    <string name="achievement_complete_50_puzzles" translatable="false">CgkIvYHO8ZAHEAIQHg</string>
+
+    <!-- achievement Complete 100 Puzzles -->
+    <string name="achievement_complete_100_puzzles" translatable="false">CgkIvYHO8ZAHEAIQHw</string>
+
+    <!-- achievement Complete 500 Puzzles -->
+    <string name="achievement_complete_500_puzzles" translatable="false">CgkIvYHO8ZAHEAIQIA</string>
+
+    <!-- achievement Complete 1,000 Puzzles -->
+    <string name="achievement_complete_1000_puzzles" translatable="false">CgkIvYHO8ZAHEAIQIQ</string>
+
+    <!-- achievement 100+ Piece -->
+    <string name="achievement_100_piece" translatable="false">CgkIvYHO8ZAHEAIQIg</string>
+
+    <!-- achievement 200+ Piece -->
+    <string name="achievement_200_piece" translatable="false">CgkIvYHO8ZAHEAIQIw</string>
+
+    <!-- achievement 100+ Piece (Rotate: On) -->
+    <string name="achievement_100_piece_rotate_on" translatable="false">CgkIvYHO8ZAHEAIQJA</string>
+
+    <!-- achievement 200+ Piece (Rotate: On) -->
+    <string name="achievement_200_piece_rotate_on" translatable="false">CgkIvYHO8ZAHEAIQJQ</string>
+
+    <!-- leaderboard 9 Pieces (Rotate: Off) -->
+    <string name="leaderboard_9_pieces_rotate_off" translatable="false">CgkIvYHO8ZAHEAIQAA</string>
+
+    <!-- leaderboard 9 Pieces (Rotate: On) -->
+    <string name="leaderboard_9_pieces_rotate_on" translatable="false">CgkIvYHO8ZAHEAIQAQ</string>
+
+    <!-- leaderboard 16 Pieces (Rotate: Off) -->
+    <string name="leaderboard_16_pieces_rotate_off" translatable="false">CgkIvYHO8ZAHEAIQAg</string>
+
+    <!-- leaderboard 16 Pieces (Rotate: On) -->
+    <string name="leaderboard_16_pieces_rotate_on" translatable="false">CgkIvYHO8ZAHEAIQAw</string>
+
+    <!-- leaderboard 25 Pieces (Rotate: Off) -->
+    <string name="leaderboard_25_pieces_rotate_off" translatable="false">CgkIvYHO8ZAHEAIQBA</string>
+
+    <!-- leaderboard 25 Pieces (Rotate: On) -->
+    <string name="leaderboard_25_pieces_rotate_on" translatable="false">CgkIvYHO8ZAHEAIQBQ</string>
+
+    <!-- leaderboard 36 Pieces (Rotate: Off) -->
+    <string name="leaderboard_36_pieces_rotate_off" translatable="false">CgkIvYHO8ZAHEAIQBg</string>
+
+    <!-- leaderboard 36 Pieces (Rotate: On) -->
+    <string name="leaderboard_36_pieces_rotate_on" translatable="false">CgkIvYHO8ZAHEAIQBw</string>
+
+    <!-- leaderboard 49 Pieces (Rotate: Off) -->
+    <string name="leaderboard_49_pieces_rotate_off" translatable="false">CgkIvYHO8ZAHEAIQCA</string>
+
+    <!-- leaderboard 49 Pieces (Rotate: On) -->
+    <string name="leaderboard_49_pieces_rotate_on" translatable="false">CgkIvYHO8ZAHEAIQCQ</string>
+
+    <!-- leaderboard 64 Pieces (Rotate: Off) -->
+    <string name="leaderboard_64_pieces_rotate_off" translatable="false">CgkIvYHO8ZAHEAIQCg</string>
+
+    <!-- leaderboard 64 Pieces (Rotate: On) -->
+    <string name="leaderboard_64_pieces_rotate_on" translatable="false">CgkIvYHO8ZAHEAIQCw</string>
+
+    <!-- leaderboard 81 Pieces (Rotate: Off) -->
+    <string name="leaderboard_81_pieces_rotate_off" translatable="false">CgkIvYHO8ZAHEAIQDA</string>
+
+    <!-- leaderboard 81 Pieces (Rotate: On) -->
+    <string name="leaderboard_81_pieces_rotate_on" translatable="false">CgkIvYHO8ZAHEAIQDQ</string>
+
+    <!-- leaderboard 100 Pieces (Rotate: Off) -->
+    <string name="leaderboard_100_pieces_rotate_off" translatable="false">CgkIvYHO8ZAHEAIQDg</string>
+
+    <!-- leaderboard 100 Pieces (Rotate: On) -->
+    <string name="leaderboard_100_pieces_rotate_on" translatable="false">CgkIvYHO8ZAHEAIQDw</string>
+
+    <!-- leaderboard 121 Pieces (Rotate: Off) -->
+    <string name="leaderboard_121_pieces_rotate_off" translatable="false">CgkIvYHO8ZAHEAIQEA</string>
+
+    <!-- leaderboard 121 Pieces (Rotate: On) -->
+    <string name="leaderboard_121_pieces_rotate_on" translatable="false">CgkIvYHO8ZAHEAIQEQ</string>
+
+    <!-- leaderboard 144 Pieces (Rotate: Off) -->
+    <string name="leaderboard_144_pieces_rotate_off" translatable="false">CgkIvYHO8ZAHEAIQEg</string>
+
+    <!-- leaderboard 144 Pieces (Rotate: On) -->
+    <string name="leaderboard_144_pieces_rotate_on" translatable="false">CgkIvYHO8ZAHEAIQEw</string>
+
+    <!-- leaderboard 169 Pieces (Rotate: Off) -->
+    <string name="leaderboard_169_pieces_rotate_off" translatable="false">CgkIvYHO8ZAHEAIQFA</string>
+
+    <!-- leaderboard 169 Pieces (Rotate: On) -->
+    <string name="leaderboard_169_pieces_rotate_on" translatable="false">CgkIvYHO8ZAHEAIQFQ</string>
+
+    <!-- leaderboard 196 Pieces (Rotate: Off) -->
+    <string name="leaderboard_196_pieces_rotate_off" translatable="false">CgkIvYHO8ZAHEAIQFg</string>
+
+    <!-- leaderboard 196 Pieces (Rotate: On) -->
+    <string name="leaderboard_196_pieces_rotate_on" translatable="false">CgkIvYHO8ZAHEAIQFw</string>
+
+    <!-- leaderboard 225 Pieces (Rotate: Off) -->
+    <string name="leaderboard_225_pieces_rotate_off" translatable="false">CgkIvYHO8ZAHEAIQGA</string>
+
+    <!-- leaderboard 225 Pieces (Rotate: On) -->
+    <string name="leaderboard_225_pieces_rotate_on" translatable="false">CgkIvYHO8ZAHEAIQGQ</string>
+
+    <!-- leaderboard 256 Pieces (Rotate: Off) -->
+    <string name="leaderboard_256_pieces_rotate_off" translatable="false">CgkIvYHO8ZAHEAIQGg</string>
+
+    <!-- leaderboard 256 Pieces (Rotate: On) -->
+    <string name="leaderboard_256_pieces_rotate_on" translatable="false">CgkIvYHO8ZAHEAIQGw</string>
 
 </resources>
