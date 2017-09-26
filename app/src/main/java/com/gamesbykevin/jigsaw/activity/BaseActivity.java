@@ -52,16 +52,12 @@ public abstract class BaseActivity extends com.gamesbykevin.androidframeworkv2.a
         //if null
         if (SOUND == null) {
 
-            /*
             //create new list
             SOUND = new SparseArray<>();
             loadSound(R.raw.menu);
-            loadSound(R.raw.theme_square);
-            loadSound(R.raw.theme_hexagon);
-            loadSound(R.raw.theme_diamond);
-            loadSound(R.raw.rotate);
-            loadSound(R.raw.rotate_connect);
-            */
+            loadSound(R.raw.theme);
+            loadSound(R.raw.connect);
+            loadSound(R.raw.place);
         }
 
         //make sure all options are entered
@@ -113,37 +109,22 @@ public abstract class BaseActivity extends com.gamesbykevin.androidframeworkv2.a
         SOUND.put(resId, MediaPlayer.create(this, resId));
     }
 
-    protected void playMenu() {
+    public void playMenu() {
 
         //stop all audio
         stopSound();
 
         //start playing menu song
-        //playSong(R.raw.menu);
+        playSong(R.raw.menu);
     }
 
-    protected void playTheme() {
+    public void playTheme() {
 
-        /*
         //stop all audio
         stopSound();
 
         //start playing main song
-        switch (OptionsActivity.OPTION_BOARD_SHAPE) {
-
-            case Diamond:
-                playSong(R.raw.theme_diamond);
-                break;
-
-            case Square:
-                playSong(R.raw.theme_square);
-                break;
-
-            case Hexagon:
-                playSong(R.raw.theme_hexagon);
-                break;
-        }
-        */
+        playSong(R.raw.theme);
     }
 
     protected void playSong(final int resId) {
@@ -154,7 +135,7 @@ public abstract class BaseActivity extends com.gamesbykevin.androidframeworkv2.a
         playSound(resId, false, false);
     }
 
-    private void playSound(final int resId, boolean restart, boolean loop) {
+    public void playSound(final int resId, boolean restart, boolean loop) {
 
         try {
 
@@ -213,7 +194,7 @@ public abstract class BaseActivity extends com.gamesbykevin.androidframeworkv2.a
         }
     }
 
-    protected void stopSound() {
+    public void stopSound() {
 
         if (SOUND != null) {
             for (int i = 0; i < SOUND.size(); i++) {

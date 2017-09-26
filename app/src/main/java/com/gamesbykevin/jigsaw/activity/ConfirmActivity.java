@@ -67,6 +67,9 @@ public class ConfirmActivity extends BaseGameActivity {
         //call parent
         super.onResume();
 
+        //play song
+        super.playMenu();
+
         //change value so onProgress changed actually fires
         ((SeekBar)findViewById(R.id.mySeekBar)).setProgress((SEEK_BAR_PROGRESS == 0) ? 1 : 0);
 

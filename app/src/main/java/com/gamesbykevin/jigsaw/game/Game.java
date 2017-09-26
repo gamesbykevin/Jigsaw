@@ -1,6 +1,8 @@
 package com.gamesbykevin.jigsaw.game;
 
 import android.view.MotionEvent;
+
+import com.gamesbykevin.jigsaw.R;
 import com.gamesbykevin.jigsaw.activity.GameActivity;
 import com.gamesbykevin.jigsaw.activity.GameActivity.Screen;
 import com.gamesbykevin.jigsaw.board.Board;
@@ -8,6 +10,8 @@ import com.gamesbykevin.jigsaw.services.AchievementHelper;
 import com.gamesbykevin.jigsaw.services.AnalyticsHelper;
 import com.gamesbykevin.jigsaw.services.LeaderboardHelper;
 
+import static com.gamesbykevin.jigsaw.board.BoardHelper.CONNECTED;
+import static com.gamesbykevin.jigsaw.board.BoardHelper.PLACED;
 import static com.gamesbykevin.jigsaw.game.GameHelper.FRAMES;
 import static com.gamesbykevin.jigsaw.game.GameHelper.GAME_OVER;
 import static com.gamesbykevin.jigsaw.game.GameHelper.GAME_OVER_DELAY_FRAMES;
@@ -153,8 +157,30 @@ public class Game implements IGame {
                         return;
                     }
 
+                    boolean starting = getBoard().isStarting();
+
                     //update the board
                     getBoard().update();
+
+                    //if we just started all the pieces, start the main theme
+                    if (starting && !getBoard().isStarting()) {
+
+                        //stop any sound
+                        getActivity().stopSound();
+
+                        //loop the main theme and start from the beginning
+                        getActivity().playSound(R.raw.theme, true, true);
+                    }
+
+                    //play any sound effects?
+                    if (PLACED) {
+                        getActivity().playSoundEffect(R.raw.place);
+                        PLACED = false;
+                        CONNECTED = false;
+                    } else if (CONNECTED) {
+                        getActivity().playSoundEffect(R.raw.connect);
+                        CONNECTED = false;
+                    }
 
                     //if we already rendered the board once, lets display it
                     if (INITIAL_RENDER) {

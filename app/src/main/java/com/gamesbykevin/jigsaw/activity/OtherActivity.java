@@ -69,6 +69,9 @@ public class OtherActivity extends BaseGameActivity {
 
         //call parent
         super.onResume();
+
+        //play music
+        super.playMenu();
     }
 
     @Override

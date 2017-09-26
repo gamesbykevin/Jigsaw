@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -28,16 +27,13 @@ import com.gamesbykevin.jigsaw.game.Game.Step;
 import com.gamesbykevin.jigsaw.opengl.OpenGLSurfaceView;
 import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Timer;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.gamesbykevin.jigsaw.activity.LevelSelectActivity.RESUME_SAVED;
-import static com.gamesbykevin.jigsaw.board.Board.IMAGE_LOCATION;
 import static com.gamesbykevin.jigsaw.game.Game.STEP;
 import static com.gamesbykevin.jigsaw.game.GameHelper.GAME_OVER;
 import static com.gamesbykevin.jigsaw.util.UtilityHelper.DEBUG;
@@ -228,11 +224,12 @@ public class GameActivity extends BaseGameActivity implements Disposable {
         //call parent
         super.onResume();
 
+        //resume theme if the game has started
+        if (getGame() != null && getGame().getBoard() != null && !getGame().getBoard().isStarting())
+            super.playTheme();
+
         //resume the game object
         getGame().onResume();
-
-        //play the main theme
-        playTheme();
 
         //if the game was previously paused we need to re-initialize the views
         if (this.paused) {
@@ -508,7 +505,6 @@ public class GameActivity extends BaseGameActivity implements Disposable {
         displayLeaderboardUI(getString(LeaderboardHelper.getResId(getGame().getBoard())));
     }
 
-
     public void onClickHome(View view) {
 
         //start the activity
@@ -534,7 +530,10 @@ public class GameActivity extends BaseGameActivity implements Disposable {
 
         //either stop the sound, or play the theme
         if (SOUND_ENABLED) {
-            playTheme();
+
+            //if the game started, we can continue playing the theme
+            if (getGame() != null && getGame().getBoard() != null && !getGame().getBoard().isStarting())
+                playTheme();
         } else {
             stopSound();
         }

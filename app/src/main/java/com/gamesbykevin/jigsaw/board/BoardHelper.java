@@ -44,6 +44,12 @@ public class BoardHelper {
     //how much to trim the final image size
     private static float TRIM_RATIO = .9f;
 
+    //did we connect any puzzle pieces?
+    public static boolean CONNECTED = false;
+
+    //did we place any puzzle pieces at their destination?
+    public static boolean PLACED = false;
+
     /**
      * Cleanup resources
      */
@@ -757,14 +763,6 @@ public class BoardHelper {
         //were any changes made?
         boolean flag = false;
 
-        //calculate the size of our end connectors
-        final int connectorW = (int) (board.getSelected().getWidth() * CONNECTOR_RATIO);
-        final int connectorH = (int) (board.getSelected().getHeight() * CONNECTOR_RATIO);
-
-        //each piece will be the same size
-        final int width = (int)(board.getSelected().getWidth() - connectorW - connectorW);
-        final int height = (int)(board.getSelected().getHeight() - connectorH - connectorH);
-
         for (int col = 0; col < board.getCols(); col++) {
 
             if (flag)
@@ -808,8 +806,13 @@ public class BoardHelper {
         }
 
         //only update if changes were made
-        if (flag)
+        if (flag) {
+            //flag true
+            CONNECTED = true;
+
+            //update since we made a change
             updatePieces(board, board.getSelected().getGroup());
+        }
     }
 
     private static boolean connectPiece(Piece current, Piece selected, Board board) {

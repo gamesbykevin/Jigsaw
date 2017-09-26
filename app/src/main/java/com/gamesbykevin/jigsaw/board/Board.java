@@ -470,6 +470,9 @@ public class Board implements ICommon {
                     //if the piece is the correct angle and we are close enough place the piece at its destination
                     if (getSelected().getAngle() == 0 && distance <= getSelected().getWidth() * CONNECTOR_RATIO) {
 
+                        //flag true
+                        BoardHelper.PLACED = true;
+
                         //place at the destination
                         getSelected().setX(getSelected().getDestinationX());
                         getSelected().setY(getSelected().getDestinationY());

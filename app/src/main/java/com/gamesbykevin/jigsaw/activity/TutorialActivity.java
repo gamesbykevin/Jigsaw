@@ -101,7 +101,7 @@ public class TutorialActivity extends BaseActivity {
         super.onResume();
 
         //resume audio
-        //super.playSong(R.raw.menu);
+        super.playMenu();
 
         //make sure the current page is displayed
         getCustomPager().setCurrentItem(CURRENT_PAGE);

@@ -123,12 +123,6 @@ public class MainActivity extends BaseGameActivity {
         OpenGLSurfaceViewHelper.DRAG_ENABLED = getBooleanValue(R.string.open_gl_zoom_file_key);
         OpenGLSurfaceViewHelper.ZOOM_ENABLED = getBooleanValue(R.string.open_gl_zoom_file_key);
 
-        //play the main theme
-        super.playTheme();
-
-        //reset to first page
-        //LevelSelectActivity.CURRENT_PAGE = 0;
-
         //start game
         startActivity(new Intent(this, LevelSelectActivity.class));
     }
