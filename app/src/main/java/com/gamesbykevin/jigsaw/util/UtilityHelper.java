@@ -26,7 +26,7 @@ public class UtilityHelper {
     /**
      * Is this an amazon app?
      */
-    public static final boolean AMAZON = false;
+    public static final boolean AMAZON = true;
 
     /**
      * App name for our framework

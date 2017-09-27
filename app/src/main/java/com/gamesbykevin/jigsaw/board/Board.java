@@ -458,6 +458,9 @@ public class Board implements ICommon {
                         //place the piece on the board accordingly
                         BoardHelper.placeSelected(this);
 
+                        //make sure all destination pieces are at their destination
+                        BoardHelper.checkDestination(this);
+
                         //remove the selected piece
                         removeSelected();
                     }
