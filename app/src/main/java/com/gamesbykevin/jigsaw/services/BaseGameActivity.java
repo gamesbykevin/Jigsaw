@@ -125,7 +125,12 @@ public abstract class BaseGameActivity extends BaseActivity implements GameHelpe
     }
 
     public void unlockAchievement(final int resId) {
+
         try {
+
+            //don't continue if not connected
+            if (!getApiClient().isConnected())
+                return;
 
             String achievementId = getString(resId);
 
@@ -143,7 +148,13 @@ public abstract class BaseGameActivity extends BaseActivity implements GameHelpe
     }
 
     public void incrementAchievement(final int resId, final int incrementValue) {
+
         try {
+
+            //don't continue if not connected
+            if (!getApiClient().isConnected())
+                return;
+
             String achievementId = getString(resId);
 
             if (DEBUG)
@@ -162,6 +173,10 @@ public abstract class BaseGameActivity extends BaseActivity implements GameHelpe
     public void updateLeaderboard(final int resId, final long score) {
 
         try {
+
+            //don't continue if not connected
+            if (!getApiClient().isConnected())
+                return;
 
             String leaderboardId = getString(resId);
 
@@ -281,15 +296,18 @@ public abstract class BaseGameActivity extends BaseActivity implements GameHelpe
                 UtilityHelper.logEvent("Displaying leaderboard ui " + leaderboardId);
 
             if (leaderboardId == null || leaderboardId.length() < 1) {
+
+                //start all leader board activity
                 startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(getApiClient()), 1);
+
             } else {
-                //startActivityForResult(Games.Leaderboards.getLeaderboardIntent(getApiClient(), leaderboardId), 1);
-                //startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(getApiClient()), 1);
 
-
-                Intent intent = Games.Leaderboards.getLeaderboardIntent(getApiClient(),
-                        leaderboardId, LeaderboardVariant.TIME_SPAN_ALL_TIME,
-                        LeaderboardVariant.COLLECTION_PUBLIC);
+                Intent intent = Games.Leaderboards.getLeaderboardIntent(
+                    getApiClient(),
+                    leaderboardId,
+                    LeaderboardVariant.TIME_SPAN_ALL_TIME,
+                    LeaderboardVariant.COLLECTION_PUBLIC
+                );
 
                 // REQUEST_LEADERBOARD is an arbitrary constant to check for in onActivityResult
                 startActivityForResult(intent, 1);

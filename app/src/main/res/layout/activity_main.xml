@@ -18,6 +18,9 @@
             <Button style="@style/buttonMenu" android:text="@string/button_text_achievements" android:onClick="onClickAchievements" />
         </TableRow>
         <TableRow style="@style/rowMenu">
+            <Button style="@style/buttonMenu" android:text="@string/button_text_leaderboard" android:onClick="onClickLeaderboards" />
+        </TableRow>
+        <TableRow style="@style/rowMenu">
             <!--suppress AndroidMissingOnClickHandler -->
             <Button style="@style/buttonMenu" android:text="@string/button_text_rate" android:onClick="onClickRate" />
         </TableRow>

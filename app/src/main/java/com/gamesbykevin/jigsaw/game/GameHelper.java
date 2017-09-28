@@ -144,6 +144,9 @@ public final class GameHelper {
             //assign the puzzle pieces
             game.getBoard().setPieces(pieces);
 
+            //loop the main theme and start from the beginning
+            game.getActivity().playSound(R.raw.theme, true, true);
+
         } else {
 
             //if not resuming, just create a new board

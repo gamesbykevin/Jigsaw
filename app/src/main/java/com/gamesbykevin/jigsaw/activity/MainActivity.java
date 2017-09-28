@@ -138,4 +138,10 @@ public class MainActivity extends BaseGameActivity {
         //start options activity
         startActivity(new Intent(this, OptionsActivity.class));
     }
+
+    public void onClickLeaderboards(View view) {
+
+        //display all the leader boards
+        super.displayLeaderboardUI(null);
+    }
 }
