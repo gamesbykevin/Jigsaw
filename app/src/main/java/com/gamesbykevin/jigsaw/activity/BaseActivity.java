@@ -310,6 +310,11 @@ public abstract class BaseActivity extends com.gamesbykevin.androidframeworkv2.a
     }
 
     protected boolean hasSavedGame() {
-        return ((String)super.getObjectValue(R.string.saved_puzzle_custom_image_key, String.class) != null);
+
+        //get the location of our saved image (if exists)
+        String tmp = (String)super.getObjectValue(R.string.saved_puzzle_custom_image_key, String.class);
+
+        //if exists and has a value return true, otherwise false
+        return (tmp != null && tmp.trim().length() > 0);
     }
 }

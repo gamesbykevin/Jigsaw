@@ -25,8 +25,10 @@ public class SplashActivity extends BaseActivity {
         setContentView(R.layout.activity_splash);
 
         //if auto login is set to false, then bypass login will be set to true
-        if (!getBooleanValue(R.string.google_play_auto_login_file_key))
-            BYPASS_LOGIN = true;
+        BYPASS_LOGIN = (!getBooleanValue(R.string.google_play_auto_login_file_key));
+
+        //is the sound enabled in the settings?
+        SOUND_ENABLED = getBooleanValue(R.string.sound_file_key);
     }
 
     @Override

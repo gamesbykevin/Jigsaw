@@ -594,6 +594,9 @@ public class GameActivity extends BaseGameActivity implements Disposable {
      */
     public void savePuzzle() {
 
+        //our shared preferences editor
+        SharedPreferences.Editor editor;
+
         try {
 
             //if the location is not a number, then the location is a path to a file and we need to move/save
@@ -608,7 +611,7 @@ public class GameActivity extends BaseGameActivity implements Disposable {
             }
 
             //get the editor so we can change the shared preferences
-            SharedPreferences.Editor editor = getSharedPreferences().edit();
+            editor = getSharedPreferences().edit();
 
             //convert array to json string when saving in shared preferences
             editor.putString(getString(R.string.saved_puzzle_key), GSON.toJson(getGame().getBoard().getPieces()));
@@ -623,12 +626,13 @@ public class GameActivity extends BaseGameActivity implements Disposable {
             editor.putString(getString(R.string.saved_puzzle_timer_key), GSON.toJson(getTimer().getTime()));
 
             //save changes
-            editor.commit();
+            editor.apply();
 
         } catch (Exception e) {
 
             UtilityHelper.handleException(e);
 
+            editor = null;
         }
     }
 
@@ -685,6 +689,6 @@ public class GameActivity extends BaseGameActivity implements Disposable {
         editor.putString(getString(R.string.completed_puzzle_index_key), GSON.toJson(indexes));
 
         //make changes final
-        editor.commit();
+        editor.apply();
     }
 }

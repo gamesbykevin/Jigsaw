@@ -38,6 +38,9 @@
     <!-- achievement 200+ Piece (Rotate: On) -->
     <string name="achievement_200_piece_rotate_on" translatable="false">CgkIvYHO8ZAHEAIQJQ</string>
 
+    <!-- achievement Complete all puzzles -->
+    <string name="achievement_complete_all_puzzles" translatable="false">CgkIvYHO8ZAHEAIQKw</string>
+
     <!-- leaderboard 9 Pieces (Rotate: Off) -->
     <string name="leaderboard_9_pieces_rotate_off" translatable="false">CgkIvYHO8ZAHEAIQAA</string>
 

@@ -150,9 +150,12 @@ public class Game implements IGame {
 
                     //if saving and exiting do this here
                     if (SAVE_EXIT) {
+
+                        //save the puzzle in the shared preferences
+                        getActivity().savePuzzle();
+
                         SAVE_EXIT = false;
                         STEP = Step.Start;
-                        getActivity().savePuzzle();
                         getActivity().exit();
                         return;
                     }
@@ -174,11 +177,11 @@ public class Game implements IGame {
 
                     //play any sound effects?
                     if (PLACED) {
-                        getActivity().playSoundEffect(R.raw.place);
+                        getActivity().playSound(R.raw.place, true, false);
                         PLACED = false;
                         CONNECTED = false;
                     } else if (CONNECTED) {
-                        getActivity().playSoundEffect(R.raw.connect);
+                        getActivity().playSound(R.raw.connect, true, false);
                         CONNECTED = false;
                     }
 

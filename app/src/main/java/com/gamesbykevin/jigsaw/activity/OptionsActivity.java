@@ -15,9 +15,6 @@ import static com.gamesbykevin.jigsaw.util.UtilityHelper.AMAZON;
 
 public class OptionsActivity extends BaseActivity {
 
-    //has the activity been paused
-    private boolean paused = false;
-
     /**
      * List of toggle buttons in the options
      */
@@ -66,9 +63,6 @@ public class OptionsActivity extends BaseActivity {
 
         //stop sound
         super.stopSound();
-
-        //flag paused
-        paused = true;
     }
 
     @Override
@@ -79,9 +73,6 @@ public class OptionsActivity extends BaseActivity {
 
         //play menu
         super.playMenu();
-
-        //flag false
-        paused = false;
     }
 
     /**
@@ -102,11 +93,8 @@ public class OptionsActivity extends BaseActivity {
                 editor.putBoolean(getString(button.settingId), ((ToggleButton)findViewById(button.buttonId)).isChecked());
             }
 
-            //store the shape setting as well
-            //editor.putString(getString(R.string.game_shape_file_key), GSON.toJson(buttonShape.getValue()));
-
             //make it final by committing the change
-            editor.commit();
+            editor.apply();
 
         } catch (Exception e) {
 
@@ -132,6 +120,9 @@ public class OptionsActivity extends BaseActivity {
 
         //get the button
         ToggleButton button = view.findViewById(R.id.toggleButtonSound);
+
+        //assign global sound setting
+        SOUND_ENABLED = button.isChecked();
 
         if (!button.isChecked()) {
 
