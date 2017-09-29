@@ -461,6 +461,9 @@ public class Board implements ICommon {
                         //make sure all destination pieces are at their destination
                         BoardHelper.checkDestination(this);
 
+                        //game over?
+                        GameHelper.GAME_OVER = isGameOver(this);
+
                         //remove the selected piece
                         removeSelected();
                     }

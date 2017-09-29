@@ -153,10 +153,8 @@ public class Game implements IGame {
 
                         //save the puzzle in the shared preferences
                         getActivity().savePuzzle();
-
                         SAVE_EXIT = false;
                         STEP = Step.Start;
-                        getActivity().exit();
                         return;
                     }
 

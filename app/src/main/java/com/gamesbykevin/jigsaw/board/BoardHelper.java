@@ -536,6 +536,9 @@ public class BoardHelper {
                     tmp.setX(tmp.getDestinationX());
                     tmp.setY(tmp.getDestinationY());
 
+                    //if placed, there will be no rotation
+                    tmp.setAngle(0);
+
                 } catch (Exception e) {
                     UtilityHelper.handleException(e);
                 }

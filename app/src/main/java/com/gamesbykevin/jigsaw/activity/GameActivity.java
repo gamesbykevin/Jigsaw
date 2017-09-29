@@ -328,7 +328,11 @@ public class GameActivity extends BaseGameActivity implements Disposable {
     @Override
     public void onBackPressed() {
 
-        //we will do different things depening which screen we are on
+        //if the game is over, don't do anything
+        if (GAME_OVER)
+            return;
+
+        //we will do different things depending which screen we are on
         switch (getScreen()) {
 
             //if viewing the game settings and back pressed, go back to game
@@ -514,7 +518,7 @@ public class GameActivity extends BaseGameActivity implements Disposable {
         finish();
     }
 
-    public void exit() {
+    private void exit() {
 
         //start the activity
         startActivity(new Intent(GameActivity.this, LevelSelectActivity.class));
@@ -634,9 +638,16 @@ public class GameActivity extends BaseGameActivity implements Disposable {
 
             editor = null;
         }
+
+        //go back to the level select activit
+        exit();
     }
 
     public void clearSave() {
+
+        //don't remove the preferences if the game is not over
+        if (!GAME_OVER)
+            return;
 
         //get the editor so we can change the shared preferences
         SharedPreferences.Editor editor = getSharedPreferences().edit();
@@ -656,7 +667,7 @@ public class GameActivity extends BaseGameActivity implements Disposable {
         //make sure level location is a number
         if (Board.IMAGE_LOCATION == null)
             return;
-        if (Board.IMAGE_LOCATION.length() < 1)
+        if (Board.IMAGE_LOCATION.trim().length() < 1)
             return;
         if (!TextUtils.isDigitsOnly(Board.IMAGE_LOCATION))
             return;
