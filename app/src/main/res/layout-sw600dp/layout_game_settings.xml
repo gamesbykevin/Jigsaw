@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/menu_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="invisible">
+
+    <TableLayout
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="40dp"
+        android:id="@+id/tableSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TableRow>
+
+            <TableLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TableRow>
+                    <TextView android:layout_gravity="center"
+                        android:layout_span="4"
+                        android:textSize="30sp"
+                        android:text="@string/settings_background_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </TableRow>
+
+                <TableRow>
+                    <ImageView android:layout_width="75dp" android:layout_height="75dp" style="@style/background_selector" android:src="@drawable/background_selector_white" android:onClick="onClickBackgroundWhite" android:id="@+id/backgroundWhite" />
+                    <ImageView android:layout_width="75dp" android:layout_height="75dp" style="@style/background_selector" android:src="@drawable/background_selector_black" android:onClick="onClickBackgroundBlack" android:id="@+id/backgroundBlack" />
+                    <ImageView android:layout_width="75dp" android:layout_height="75dp" style="@style/background_selector" android:src="@drawable/background_selector_gray" android:onClick="onClickBackgroundGray"  android:id="@+id/backgroundGray" />
+                    <ImageView android:layout_width="75dp" android:layout_height="75dp" style="@style/background_selector" android:src="@drawable/background_selector_orange" android:onClick="onClickBackgroundOrange" android:id="@+id/backgroundOrange" />
+                </TableRow>
+
+                <TableRow>
+                    <ImageView android:layout_width="75dp" android:layout_height="75dp" style="@style/background_selector" android:src="@drawable/background_selector_brown" android:onClick="onClickBackgroundBrown" android:id="@+id/backgroundBrown" />
+                    <ImageView android:layout_width="75dp" android:layout_height="75dp" style="@style/background_selector" android:src="@drawable/background_selector_blue" android:onClick="onClickBackgroundBlue" android:id="@+id/backgroundBlue" />
+                    <ImageView android:layout_width="75dp" android:layout_height="75dp" style="@style/background_selector" android:src="@drawable/background_selector_yellow" android:onClick="onClickBackgroundYellow" android:id="@+id/backgroundYellow" />
+                    <ImageView android:layout_width="75dp" android:layout_height="75dp" style="@style/background_selector" android:src="@drawable/background_selector_red" android:onClick="onClickBackgroundRed" android:id="@+id/backgroundRed" />
+                </TableRow>
+
+                <TableRow>
+                    <ImageView android:layout_width="75dp" android:layout_height="75dp" style="@style/background_selector" android:src="@drawable/background_selector_purple" android:onClick="onClickBackgroundPurple" android:id="@+id/backgroundPurple" />
+                    <ImageView android:layout_width="75dp" android:layout_height="75dp" style="@style/background_selector" android:src="@drawable/background_selector_green" android:onClick="onClickBackgroundGreen" android:id="@+id/backgroundGreen" />
+                    <ImageView android:layout_width="75dp" android:layout_height="75dp" style="@style/background_selector" android:src="@drawable/background_selector_pink" android:onClick="onClickBackgroundPink" android:id="@+id/backgroundPink" />
+                    <ImageView android:layout_width="75dp" android:layout_height="75dp" style="@style/background_selector" android:src="@drawable/background_selector_turquoise" android:onClick="onClickBackgroundTurquoise" android:id="@+id/backgroundTurquoise" />
+                </TableRow>
+
+            </TableLayout>
+
+            <TableLayout
+                android:layout_marginLeft="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TableRow>
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        style="@style/game_button"
+                        android:onClick="onClickChangeSound"
+                        android:src="@drawable/sound_on"
+                        android:id="@+id/buttonSound" />
+
+                    <ImageView android:layout_width="150dp" android:layout_height="150dp" android:id="@+id/buttonLeaderboard" style="@style/button_leaderboard" />
+                </TableRow>
+
+                <TableRow>
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        style="@style/game_button"
+                        android:onClick="onClickShowTimer"
+                        android:src="@drawable/timer_on"
+                        android:id="@+id/buttonTimer" />
+
+                    <ImageView android:layout_width="150dp" android:layout_height="150dp" android:id="@+id/buttonAchievement" style="@style/button_achievement" />
+                </TableRow>
+            </TableLayout>
+        </TableRow>
+    </TableLayout>
+
+    <ImageView style="@style/button_settings" />
+
+    <!-- Title here-->
+    <TextView
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/titleText"
+        android:textSize="30sp"
+        android:layout_marginTop="40dp"
+        android:text="@string/text_in_game_options"
+        android:textColor="@color/colorWhite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

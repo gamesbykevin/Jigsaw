@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/menu_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="invisible">
+
+    <TableLayout
+        android:stretchColumns="*"
+        android:layout_marginBottom="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableRow android:gravity="center">
+
+            <TextView
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:textSize="40sp"
+                android:textColor="@color/colorBlack"
+                android:textIsSelectable="false"
+                android:textStyle="normal"
+                android:layout_span="2"
+                android:id="@+id/textViewPrompt"
+                android:text="@string/textViewPrompt" />
+
+        </TableRow>
+
+        <TableRow android:gravity="center">
+
+            <TextView
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:textSize="40sp"
+                android:textColor="@color/colorBlack"
+                android:textIsSelectable="false"
+                android:textStyle="normal"
+                android:layout_span="2"
+                android:id="@+id/textViewPromptExtra"
+                android:text="@string/textViewPromptExtra" />
+
+        </TableRow>
+
+        <TableRow android:gravity="center">
+
+            <Button
+                android:textSize="8pt"
+                android:textColor="@color/colorWhite"
+                android:textIsSelectable="false"
+                android:textStyle="normal"
+                android:background="@drawable/button"
+                android:layout_margin="20dp"
+                android:layout_width="125dp"
+                android:layout_height="50dp"
+                android:text="@string/confirm_save"
+                android:onClick="onClickConfirm" />
+
+            <Button
+                android:textSize="8pt"
+                android:textColor="@color/colorWhite"
+                android:textIsSelectable="false"
+                android:textStyle="normal"
+                android:background="@drawable/button"
+                android:layout_margin="20dp"
+                android:layout_width="125dp"
+                android:layout_height="50dp"
+                android:text="@string/confirm_exit"
+                android:onClick="onClickExit" />
+
+        </TableRow>
+
+    </TableLayout>
+
+    <!-- Title here-->
+    <TextView
+        android:layout_alignParentTop="true"
+        android:id="@+id/titleText"
+        android:layout_marginTop="30dp"
+        android:textSize="40sp"
+        android:text="@string/text_prompt_title"
+        style="@style/textViewLevelSelectTitle"
+        />
+
+</RelativeLayout>
