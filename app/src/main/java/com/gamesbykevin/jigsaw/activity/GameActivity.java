@@ -601,6 +601,14 @@ public class GameActivity extends BaseGameActivity implements Disposable {
         //our shared preferences editor
         SharedPreferences.Editor editor;
 
+        boolean result = false;
+
+        //get the previous settings (if they exist)
+        String tmpKey = null;
+        String tmpTime = null;
+        String tmpLoc = null;
+        boolean rotate = false;
+
         try {
 
             //if the location is not a number, then the location is a path to a file and we need to move/save
@@ -617,6 +625,12 @@ public class GameActivity extends BaseGameActivity implements Disposable {
             //get the editor so we can change the shared preferences
             editor = getSharedPreferences().edit();
 
+            //get the current saved settings
+            tmpKey = getSharedPreferences().getString(getString(R.string.saved_puzzle_key), null);
+            rotate = getSharedPreferences().getBoolean(getString(R.string.saved_puzzle_rotate_key), false);
+            tmpLoc = getSharedPreferences().getString(getString(R.string.saved_puzzle_custom_image_key), null);
+            tmpTime = getString(R.string.saved_puzzle_timer_key);
+
             //convert array to json string when saving in shared preferences
             editor.putString(getString(R.string.saved_puzzle_key), GSON.toJson(getGame().getBoard().getPieces()));
 
@@ -630,7 +644,16 @@ public class GameActivity extends BaseGameActivity implements Disposable {
             editor.putString(getString(R.string.saved_puzzle_timer_key), GSON.toJson(getTimer().getTime()));
 
             //save changes
-            editor.apply();
+            result = editor.commit();
+
+            //if not successful, try to commit again
+            if (!result) {
+                editor.putString(getString(R.string.saved_puzzle_key), GSON.toJson(getGame().getBoard().getPieces()));
+                editor.putBoolean(getString(R.string.saved_puzzle_rotate_key), Board.ROTATE);
+                editor.putString(getString(R.string.saved_puzzle_custom_image_key), GSON.toJson(Board.IMAGE_LOCATION));
+                editor.putString(getString(R.string.saved_puzzle_timer_key), GSON.toJson(getTimer().getTime()));
+                result = editor.commit();
+            }
 
         } catch (Exception e) {
 
@@ -639,7 +662,26 @@ public class GameActivity extends BaseGameActivity implements Disposable {
             editor = null;
         }
 
-        //go back to the level select activit
+        //if the save was not successful, try to save the old settings
+        if (!result) {
+
+            //if previous values exist, try to save those
+            if (tmpKey != null && tmpLoc == null && tmpTime == null &&
+                    tmpKey.trim().length() > 0 && tmpLoc.trim().length() > 0 && tmpTime.trim().length() > 0) {
+                if (editor == null)
+                    editor = getSharedPreferences().edit();
+
+                editor.putString(getString(R.string.saved_puzzle_key), tmpKey);
+                editor.putBoolean(getString(R.string.saved_puzzle_rotate_key), rotate);
+                editor.putString(getString(R.string.saved_puzzle_custom_image_key), tmpLoc);
+                editor.putString(getString(R.string.saved_puzzle_timer_key), tmpTime);
+
+                //save changes once more
+                result = editor.commit();
+            }
+        }
+
+        //go back to the level select activity
         exit();
     }
 
